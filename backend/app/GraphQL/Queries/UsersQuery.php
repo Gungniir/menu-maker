@@ -40,12 +40,10 @@ class UsersQuery extends Query
      * @noinspection PhpUnusedParameterInspection
      * @noinspection MissingParameterTypeDeclarationInspection
      */
-    public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields): array|\Illuminate\Database\Eloquent\Collection|Collection
+    public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, SelectFields $selectField): array|\Illuminate\Database\Eloquent\Collection|Collection
     {
-        /** @var SelectFields $fields */
-        $fields = $getSelectFields();
-        $select = $fields->getSelect();
-        $with = $fields->getRelations();
+        $select = $selectField->getSelect();
+        $with = $selectField->getRelations();
 
         if (isset($args['id'])) {
             return User::whereId($args['id'])->with($with)->select($select)->get();
