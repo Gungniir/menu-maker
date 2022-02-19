@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -63,6 +61,7 @@ class AuthController extends Controller
      */
     public function refresh(): JsonResponse
     {
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
         return $this->respondWithToken(auth()->refresh());
     }
 
@@ -75,6 +74,8 @@ class AuthController extends Controller
      */
     protected function respondWithToken(string $token): JsonResponse
     {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @noinspection PhpParamsInspection */
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
