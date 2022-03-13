@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 use App\GraphQL\Queries\UsersQuery;
 use App\GraphQL\Scalars\DateTimeScalar;
+use App\GraphQL\Types\DishType;
 use App\GraphQL\Types\UserType;
 use Rebing\GraphQL\GraphQL;
 use Rebing\GraphQL\GraphQLController;
@@ -108,6 +109,7 @@ return [
 
     'types' => [
         UserType::class,
+        DishType::class,
         DateTimeScalar::class,
     ],
 

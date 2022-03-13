@@ -34,15 +34,18 @@ class UserType extends GraphQLType
                 'privacy' => MePrivacy::class,
             ],
             'created_at' => [
-                'type' => Type::nonNull(GraphQL::type('DateTimeScalar')),
+                'type' => GraphQL::type('DateTimeScalar'),
             ],
             'updated_at' => [
-                'type' => Type::nonNull(GraphQL::type('DateTimeScalar')),
+                'type' => GraphQL::type('DateTimeScalar'),
                 'privacy' => MePrivacy::class,
             ],
             'telegram_id' => [
                 'type' => Type::int(),
                 'privacy' => MePrivacy::class,
+            ],
+            'dishes' => [
+                'type' => Type::nonNull(Type::listOf(GraphQL::type('Dish')))
             ]
         ];
     }
