@@ -42,10 +42,9 @@ class UserController extends Controller
 
         $user = User::forceCreate([
             'name' => $input['name'],
-            'email' => $input['email']
+            'email' => $input['email'],
+            'password' => Hash::make($input['password'])
         ]);
-
-        $user->password = Hash::make($input['password']);
 
         $user->saveOrFail();
 
@@ -76,17 +75,17 @@ class UserController extends Controller
         $input = $request->validate([
             'name' => 'required|string|max:255|min:3',
             'email' => 'required|email:rfc,dns|max:255|unique:users',
-            'password' => 'required|nullable|string|min:6|max:255',
-            'telegram_id' => 'required|nullable|numeric|max:9223372036854775807|min:-9223372036854775808'
+            'password' => 'nullable|string|min:6|max:255',
+            'telegram_id' => 'nullable|numeric|max:9223372036854775807|min:-9223372036854775808'
         ]);
 
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
-            'telegram_id' => $input['telegram_id']
+            'telegram_id' => $input['telegram_id'] ?? null
         ]);
 
-        if (!is_null($input['password'])) {
+        if (!is_null($input['password'] ?? null)) {
             $user->password = Hash::make($input['password']);
         }
 
@@ -106,9 +105,9 @@ class UserController extends Controller
     public function destroy(Request $request, User $user): JsonResponse
     {
         $force = $request->boolean('force');
-        $this->authorize('forceDelete', $user);
 
         if ($force) {
+            $this->authorize('forceDelete', $user);
             $user->forceDelete();
         } else {
             $user->delete();
