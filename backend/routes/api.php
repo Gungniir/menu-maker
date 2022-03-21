@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +30,5 @@ Route::group([
     'middleware' => 'api'
 ], static function () {
     Route::resource('dish', DishController::class);
+    Route::resource('user', UserController::class);
 });
