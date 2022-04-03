@@ -1,4 +1,4 @@
-# frontend
+# menumaker
 
 ## Project setup
 ```
