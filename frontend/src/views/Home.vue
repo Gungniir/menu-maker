@@ -20,7 +20,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn color="primary" x-large class="px-8 mr-10">
+              <v-btn color="primary" x-large class="px-8 mr-10" to="login">
                 Войти
               </v-btn>
               <v-btn color="primary" x-large class="px-8" outlined>
@@ -46,8 +46,7 @@ import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
     return {}
   }
 })
-export default class Home extends Vue {
-}
+export default class Home extends Vue {}
 </script>
 
 <style lang="scss" scoped>
@@ -60,7 +59,7 @@ export default class Home extends Vue {
 
 
   .home__header {
-    font-family: Roboto;
+    font-family: Roboto, serif;
     font-size: 55px;
     font-weight: 600;
     line-height: 64px;
@@ -69,11 +68,11 @@ export default class Home extends Vue {
   }
 
   .home__content {
-    font-family: Montserrat;
+    font-family: Montserrat, serif;
     font-size: 32px;
     font-weight: 400;
     line-height: 45px;
-    letter-spacing: 0em;
+    letter-spacing: 0;
     text-align: left;
   }
 }
