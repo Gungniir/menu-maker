@@ -1,43 +1,79 @@
 <template>
   <div class="login">
-    <div class="login__card">
-      <div class="card__header mb-11">
-        <div class="header__logo mb-5">
-          <v-img :src="require('@/assets/logo-2.svg')" max-width="100" height="38"/>
+    <validation-observer v-slot="{ invalid }" ref="observer">
+      <div class="login__card">
+        <div class="card__header mb-11">
+          <div class="header__logo mb-5">
+            <v-img :src="require('@/assets/logo-2.svg')" max-width="100" height="38" />
+          </div>
+          <div class="header__content">Добро пожаловать</div>
         </div>
-        <div class="header__content">Добро пожаловать</div>
+        <div class="card__body">
+          <validation-provider rules="required|email" v-slot="{ errors }">
+            <v-text-field
+              v-model="login"
+              :disabled="loading"
+              :error-messages="errors"
+              outlined
+              label="Логин"
+              placeholder="e.g. john@gmail.com"
+              persistent-placeholder
+            />
+          </validation-provider>
+          <validation-provider vid="password" rules="required" v-slot="{ errors }">
+            <v-text-field
+              v-model="password"
+              :disabled="loading"
+              :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showPassword ? 'text' : 'password'"
+              :error-messages="errors"
+              outlined
+              label="Пароль"
+              placeholder="Xsw36Fg8jK123"
+              persistent-placeholder
+              @click:append="showPassword = !showPassword"
+            />
+          </validation-provider>
+        </div>
+        <div class="card__buttons">
+          <v-btn :disabled="loading || invalid" color="primary" class="mb-5" block x-large @click="tryLogin">Войти</v-btn>
+          <v-btn :disabled="loading" color="primary" text block>Забыли пароль?</v-btn>
+        </div>
       </div>
-      <div class="card__body">
-        <v-text-field outlined label="Логин" placeholder="e.g. john@gmail.com" persistent-placeholder />
-        <v-text-field
-          outlined
-          label="Пароль"
-          placeholder="Xsw36Fg8jK123"
-          persistent-placeholder
-          :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="showPassword ? 'text' : 'password'"
-          @click:append="showPassword = !showPassword"
-        />
-      </div>
-      <div class="card__buttons">
-        <v-btn color="primary" class="mb-5" block x-large>Войти</v-btn>
-        <v-btn color="primary" text block>Забыли пароль?</v-btn>
-      </div>
-    </div>
+    </validation-observer>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator'
+import AuthRepository from "@/repositories/AuthRepository";
+import {ValidationObserver} from "vee-validate";
 
 @Component({
-  data() {
-    return {
-      showPassword: false
-    }
-  }
+  components: { ValidationObserver }
 })
 export default class Login extends Vue {
+  $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
+  private login = ''
+  private password = ''
+  private showPassword = false
+  private loading = false
+
+  public async tryLogin(): Promise<void> {
+    this.loading = true;
+    try {
+      const {data} = await AuthRepository.login(this.login, this.password);
+      localStorage.setItem('jwt', data.access_token);
+    } catch (e) {
+      this.$refs.observer.setErrors({
+        'password': ['Неверный логин или пароль']
+      });
+    }
+    this.loading = false
+  }
 }
 </script>
 
