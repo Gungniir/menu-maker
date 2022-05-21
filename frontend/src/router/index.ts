@@ -8,16 +8,59 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      fullPage: true
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
-  }
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+    meta: {
+      fullPage: true,
+    }
+  },
+  {
+    path: '/menus',
+    name: 'Menus',
+    component: () => import(/* webpackChunkName: "menus" */ '../views/Menus.vue'),
+    meta: {
+      fullPage: false,
+      showInMenu: true,
+      icon: '$menu',
+    }
+  },
+  {
+    path: '/dishes',
+    name: 'Dishes',
+    component: () => import(/* webpackChunkName: "dishes" */ '../views/Dishes.vue'),
+    meta: {
+      fullPage: false,
+      showInMenu: true,
+      icon: '$dishes',
+    }
+  },
+  {
+    path: '/products',
+    name: 'Products',
+    component: () => import(/* webpackChunkName: "products" */ '../views/Products.vue'),
+    meta: {
+      fullPage: false,
+      showInMenu: true,
+      icon: '$products',
+    }
+  },
+  {
+    path: '/ingredients',
+    name: 'Ingredients',
+    component: () => import(/* webpackChunkName: "ingredients" */ '../views/Ingredients.vue'),
+    meta: {
+      fullPage: false,
+      showInMenu: true,
+      icon: '$ingredients',
+    }
+  },
 ]
 
 const router = new VueRouter({

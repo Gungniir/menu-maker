@@ -1,30 +1,40 @@
 <template>
   <v-app id="app">
     <v-main>
-      <router-view/>
+      <page v-if="usePage" :pages="pages">
+        <router-view />
+      </page>
+      <router-view v-else />
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import {Component, Vue} from 'vue-property-decorator'
+import Page from "@/components/Page.vue";
+import {PageMenuItem} from "@/models/PageMenuItem";
 
-export default Vue.extend({
-  name: 'App',
-
-  data: () => ({
-    //
-  }),
-  methods: {
-    load() {
-      return false;
-    }
-  }
+@Component({
+  components: {Page}
 })
+export default class App extends Vue {
+  get usePage(): boolean {
+    return this.$route.meta ? !this.$route.meta.fullPage : false;
+  }
+
+  get pages(): PageMenuItem[] {
+    return this.$router.getRoutes().filter(({meta}) => meta.showInMenu).map(route => ({
+      link: route.path,
+      selected: this.$route.path === route.path,
+      icon: route.meta.icon ?? 'mdi-close'
+    }))
+  }
+}
 </script>
 
-<style>
+<style lang="scss">
 #app {
-  color: #3C3C3C
+  color: #3C3C3C;
+  background: var(--v-app-background-base);
 }
 </style>

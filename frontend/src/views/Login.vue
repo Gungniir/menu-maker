@@ -90,6 +90,7 @@ export default class Login extends Vue {
 
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 10px;
+    background: var(--v-background-base);
 
     .header__logo {
       display: flex;
