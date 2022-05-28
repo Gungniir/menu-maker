@@ -5,8 +5,7 @@ import {RecipeItem} from "@/models/RecipeItem";
 import {Preparation} from "@/models/Preparation";
 import {Tool} from "@/models/Tool";
 
-export type Dish = BaseType & {
-  creator_id: number,
+export type DishEntity = {
   name: string,
   is_archive: boolean,
   cooking_time: number | null,
@@ -17,12 +16,16 @@ export type Dish = BaseType & {
   link: string | null,
 }
 
+export type Dish = BaseType & DishEntity & {
+  creator_id: number,
+}
+
 export type DishPaginate = Dish & {
   image: Image[],
   categories: Category[],
 }
 
-export type DishFind = Dish & {
+export type DishShow = Dish & {
   image: Image[],
   categories: Category[],
   recipe_items: RecipeItem[],
