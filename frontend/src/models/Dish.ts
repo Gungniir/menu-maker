@@ -1,0 +1,31 @@
+import {Image} from "@/models/Image";
+import {BaseType} from "@/models/common/BaseType";
+import {Category} from "@/models/Category";
+import {RecipeItem} from "@/models/RecipeItem";
+import {Preparation} from "@/models/Preparation";
+import {Tool} from "@/models/Tool";
+
+export type Dish = BaseType & {
+  creator_id: number,
+  name: string,
+  is_archive: boolean,
+  cooking_time: number | null,
+  kcal: number | null,
+  proteins: number | null,
+  fats: number | null,
+  carbohydrates: number | null,
+  link: string | null,
+}
+
+export type DishPaginate = Dish & {
+  image: Image[],
+  categories: Category[],
+}
+
+export type DishFind = Dish & {
+  image: Image[],
+  categories: Category[],
+  recipe_items: RecipeItem[],
+  preparations: Preparation[],
+  tools: Tool[]
+}
