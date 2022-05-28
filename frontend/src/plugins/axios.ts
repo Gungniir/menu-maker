@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from "@/router";
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -35,6 +36,20 @@ _axios.interceptors.response.use(
   },
   (err) => {
     // Do something with response error
+    for (const errKey in err) {
+      console.log(errKey, err[errKey]);
+    }
+
+    if (err.response.status === 403) {
+      router.push({
+        path: '/login',
+        query: {
+          returnto: router.currentRoute.path
+        }
+      });
+      return;
+    }
+
     return Promise.reject(err);
   },
 );
