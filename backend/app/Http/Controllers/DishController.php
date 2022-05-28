@@ -20,7 +20,9 @@ class DishController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Dish::whereCreatorId(Auth::id())->paginate(10));
+        $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->paginate(10);
+
+        return response()->json($pagination);
     }
 
     /**
@@ -57,6 +59,8 @@ class DishController extends Controller
      */
     public function show(Dish $dish): JsonResponse
     {
+        $dish->load('recipeItems', 'preparations', 'images', 'categories', 'tools');
+
         return response()->json($dish);
     }
 

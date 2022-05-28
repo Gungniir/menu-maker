@@ -49,6 +49,6 @@ class Category extends Model
 
     public function dishes(): BelongsToMany
     {
-        return $this->belongsToMany(Dish::class);
+        return $this->belongsToMany(Dish::class, 'dish_category');
     }
 }

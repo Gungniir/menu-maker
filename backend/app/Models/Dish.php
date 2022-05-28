@@ -89,7 +89,7 @@ class Dish extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'dish_category');
     }
 
     public function tools(): BelongsToMany
