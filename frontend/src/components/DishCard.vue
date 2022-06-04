@@ -2,6 +2,24 @@
   <div class="dc">
     <v-img v-if="dish.images[0]" width="100%" height="100%" :src="dish.images[0]" />
     <div v-else class="dc__background"/>
+    <div class="dc__actions">
+      <v-tooltip bottom open-delay="300">
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" :to="`/dishes/${dish.id}/edit`">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </template>
+        Редактировать
+      </v-tooltip>
+      <v-tooltip bottom open-delay="300">
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+        Удалить
+      </v-tooltip>
+    </div>
     <div class="dc__name">
       {{ dish.name }}
     </div>
@@ -50,6 +68,20 @@ export default class DishCard extends Vue {
     width: 100%;
 
     background: #FFEDD3;
+  }
+
+  &:hover .dc__actions{
+    display: flex;
+  }
+
+  .dc__actions {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 </style>

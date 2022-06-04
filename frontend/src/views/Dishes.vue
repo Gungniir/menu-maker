@@ -20,8 +20,8 @@ import DishCard from "@/components/DishCard.vue";
 })
 export default class Dishes extends Vue {
   public dishes: DishPaginate[] = [];
-  public pages = 1
-  public page = 0
+  public pages = 1;
+  public page = 0;
 
   mounted(): void {
     this.fetchMoreDishes();

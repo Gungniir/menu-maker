@@ -40,5 +40,9 @@ export default class App extends Vue {
   color: #3C3C3C;
   background: var(--v-app-background-base);
   font-family: Montserrat, serif;
+
+  .v-icon {
+    color: var(--v-icon-base);
+  }
 }
 </style>

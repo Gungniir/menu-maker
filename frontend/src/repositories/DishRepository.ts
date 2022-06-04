@@ -9,7 +9,7 @@ export default {
   paginate(page = 1): AxiosPromise<Pagination<DishPaginate>> {
     return Repository.get(base + '?page=' + page);
   },
-  show(id: number): AxiosPromise<Pagination<DishShow>> {
+  show(id: number): AxiosPromise<DishShow> {
     return Repository.get(base + '/' + id);
   },
   store(dish: DishEntity): AxiosPromise<Dish> {

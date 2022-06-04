@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import VueRouter, {RouteConfig} from 'vue-router'
 import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
@@ -40,6 +40,17 @@ const routes: Array<RouteConfig> = [
       withoutBackground: true,
       showInMenu: true,
       icon: '$dishes',
+    }
+  },
+  {
+    path: '/dishes/:dishId(\\d+)/edit',
+    name: 'DishesEdit',
+    component: () => import(/* webpackChunkName: "dishes" */ '../views/DishesEdit.vue'),
+    props: route => ({dishId: Number(route.params.dishId)}),
+    meta: {
+      fullPage: false,
+      withoutBackground: false,
+      showInMenu: false,
     }
   },
   {

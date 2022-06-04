@@ -4,6 +4,7 @@ import Menu from "@/icons/Menu.vue";
 import Dishes from "@/icons/Dishes.vue";
 import Ingredients from "@/icons/Ingredients.vue";
 import Products from "@/icons/Products.vue";
+import Add from "@/icons/Add.vue";
 
 Vue.use(Vuetify)
 
@@ -35,6 +36,9 @@ export default new Vuetify({
       },
       products: {
         component: Products
+      },
+      add: {
+        component: Add
       }
     }
   },

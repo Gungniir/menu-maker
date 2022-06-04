@@ -3,27 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tool;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ToolController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $paginate = Tool::whereCreatorId(Auth::id())->paginate(9);
+
+        return response()->json($paginate);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         //
     }
@@ -31,10 +35,10 @@ class ToolController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Tool  $tool
-     * @return \Illuminate\Http\Response
+     * @param Tool $tool
+     * @return JsonResponse
      */
-    public function show(Tool $tool)
+    public function show(Tool $tool): JsonResponse
     {
         //
     }
@@ -42,11 +46,11 @@ class ToolController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Tool  $tool
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Tool $tool
+     * @return JsonResponse
      */
-    public function update(Request $request, Tool $tool)
+    public function update(Request $request, Tool $tool): JsonResponse
     {
         //
     }
@@ -54,10 +58,10 @@ class ToolController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Tool  $tool
-     * @return \Illuminate\Http\Response
+     * @param Tool $tool
+     * @return JsonResponse
      */
-    public function destroy(Tool $tool)
+    public function destroy(Tool $tool): JsonResponse
     {
         //
     }
