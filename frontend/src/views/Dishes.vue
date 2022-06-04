@@ -1,5 +1,8 @@
 <template>
   <div class="dishes">
+    <div class="dishes__header">
+      Все блюда
+    </div>
     <div class="dishes__container">
       <DishCard v-for="dish of dishes" :key="dish.id" :dish="dish" />
     </div>
@@ -40,6 +43,16 @@ export default class Dishes extends Vue {
 <style scoped lang="scss">
 .dishes {
   width: 100%;
+  .dishes__header {
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 49px;
+    letter-spacing: 0;
+    text-align: center;
+
+    margin-bottom: 40px;
+  }
+
   .dishes__container {
     width: 100%;
     display: grid;

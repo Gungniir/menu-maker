@@ -1,6 +1,7 @@
 <template>
   <div class="dc">
-    <v-img width="100%" height="100%" :src="dish.images[0]" />
+    <v-img v-if="dish.images[0]" width="100%" height="100%" :src="dish.images[0]" />
+    <div v-else class="dc__background"/>
     <div class="dc__name">
       {{ dish.name }}
     </div>
@@ -42,6 +43,13 @@ export default class DishCard extends Vue {
     background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0 0 10px 10px;
+  }
+
+  .dc__background {
+    height: 100%;
+    width: 100%;
+
+    background: #FFEDD3;
   }
 }
 </style>
