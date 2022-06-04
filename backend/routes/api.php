@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DishController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
-], static function ($router) {
+], static function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -29,6 +30,9 @@ Route::group([
 Route::group([
     'middleware' => 'api'
 ], static function () {
-    Route::resource('dish', DishController::class);
-    Route::resource('user', UserController::class);
+    Route::apiResource('dish', DishController::class);
+    Route::apiResource('user', UserController::class);
+    Route::apiResource('image', ImageController::class, [
+        'except' => ['update']
+    ]);
 });

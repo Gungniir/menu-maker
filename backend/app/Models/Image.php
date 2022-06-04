@@ -38,6 +38,8 @@ class Image extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');

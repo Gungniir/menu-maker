@@ -3,62 +3,76 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ImageController extends Controller
 {
+    public function __construct() {
+        $this->authorizeResource(Image::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $pagination = Image::whereCreatorId(Auth::id())->paginate(9);
+
+        return response()->json($pagination);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $input = $request->validate([
+            'name' => 'required|string|max:255',
+            'file' => 'required|dimensions:min_width=200,min_height=200'
+        ]);
+
+        /** @noinspection NullPointerExceptionInspection */
+        $path = $request->file('file')->store('images/' . Auth::id());
+
+        $image = Image::create([
+            'creator_id' => Auth::id(),
+            'name' => $input['name'],
+            'filename' => $path,
+        ]);
+
+        return response()->json($image);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @param Image $image
+     * @return StreamedResponse
      */
-    public function show(Image $image)
+    public function show(Image $image): StreamedResponse
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Image $image)
-    {
-        //
+        return Storage::download('images/' . Auth::id() . '/' . $image->filename);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @param Image $image
+     * @return JsonResponse
      */
-    public function destroy(Image $image)
+    public function destroy(Image $image): JsonResponse
     {
-        //
+        $image->delete();
+
+        return response()->json($image);
     }
 }
