@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\IngredientUnit;
 use Database\Factories\IngredientFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string $name Название продукта
  * @property bool $is_perishable Скоропортящийся ли продукт
  * @property int $amount Количество у создателя
+ * @property IngredientUnit $unit Единица измерения продукта
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
@@ -39,6 +41,10 @@ use Illuminate\Support\Carbon;
 class Ingredient extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'unit' => IngredientUnit::class,
+    ];
 
     public function creator(): BelongsTo
     {
