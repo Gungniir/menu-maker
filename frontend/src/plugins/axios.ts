@@ -17,9 +17,10 @@ const _axios = axios.create(config);
 _axios.interceptors.request.use(
   (cfg) => {
     // Do something before request is sent
-    if (localStorage.getItem('jwt-token')) {
+    if (localStorage.getItem('jwt')) {
       cfg.headers['Authorization'] = 'Bearer ' + localStorage.getItem('jwt')
     }
+
     return cfg;
   },
   (err) => {
@@ -36,10 +37,6 @@ _axios.interceptors.response.use(
   },
   (err) => {
     // Do something with response error
-    for (const errKey in err) {
-      console.log(errKey, err[errKey]);
-    }
-
     if (err.response.status === 403) {
       router.push({
         path: '/login',

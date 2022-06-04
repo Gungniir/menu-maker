@@ -21,12 +21,12 @@ export type Dish = BaseType & DishEntity & {
 }
 
 export type DishPaginate = Dish & {
-  image: Image[],
+  images: Image[],
   categories: Category[],
 }
 
 export type DishShow = Dish & {
-  image: Image[],
+  images: Image[],
   categories: Category[],
   recipe_items: RecipeItem[],
   preparations: Preparation[],

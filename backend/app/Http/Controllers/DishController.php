@@ -20,7 +20,7 @@ class DishController extends Controller
      */
     public function index(): JsonResponse
     {
-        $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->paginate(10);
+        $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->paginate(9);
 
         return response()->json($pagination);
     }

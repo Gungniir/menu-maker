@@ -5,17 +5,21 @@
         <v-img :src="require('@/assets/logo-2.svg')" />
       </div>
       <div class="left-panel__menu">
-        <div
+        <router-link
           v-for="page of pages"
           :key="page.link"
-          class="menu__item"
-          v-ripple
+          :to="page.link"
         >
-          <v-icon size="60" :color="page.selected ? 'primary' : 'icon'">{{ page.icon }}</v-icon>
-        </div>
+          <div
+            class="menu__item"
+            v-ripple
+          >
+            <v-icon size="60" :color="page.selected ? 'primary' : 'icon'">{{ page.icon }}</v-icon>
+          </div>
+        </router-link>
       </div>
     </div>
-    <div class="page__content">
+    <div class="page__content" :class="{'page__without-bg': withoutBackground}">
       <slot />
     </div>
     <div class="page__right-panel">
@@ -33,6 +37,7 @@ import {PageMenuItem} from "@/models/PageMenuItem";
 @Component({})
 export default class Page extends Vue {
   @Prop({default: () => ([])}) readonly pages!: PageMenuItem[]
+  @Prop({default: false}) readonly withoutBackground!: boolean;
 }
 </script>
 
@@ -44,6 +49,7 @@ export default class Page extends Vue {
   display: flex;
 
   .page__left-panel {
+    flex-shrink: 0;
     max-width: 345px;
     width: 17vw;
     padding: 40px;
@@ -82,6 +88,7 @@ export default class Page extends Vue {
   }
 
   .page__right-panel {
+    flex-shrink: 0;
     max-width: 255px;
     width: 13vw;
     padding: 60px;
@@ -93,11 +100,14 @@ export default class Page extends Vue {
   .page__content {
     flex-grow: 1;
     margin: 60px 0;
+    overflow: hidden;
 
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 25px;
+    &:not(.page__without-bg) {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 25px;
 
-    background: var(--v-background-base);
+      background: var(--v-background-base);
+    }
   }
 }
 </style>

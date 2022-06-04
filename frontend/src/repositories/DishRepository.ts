@@ -6,8 +6,8 @@ import {Dish, DishEntity, DishPaginate, DishShow} from "@/models/Dish";
 const base = 'dish';
 
 export default {
-  paginate(): AxiosPromise<Pagination<DishPaginate>> {
-    return Repository.get(base);
+  paginate(page = 1): AxiosPromise<Pagination<DishPaginate>> {
+    return Repository.get(base + '?page=' + page);
   },
   show(id: number): AxiosPromise<Pagination<DishShow>> {
     return Repository.get(base + '/' + id);

@@ -32,7 +32,7 @@ class DishTest extends TestCase
         $response->assertStatus(200);
 
         $json = $response->json();
-        $this->assertEquals(10, $json['total']);
+        $this->assertEquals(9, $json['total']);
 
 
         Dish::whereCreatorId($user->id)->forceDelete();

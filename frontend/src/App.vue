@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <v-main>
-      <page v-if="usePage" :pages="pages">
+      <page v-if="usePage" :pages="pages" :without-background="withoutBackground">
         <router-view />
       </page>
       <router-view v-else />
@@ -20,6 +20,9 @@ import {PageMenuItem} from "@/models/PageMenuItem";
 export default class App extends Vue {
   get usePage(): boolean {
     return this.$route.meta ? !this.$route.meta.fullPage : false;
+  }
+  get withoutBackground(): boolean {
+    return this.$route.meta ? this.$route.meta.withoutBackground : false;
   }
 
   get pages(): PageMenuItem[] {

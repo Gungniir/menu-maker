@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             ])->create();
         }
 
-        User::factory()->count(5)->create();
-        User::factory()->unverified()->count(5)->create();
+        (new DishSeeder())->run();
     }
 }

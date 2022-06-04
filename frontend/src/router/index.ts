@@ -37,6 +37,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "dishes" */ '../views/Dishes.vue'),
     meta: {
       fullPage: false,
+      withoutBackground: true,
       showInMenu: true,
       icon: '$dishes',
     }
