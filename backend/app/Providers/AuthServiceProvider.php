@@ -4,12 +4,15 @@ namespace App\Providers;
 
 use App\Models\Dish;
 use App\Models\Image;
+use App\Models\Ingredient;
+use App\Models\Tool;
 use App\Models\User;
 use App\Policies\DishPolicy;
 use App\Policies\ImagePolicy;
+use App\Policies\IngredientPolicy;
+use App\Policies\ToolPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,10 +22,11 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Dish::class => DishPolicy::class,
         User::class => UserPolicy::class,
         Image::class => ImagePolicy::class,
+        Tool::class => ToolPolicy::class,
+        Ingredient::class => IngredientPolicy::class,
     ];
 
     /**

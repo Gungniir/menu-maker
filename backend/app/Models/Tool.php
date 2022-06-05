@@ -31,18 +31,20 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
- * @method static Builder|Tool whereAmount($value)
- * @method static Builder|Tool whereCreatedAt($value)
- * @method static Builder|Tool whereCreatorId($value)
- * @method static Builder|Tool whereDeletedAt($value)
- * @method static Builder|Tool whereId($value)
- * @method static Builder|Tool whereName($value)
- * @method static Builder|Tool whereReusable($value)
- * @method static Builder|Tool whereUpdatedAt($value)
+ * @method static Builder|Tool whereAmount(int $value)
+ * @method static Builder|Tool whereCreatedAt(Carbon $value)
+ * @method static Builder|Tool whereCreatorId(int $value)
+ * @method static Builder|Tool whereDeletedAt(Carbon $value)
+ * @method static Builder|Tool whereId(int $value)
+ * @method static Builder|Tool whereName(string $value)
+ * @method static Builder|Tool whereReusable(bool $value)
+ * @method static Builder|Tool whereUpdatedAt(Carbon $value)
  */
 class Tool extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
     public function creator(): BelongsTo
     {

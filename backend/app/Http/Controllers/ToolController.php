@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class ToolController extends Controller
 {
+    public function __construct() {
+        $this->authorizeResource(Tool::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,7 +33,18 @@ class ToolController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        //
+        $input = $request->validate([
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|integer|min:0',
+            'reusable' => 'required|boolean',
+        ]);
+
+        $tool = Tool::create([
+            ...$input,
+            'creator_id' => Auth::id()
+        ]);
+
+        return response()->json($tool);
     }
 
     /**
@@ -40,7 +55,7 @@ class ToolController extends Controller
      */
     public function show(Tool $tool): JsonResponse
     {
-        //
+        return response()->json($tool);
     }
 
     /**
@@ -52,7 +67,17 @@ class ToolController extends Controller
      */
     public function update(Request $request, Tool $tool): JsonResponse
     {
-        //
+        $input = $request->validate([
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric|integer|min:0',
+            'reusable' => 'required|boolean',
+        ]);
+
+        $tool->update([
+            ...$input
+        ]);
+
+        return response()->json($tool);
     }
 
     /**
@@ -63,6 +88,14 @@ class ToolController extends Controller
      */
     public function destroy(Tool $tool): JsonResponse
     {
-        //
+        $dishes = $tool->dishes()->get();
+
+        if ($dishes->count() > 0) {
+            return response()->json($dishes, 409);
+        }
+
+        $tool->delete();
+
+        return response()->json($tool);
     }
 }

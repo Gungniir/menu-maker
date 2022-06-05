@@ -65,7 +65,7 @@ class Dish extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = ['created_at', 'updated_at', 'deleted_at'];
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
     public function creator(): BelongsTo
     {
@@ -95,5 +95,10 @@ class Dish extends Model
     public function tools(): BelongsToMany
     {
         return $this->belongsToMany(Tool::class);
+    }
+
+    public function ingredients(): BelongsToMany
+    {
+        return $this->belongsToMany(Ingredient::class);
     }
 }

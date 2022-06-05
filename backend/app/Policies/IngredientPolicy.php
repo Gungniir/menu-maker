@@ -6,8 +6,9 @@ use App\Models\Dish;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
-class ToolPolicy
+class IngredientPolicy
 {
     use HandlesAuthorization;
 

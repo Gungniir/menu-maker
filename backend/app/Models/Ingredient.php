@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -46,8 +47,15 @@ class Ingredient extends Model
         'unit' => IngredientUnit::class,
     ];
 
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function dishes(): BelongsToMany
+    {
+        return $this->belongsToMany(Dish::class);
     }
 }

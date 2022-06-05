@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +36,6 @@ Route::group([
     Route::apiResource('image', ImageController::class, [
         'except' => ['update']
     ]);
+    Route::apiResource('tool', ToolController::class);
+    Route::apiResource('ingredient', IngredientController::class);
 });
