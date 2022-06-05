@@ -12,14 +12,14 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator'
 import DishRepository from "@/repositories/DishRepository";
-import {DishPaginate} from "@/models/Dish";
+import {DishIndex} from "@/models/Dish";
 import DishCard from "@/components/DishCard.vue";
 
 @Component({
   components: {DishCard}
 })
 export default class Dishes extends Vue {
-  public dishes: DishPaginate[] = [];
+  public dishes: DishIndex[] = [];
   public pages = 1;
   public page = 0;
 

@@ -28,11 +28,11 @@
 
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator'
-import {DishPaginate} from "@/models/Dish";
+import {DishIndex} from "@/models/Dish";
 
 @Component({})
 export default class DishCard extends Vue {
-  @Prop() readonly dish!: DishPaginate
+  @Prop() readonly dish!: DishIndex
 }
 </script>
 

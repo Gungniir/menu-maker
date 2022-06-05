@@ -74,7 +74,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator'
 import {DishShow} from "@/models/Dish";
 import DishRepository from "@/repositories/DishRepository";
-import { Tool } from '@/models/Tool';
+import {Tool} from '@/models/Tool';
 
 @Component({})
 export default class DishesEdit extends Vue {
