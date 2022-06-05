@@ -1,12 +1,12 @@
 import Repository from '../plugins/axios';
 import {AxiosPromise} from "axios";
 import {Pagination} from "@/models/common/Pagination";
-import {Dish, DishEntity, DishPaginate, DishShow} from "@/models/Dish";
+import {Dish, DishEntity, DishIndex, DishShow} from "@/models/Dish";
 
 const base = 'dish';
 
 export default {
-  paginate(page = 1): AxiosPromise<Pagination<DishPaginate>> {
+  paginate(page = 1): AxiosPromise<Pagination<DishIndex>> {
     return Repository.get(base + '?page=' + page);
   },
   show(id: number): AxiosPromise<DishShow> {

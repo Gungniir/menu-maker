@@ -20,7 +20,7 @@ export type Dish = BaseType & DishEntity & {
   creator_id: number,
 }
 
-export type DishPaginate = Dish & {
+export type DishIndex = Dish & {
   images: Image[],
   categories: Category[],
 }
