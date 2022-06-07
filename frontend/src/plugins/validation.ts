@@ -21,6 +21,15 @@ extend('email', {
   message: 'Неверный формат почты'
 });
 
+extend('integer', {
+  validate(value: string) {
+    return {
+      valid: /^\d+$/.test(value)
+    };
+  },
+  message: 'Неверный формат числа'
+});
+
 
 extend('secret', {
   validate: value => value === 'example',
