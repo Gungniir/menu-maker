@@ -37,7 +37,7 @@ export default class App extends Vue {
 
 <style lang="scss">
 #app {
-  color: #3C3C3C;
+  color: var(--v-text-base);
   background: var(--v-app-background-base);
   font-family: Montserrat, serif;
 

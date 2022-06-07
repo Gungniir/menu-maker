@@ -14,6 +14,7 @@ export default new Vuetify({
       light: {
         primary: '#FF7043',
         'app-background': '#F0F0F0',
+        text: '#3C3C3C',
         background: '#FFFFFF',
 
         icon: '#7D8488',
