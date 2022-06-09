@@ -3,8 +3,9 @@
     <div class="dishes__header">
       Все блюда
     </div>
-    <div class="dishes__container">
+    <div ref="intersectionObserverRoot" class="dishes__container">
       <DishCard v-for="dish of dishes" :key="dish.id" :dish="dish" />
+      <div ref="intersectionObserver" class="dishes__intersection-observer"/>
     </div>
   </div>
 </template>
@@ -19,23 +20,44 @@ import DishCard from "@/components/DishCard.vue";
   components: {DishCard}
 })
 export default class Dishes extends Vue {
-  public dishes: DishIndex[] = [];
-  public pages = 1;
-  public page = 0;
+  private dishes: DishIndex[] = [];
+  private lastPage = 1;
+  private page = 1;
+  private loading = true;
+  private intersectionObserver = new IntersectionObserver((entries) => {
+    this.onIntersectionCallback(entries[0].isIntersecting);
+  }, {
+    root: this.$refs.intersectionObserverRoot as Element,
+  })
 
   mounted(): void {
+    this.fetchMoreDishes();
+    this.intersectionObserver.observe(this.$refs.intersectionObserver as Element);
+  }
+
+  beforeDestroy(): void {
+    this.intersectionObserver.unobserve(this.$refs.intersectionObserver as Element);
+  }
+
+  onIntersectionCallback(visible: boolean): void {
+    if (this.loading || !visible) {
+      return;
+    }
+
     this.fetchMoreDishes();
   }
 
   async fetchMoreDishes(): Promise<void> {
-    if (this.pages === this.page) {
+    if (this.lastPage < this.page) {
       return;
     }
+    this.loading = true;
 
     const {data} = await DishRepository.paginate(this.page++);
 
     this.dishes.push(...data.data);
-    this.pages = data.last_page;
+    this.lastPage = data.last_page;
+    this.loading = false;
   }
 }
 </script>

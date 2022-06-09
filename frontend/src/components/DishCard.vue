@@ -54,6 +54,7 @@ export default class DishCard extends Vue {
 
     display: flex;
     align-items: center;
+    justify-content: center;
 
     overflow: hidden;
     text-overflow: ellipsis;
