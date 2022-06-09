@@ -31,7 +31,11 @@
       <div class="dish-edit__right">
         <div class="dish-edit__name-container">
           <template v-if="!editNameShow" >
-            <div class="dish-edit__name" :title="dish.name">
+            <div
+              class="dish-edit__name"
+              :title="dish.name"
+              @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())"
+            >
               {{ dish.name }}
             </div>
             <div class="dish-edit__name-actions">
@@ -57,7 +61,7 @@
                 editNameShow = false;
                 updateDish();
               })"
-              @keyup.enter="
+              @keyup.enter.esc="
                 ocDrop('dish-edit__name-input');
                 editNameShow = false;
                 updateDish();
@@ -156,20 +160,6 @@
             <v-icon>$add</v-icon>
           </v-btn>
         </div>
-        <!--        <div class="dish-edit__tools-container">-->
-        <!--          <div class="dish-edit__tools-header dish-edit__h2">-->
-        <!--            Инструменты:-->
-        <!--          </div>-->
-        <!--          <div class="dish-edit__tool">-->
-
-        <!--          </div>-->
-        <!--          <div class="dish-edit__tool-add">-->
-
-        <!--          </div>-->
-        <!--          <v-btn icon>-->
-        <!--            <v-icon>$add</v-icon>-->
-        <!--          </v-btn>-->
-        <!--        </div>-->
         <div class="dish-edit__cooking-time-container">
           <div class="dish-edit__cooking-time-header dish-edit__h2">
             Время приготовления:
@@ -345,11 +335,18 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
           line-height: 44px;
           letter-spacing: 0;
           text-align: center;
+          cursor: pointer;
+          border-radius: 10px;
+          transition: background-color cubic-bezier(0.25, 0.1, 0.25, 1) 300ms;
         }
 
         &:hover {
           .dish-edit__name-actions {
             opacity: 1;
+          }
+
+          .dish-edit__name {
+            background: rgba(0,0,0,0.1);
           }
         }
 
@@ -368,8 +365,6 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
           transition: opacity cubic-bezier(0.25, 0.1, 0.25, 1) 300ms;
 
           aspect-ratio: 1;
-          border-radius: 50%;
-          background: rgba(0,0,0,0.05);
         }
       }
 
