@@ -15,6 +15,7 @@ import {Component, Vue} from "vue-property-decorator";
 export default class OutsideClickMixin extends Vue {
   private ocRegisteredClasses: {
     nodeClass: string,
+    allowMenu: boolean,
     callback: () => void,
   }[] = [];
 
@@ -33,10 +34,11 @@ export default class OutsideClickMixin extends Vue {
     document.body.removeEventListener('click', this.ocDetect);
   }
 
-  ocRegister(nodeClass: string, callback: () => void): void {
+  ocRegister(nodeClass: string, callback: () => void, allowVMenu = false): void {
     setTimeout(() => {
       this.ocRegisteredClasses.push({
         nodeClass,
+        allowMenu: allowVMenu,
         callback
       })
     }, 100);
@@ -51,7 +53,7 @@ export default class OutsideClickMixin extends Vue {
 
     do {
       for (const item of check) {
-        if (target.classList && target.classList.contains(item.nodeClass)) {
+        if (target.classList && (target.classList.contains(item.nodeClass) || item.allowMenu && target.classList.contains('v-list-item'))) {
           // not outside click!
           check = check.filter(({nodeClass}) => nodeClass !== item.nodeClass);
         }

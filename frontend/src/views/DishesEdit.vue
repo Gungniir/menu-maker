@@ -42,7 +42,7 @@
                       addRecipeItemId = recipeItem.id;
                       addRecipeItemValue = recipeItem.item;
                       addRecipeItemShow = true;
-                      $refs.addRecipeItemInput.focus();
+                      $nextTick(() => $refs.addRecipeItemInput.focus())
                     "
                   >
                     <v-icon>mdi-pencil</v-icon>
@@ -76,20 +76,22 @@
                   ref="addRecipeItemInput"
                   :prefix="addEditRecipeItemPrefix"
                   :error-messages="errors"
-                  autofocus
+                  @focus="ocRegister('dish-edit__recipe-item-add', () => {
+                    closeAddRecipeItem();
+                  })"
                 />
               </validation-provider>
               <v-btn
                 class="ml-4"
                 color="primary"
                 :outlined="invalid"
-                @click="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem()"
+                @click="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem(); ocDrop('dish-edit__recipe-item-add')"
               >
                 {{ invalid ? 'Отмена' : addRecipeItemId ? 'Изменить' : 'Добавить' }}
               </v-btn>
             </div>
           </validation-observer>
-          <v-btn v-else icon @click="addRecipeItemShow = true">
+          <v-btn v-else icon @click="addRecipeItemShow = true; $nextTick(() => $refs.addRecipeItemInput.focus())">
             <v-icon>$add</v-icon>
           </v-btn>
         </div>
@@ -159,7 +161,7 @@
                         addIngredientId = ingredient.id;
                         addIngredientAmount = ingredient.pivot.amount;
                         addIngredientShow = true;
-                        $refs.addIngredientAmountInput.focus();
+                        $nextTick(() => $refs.addIngredientAmountInput.focus());
                       "
                     >
                       <v-icon>mdi-pencil</v-icon>
@@ -192,16 +194,21 @@
           <validation-observer v-if="addIngredientShow" slim v-slot="{ invalid }">
             <div class="dish-edit__ingredient-add">
               <div>
-                <v-autocomplete
-                  v-model="addIngredientId"
-                  ref="addIngredientIdInput"
-                  :items="availableIngredients"
-                  label="Ингредиент"
-                  item-text="name"
-                  item-value="id"
-                  autofocus
-                  @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
-                />
+                <validation-provider slim rules="required" v-slot="{ errors }">
+                  <v-autocomplete
+                    v-model="addIngredientId"
+                    ref="addIngredientIdInput"
+                    :items="availableIngredients"
+                    label="Ингредиент"
+                    item-text="name"
+                    item-value="id"
+                    :error-messages="errors"
+                    @focus="ocRegister('dish-edit__ingredient-add', () => {
+                      closeAddIngredient();
+                    }, true)"
+                    @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
+                  />
+                </validation-provider>
               </div>
               <validation-provider slim rules="required|min:1" v-slot="{ errors }">
                 <div style="width: 20%" class="ml-4">
@@ -216,14 +223,14 @@
               <v-btn
                 class="ml-4"
                 color="primary"
-                :outlined="!addIngredientId || invalid"
-                @click="invalid ? closeAddIngredient() : addIngredient()"
+                :outlined="invalid"
+                @click="invalid ? closeAddIngredient() : addIngredient(); ocDrop('dish-edit__ingredient-add')"
               >
-                {{ !addIngredientId ? 'Отмена' : addIngredientButtonText }}
+                {{ invalid ? 'Отмена' : addIngredientButtonText }}
               </v-btn>
             </div>
           </validation-observer>
-          <v-btn v-else icon @click="addIngredientShow = true">
+          <v-btn v-else icon @click="addIngredientShow = true; $nextTick(() => $refs.addIngredientIdInput.focus())">
             <v-icon>$add</v-icon>
           </v-btn>
         </div>
