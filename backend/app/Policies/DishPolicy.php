@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Dish;
 use App\Models\Ingredient;
+use App\Models\RecipeItem;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -118,5 +119,43 @@ class DishPolicy
     public function destroyIngredient(User $user, Dish $dish, Ingredient $ingredient) : Response|bool
     {
         return $dish->creator_id === $user->id && $ingredient->creator_id === $user->id;
+    }
+
+    /**
+     * Когда пользователь может добавить элемент рецепта
+     *
+     * @param User $user
+     * @param Dish $dish
+     * @return Response|bool
+     */
+    public function storeRecipeItem(User $user, Dish $dish) : Response|bool
+    {
+        return $dish->creator_id === $user->id;
+    }
+
+    /**
+     * Когда пользователь может удалить элемент рецепта
+     *
+     * @param User $user
+     * @param Dish $dish
+     * @param RecipeItem $recipeItem
+     * @return Response|bool
+     */
+    public function destroyRecipeItem(User $user, Dish $dish, RecipeItem $recipeItem) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $recipeItem->dish_id === $dish->id;
+    }
+
+    /**
+     * Когда пользователь может обновить элемент рецепта
+     *
+     * @param User $user
+     * @param Dish $dish
+     * @param RecipeItem $recipeItem
+     * @return Response|bool
+     */
+    public function updateRecipeItem(User $user, Dish $dish, RecipeItem $recipeItem) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $recipeItem->dish_id === $dish->id;
     }
 }

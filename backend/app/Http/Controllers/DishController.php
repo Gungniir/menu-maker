@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dish;
 use App\Models\DishIngredient;
 use App\Models\Ingredient;
+use App\Models\RecipeItem;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -94,6 +95,19 @@ class DishController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     *
+     * @param Dish $dish
+     * @return JsonResponse
+     */
+    public function destroy(Dish $dish): JsonResponse
+    {
+        $response = $dish->delete();
+
+        return response()->json($response);
+    }
+
+    /**
      * Добавить или изменить ингредиент.
      *
      * @param Request $request
@@ -136,15 +150,68 @@ class DishController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Добавить элемент рецепта к блюду
      *
+     * @param Request $request
      * @param Dish $dish
      * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function destroy(Dish $dish): JsonResponse
+    public function storeRecipeItem(Request $request, Dish $dish): JsonResponse
     {
-        $response = $dish->delete();
+        $this->authorize('storeRecipeItem', [$dish]);
 
-        return response()->json($response);
+        $input = $request->validate([
+            'item' => 'required|string',
+        ]);
+
+        RecipeItem::create([
+            'dish_id' => $dish->id,
+            'item' => $input['item'],
+            'order' => -1,
+        ]);
+
+        return $this->show($dish);
+    }
+
+    /**
+     * Добавить элемент рецепта к блюду
+     *
+     * @param Request $request
+     * @param Dish $dish
+     * @param RecipeItem $recipeItem
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function updateRecipeItem(Request $request, Dish $dish, RecipeItem $recipeItem): JsonResponse
+    {
+        $this->authorize('updateRecipeItem', [$dish, $recipeItem]);
+
+        $input = $request->validate([
+            'item' => 'required|string',
+        ]);
+
+        $recipeItem->update([
+            'item' => $input['item']
+        ]);
+
+        return $this->show($dish);
+    }
+
+    /**
+     * Удалть элемент рецепта у блюда
+     *
+     * @param Dish $dish
+     * @param RecipeItem $recipeItem
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function destroyRecipeItem(Dish $dish, RecipeItem $recipeItem): JsonResponse
+    {
+        $this->authorize('destroyRecipeItem', [$dish, $recipeItem]);
+
+        $recipeItem->delete();
+
+        return $this->show($dish);
     }
 }

@@ -35,6 +35,9 @@ Route::group([
     Route::prefix('dish')->group(static function () {
         Route::put('{dish}/ingredient/{ingredient}', [DishController::class, 'storeIngredient']);
         Route::delete('{dish}/ingredient/{ingredient}', [DishController::class, 'destroyIngredient']);
+        Route::post('{dish}/recipe', [DishController::class, 'storeRecipeItem']);
+        Route::put('{dish}/recipe/{recipeItem}', [DishController::class, 'updateRecipeItem']);
+        Route::delete('{dish}/recipe/{recipeItem}', [DishController::class, 'destroyRecipeItem']);
     });
 
     Route::apiResource('user', UserController::class);

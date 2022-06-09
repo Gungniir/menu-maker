@@ -38,6 +38,8 @@ class RecipeItem extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function dish(): BelongsTo
     {
         return $this->belongsTo(Dish::class);
