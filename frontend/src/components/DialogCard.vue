@@ -36,12 +36,27 @@
 
 <script lang="ts">
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import {ValidationObserver} from "vee-validate";
 
 @Component({})
 export default class DialogCard extends Vue {
+  $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
   @Prop({default: 'Заголовок окна'}) title!: string;
   @Prop({default: false}) value!: boolean;
   @Prop({default: false}) withObserver!: boolean;
+
+  public get observer(): InstanceType<typeof ValidationObserver> {
+    return this.$refs.observer;
+  }
+
+  public reset(): void {
+    this.$nextTick(() => {
+      this.observer.reset();
+    })
+  }
 
   private opened = false;
 

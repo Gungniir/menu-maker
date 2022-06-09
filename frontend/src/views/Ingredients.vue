@@ -32,7 +32,7 @@
           </ul>
         </div>
       </div>
-      <dialog-card v-model="showAddDialog" title="Добавить ингредиент" with-observer v-slot="{ invalid }">
+      <dialog-card ref="addDialog" v-model="showAddDialog" title="Добавить ингредиент" with-observer v-slot="{ invalid }">
         <div class="ingredients__input-group">
           <validation-provider
             vid="name"
@@ -96,7 +96,7 @@
           style="bottom: 50px; right: 50px"
           v-on="on"
           v-bind="attrs"
-          @click="showAddDialog = true"
+          @click="openAddDialog"
         >
           <v-icon color="white">mdi-plus</v-icon>
         </v-btn>
@@ -117,6 +117,10 @@ import DialogCard from "@/components/DialogCard.vue";
   components: {DialogCard, Products}
 })
 export default class Ingredients extends Vue {
+  $refs!: {
+    addDialog: InstanceType<typeof DialogCard>
+  }
+
   // noinspection JSMismatchedCollectionQueryUpdate
   private ingredients: Ingredient[] = [];
   private nextPage = 1;
@@ -140,6 +144,14 @@ export default class Ingredients extends Vue {
 
   mounted(): void {
     this.loadIngredients();
+  }
+
+  openAddDialog(): void {
+    this.showAddDialog = true;
+    this.newIngredientName = '';
+    this.newIngredientUnit = IngredientUnit.Grams;
+    this.newIngredientAmount = 0;
+    this.$refs.addDialog.reset();
   }
 
   async loadIngredients(): Promise<void> {
