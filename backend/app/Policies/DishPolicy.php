@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Dish;
+use App\Models\Ingredient;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -91,5 +92,31 @@ class DishPolicy
     public function forceDelete(User $user, Dish $dish): Response|bool
     {
         return false;
+    }
+
+    /**
+     * Когда пользователь может прикрепить к блюду ингредиент
+     *
+     * @param User $user
+     * @param Dish $dish
+     * @param Ingredient $ingredient
+     * @return Response|bool
+     */
+    public function storeIngredient(User $user, Dish $dish, Ingredient $ingredient) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $ingredient->creator_id === $user->id;
+    }
+
+    /**
+     * Когда пользователь может открепить от блюда ингредиент
+     *
+     * @param User $user
+     * @param Dish $dish
+     * @param Ingredient $ingredient
+     * @return Response|bool
+     */
+    public function destroyIngredient(User $user, Dish $dish, Ingredient $ingredient) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $ingredient->creator_id === $user->id;
     }
 }

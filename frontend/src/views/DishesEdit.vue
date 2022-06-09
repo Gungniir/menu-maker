@@ -29,8 +29,41 @@
         </div>
       </div>
       <div class="dish-edit__right">
-        <div class="dish-edit__name" :title="dish.name">
-          {{ dish.name }}
+        <div class="dish-edit__name-container">
+          <template v-if="!editNameShow" >
+            <div class="dish-edit__name" :title="dish.name">
+              {{ dish.name }}
+            </div>
+            <div class="dish-edit__name-actions">
+              <v-tooltip
+                bottom
+                open-delay="300"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-btn icon v-on="on" v-bind="attrs" @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                Редактировать
+              </v-tooltip>
+            </div>
+          </template>
+          <div v-else class="dish-edit__name-input">
+            <v-text-field
+              v-model="dish.name"
+              ref="editNameInput"
+              label="Название"
+              @focus="ocRegister('dish-edit__name-input', () => {
+                editNameShow = false;
+                updateDish();
+              })"
+              @keyup.enter="
+                ocDrop('dish-edit__name-input');
+                editNameShow = false;
+                updateDish();
+              "
+            />
+          </div>
         </div>
         <div class="dish-edit__ingredients-container">
           <div class="dish-edit__ingredients-header dish-edit__h2">
@@ -151,21 +184,26 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from 'vue-property-decorator'
+import {Component, Prop} from 'vue-property-decorator'
 import {DishShow} from "@/models/Dish";
 import DishRepository from "@/repositories/DishRepository";
 import IngredientRepository from "@/repositories/IngredientRepository";
 import {Ingredient, IngredientUnit} from "@/models/Ingredient";
 import {nextEnum} from "@/models/common/Enum";
+import {mixins} from "vue-class-component";
+import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 
 @Component({})
-export default class DishesEdit extends Vue {
+export default class DishesEdit extends mixins(OutsideClickMixin) {
   private dish: DishShow | null = null;
   private availableIngredients: Ingredient[] = [];
+
   private addIngredientShow = false;
   private addIngredientId = 0;
   private addIngredientAmount = 1;
   private addIngredientFakeUnit = IngredientUnit.Grams;
+
+  private editNameShow = false;
 
   get addIngredientValue(): Ingredient | undefined {
     return this.availableIngredients.find(({id}) => id === this.addIngredientId);
@@ -198,6 +236,14 @@ export default class DishesEdit extends Vue {
     const {data} = await DishRepository.show(this.dishId);
 
     this.dish = data;
+  }
+
+  async updateDish(): Promise<void> {
+    if (this.dish === null) {
+      return;
+    }
+
+    await DishRepository.update(this.dishId, this.dish);
   }
 
   async loadAvailableIngredients(): Promise<void> {
@@ -286,16 +332,45 @@ export default class DishesEdit extends Vue {
     .dish-edit__right {
       width: 45%;
 
-      .dish-edit__name {
-        margin-bottom: 24px;
+      .dish-edit__name-container {
+        position: relative;
 
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 36px;
-        font-weight: 400;
-        line-height: 44px;
-        letter-spacing: 0;
-        text-align: center;
+        .dish-edit__name {
+          margin-bottom: 24px;
+
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 36px;
+          font-weight: 400;
+          line-height: 44px;
+          letter-spacing: 0;
+          text-align: center;
+        }
+
+        &:hover {
+          .dish-edit__name-actions {
+            opacity: 1;
+          }
+        }
+
+        .dish-edit__name-actions {
+          position: absolute;
+          top: 0;
+          right: 0;
+          height: 100%;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          opacity: 0;
+
+          transition: opacity cubic-bezier(0.25, 0.1, 0.25, 1) 300ms;
+
+          aspect-ratio: 1;
+          border-radius: 50%;
+          background: rgba(0,0,0,0.05);
+        }
       }
 
       .dish-edit__ingredients-container {

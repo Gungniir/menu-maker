@@ -32,6 +32,11 @@ Route::group([
     'middleware' => 'api'
 ], static function () {
     Route::apiResource('dish', DishController::class);
+    Route::prefix('dish')->group(static function () {
+        Route::put('{dish}/ingredient/{ingredient}', [DishController::class, 'storeIngredient']);
+        Route::delete('{dish}/ingredient/{ingredient}', [DishController::class, 'destroyIngredient']);
+    });
+
     Route::apiResource('user', UserController::class);
     Route::apiResource('image', ImageController::class, [
         'except' => ['update']
