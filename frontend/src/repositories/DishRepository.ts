@@ -21,5 +21,11 @@ export default {
   },
   destroy(id: number): AxiosPromise<boolean> {
     return Repository.delete(base + '/' + id);
-  }
+  },
+  storeIngredient(dish_id: number, ingredient_id: number, amount: number): AxiosPromise<DishShow> {
+    return Repository.put(base + '/' + dish_id + '/ingredient/' + ingredient_id, {amount});
+  },
+  destroyIngredient(dish_id: number, ingredient_id: number): AxiosPromise<DishShow> {
+    return Repository.delete(base + '/' + dish_id + '/ingredient/' + ingredient_id);
+  },
 }

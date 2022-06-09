@@ -37,32 +37,106 @@
             Ингредиенты (на одну порцию):
           </div>
           <div v-for="ingredient of dish.ingredients" :key="ingredient.id" class="dish-edit__ingredient">
-            {{ ingredient.name }}
+            <div class="dish-edit__ingredient-name">
+              {{ ingredient.name }}
+            </div>
+            <div class="dish-edit__ingredient-amount-actions">
+              <div class="dish-edit__ingredient-actions">
+                <v-tooltip
+                  bottom
+                  open-delay="300"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-on="on"
+                      v-bind="attrs"
+                      @click="
+                        addIngredientId = ingredient.id;
+                        addIngredientAmount = ingredient.pivot.amount;
+                        addIngredientShow = true;
+                        $refs.addIngredientAmountInput.focus();
+                      "
+                    >
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                  Изменить количество
+                </v-tooltip>
+                <v-tooltip
+                  bottom
+                  open-delay="300"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-on="on"
+                      v-bind="attrs"
+                      @click="destroyIngredient(ingredient.id)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </template>
+                  Удалить
+                </v-tooltip>
+              </div>
+              <div class="dish-edit__ingredient-amount">
+                {{ ingredient.pivot.amount }} {{ ingredient.unit }}
+              </div>
+            </div>
           </div>
-          <div v-if="addIngredientShow" class="dish-edit__ingredient-add">
-            <v-combobox v-model="addIngredientValue" item-text="name" :items="availableIngredients" />
-            <v-btn class="ml-4" color="primary" :outlined="!this.addIngredientValue" @click="addIngredient">
-              {{ !this.addIngredientValue ? 'Отмена' : 'Добавить'}}
-            </v-btn>
-          </div>
-          <v-btn icon @click="addIngredientShow = true">
+          <validation-observer v-if="addIngredientShow" slim v-slot="{ invalid }">
+            <div class="dish-edit__ingredient-add">
+              <div>
+                <v-autocomplete
+                  v-model="addIngredientId"
+                  ref="addIngredientIdInput"
+                  :items="availableIngredients"
+                  label="Ингредиент"
+                  item-text="name"
+                  item-value="id"
+                  autofocus
+                  @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
+                />
+              </div>
+              <validation-provider slim rules="required|min:1" v-slot="{ errors }">
+                <div style="width: 20%" class="ml-4">
+                  <v-text-field
+                    v-model="addIngredientAmount"
+                    ref="addIngredientAmountInput"
+                    :error="errors.length > 0"
+                    :suffix="addIngredientUnit"
+                  />
+                </div>
+              </validation-provider>
+              <v-btn
+                class="ml-4"
+                color="primary"
+                :outlined="!addIngredientId || invalid"
+                @click="invalid ? closeAddIngredient() : addIngredient()"
+              >
+                {{ !addIngredientId ? 'Отмена' : addIngredientButtonText }}
+              </v-btn>
+            </div>
+          </validation-observer>
+          <v-btn v-else icon @click="addIngredientShow = true">
             <v-icon>$add</v-icon>
           </v-btn>
         </div>
-<!--        <div class="dish-edit__tools-container">-->
-<!--          <div class="dish-edit__tools-header dish-edit__h2">-->
-<!--            Инструменты:-->
-<!--          </div>-->
-<!--          <div class="dish-edit__tool">-->
+        <!--        <div class="dish-edit__tools-container">-->
+        <!--          <div class="dish-edit__tools-header dish-edit__h2">-->
+        <!--            Инструменты:-->
+        <!--          </div>-->
+        <!--          <div class="dish-edit__tool">-->
 
-<!--          </div>-->
-<!--          <div class="dish-edit__tool-add">-->
+        <!--          </div>-->
+        <!--          <div class="dish-edit__tool-add">-->
 
-<!--          </div>-->
-<!--          <v-btn icon>-->
-<!--            <v-icon>$add</v-icon>-->
-<!--          </v-btn>-->
-<!--        </div>-->
+        <!--          </div>-->
+        <!--          <v-btn icon>-->
+        <!--            <v-icon>$add</v-icon>-->
+        <!--          </v-btn>-->
+        <!--        </div>-->
         <div class="dish-edit__cooking-time-container">
           <div class="dish-edit__cooking-time-header dish-edit__h2">
             Время приготовления:
@@ -81,18 +155,43 @@ import {Component, Prop, Vue} from 'vue-property-decorator'
 import {DishShow} from "@/models/Dish";
 import DishRepository from "@/repositories/DishRepository";
 import IngredientRepository from "@/repositories/IngredientRepository";
-import {Ingredient} from "@/models/Ingredient";
+import {Ingredient, IngredientUnit} from "@/models/Ingredient";
+import {nextEnum} from "@/models/common/Enum";
 
 @Component({})
 export default class DishesEdit extends Vue {
   private dish: DishShow | null = null;
   private availableIngredients: Ingredient[] = [];
   private addIngredientShow = false;
-  private addIngredientValue: Ingredient | null = null;
+  private addIngredientId = 0;
+  private addIngredientAmount = 1;
+  private addIngredientFakeUnit = IngredientUnit.Grams;
+
+  get addIngredientValue(): Ingredient | undefined {
+    return this.availableIngredients.find(({id}) => id === this.addIngredientId);
+  }
+
+  get addIngredientUnit(): IngredientUnit {
+    return this.addIngredientValue ? this.addIngredientValue.unit : this.addIngredientFakeUnit;
+  }
+
+  get addIngredientButtonText(): string {
+    return this.dish?.ingredients.find(({id}) => id === this.addIngredientId) ? 'Изменить' : 'Добавить'
+  }
 
   mounted(): void {
     this.loadDish();
     this.loadAvailableIngredients();
+    setInterval(this.updateFakeUnit, 2000);
+  }
+
+  updateFakeUnit(): void {
+    this.addIngredientFakeUnit = nextEnum(IngredientUnit, this.addIngredientFakeUnit);
+  }
+
+  closeAddIngredient(): void {
+    this.addIngredientShow = false;
+    return;
   }
 
   async loadDish(): Promise<void> {
@@ -117,14 +216,18 @@ export default class DishesEdit extends Vue {
   }
 
   async addIngredient(): Promise<void> {
-    if (!this.addIngredientValue) {
-      this.addIngredientShow = false;
-      return;
-    }
+    const {data} = await DishRepository.storeIngredient(this.dishId, this.addIngredientId, this.addIngredientAmount);
 
-    this.dish?.ingredients.push(this.addIngredientValue)
+    this.dish = data;
+
     this.addIngredientShow = false;
-    this.addIngredientValue = null;
+    this.addIngredientId = 0;
+  }
+
+  async destroyIngredient(ingredient_id: number): Promise<void> {
+    const {data} = await DishRepository.destroyIngredient(this.dishId, ingredient_id);
+
+    this.dish = data;
   }
 
   @Prop({required: true}) readonly dishId!: number;
@@ -194,6 +297,56 @@ export default class DishesEdit extends Vue {
         letter-spacing: 0;
         text-align: center;
       }
+
+      .dish-edit__ingredients-container {
+        margin-bottom: 20px;
+
+        .dish-edit__ingredients-header {
+          margin-bottom: 20px;
+        }
+
+        .dish-edit__ingredient {
+          height: 44px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+          &:last-of-type {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+          }
+
+          &:hover {
+            .dish-edit__ingredient-amount-actions .dish-edit__ingredient-actions {
+              display: flex;
+            }
+          }
+
+          .dish-edit__ingredient-name {
+
+          }
+
+          .dish-edit__ingredient-amount-actions {
+            display: flex;
+            align-items: center;
+
+            .dish-edit__ingredient-amount {
+
+            }
+
+            .dish-edit__ingredient-actions {
+              margin-right: 12px;
+              display: none;
+            }
+          }
+        }
+
+        .dish-edit__ingredient-add {
+          display: flex;
+          align-items: center;
+        }
+      }
     }
 
     .dish-edit__h2 {
@@ -202,11 +355,6 @@ export default class DishesEdit extends Vue {
       line-height: 29px;
       letter-spacing: 0;
       text-align: left;
-    }
-
-    .dish-edit__ingredient-add {
-      display: flex;
-      align-items: center;
     }
   }
 }

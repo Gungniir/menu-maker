@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\DishIngredient;
+use App\Models\Ingredient;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -59,7 +62,7 @@ class DishController extends Controller
      */
     public function show(Dish $dish): JsonResponse
     {
-        $dish->load('recipeItems', 'preparations', 'images', 'categories', 'tools');
+        $dish->load('recipeItems', 'preparations', 'images', 'categories', 'tools', 'ingredients');
 
         return response()->json($dish);
     }
@@ -88,6 +91,48 @@ class DishController extends Controller
         $dish->update($input);
 
         return response()->json($dish);
+    }
+
+    /**
+     * Добавить или изменить ингредиент.
+     *
+     * @param Request $request
+     * @param Dish $dish
+     * @param Ingredient $ingredient
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function storeIngredient(Request $request, Dish $dish, Ingredient $ingredient): JsonResponse
+    {
+        $this->authorize('storeIngredient', [$dish, $ingredient]);
+
+        $input = $request->validate([
+            'amount' => 'required|numeric|min:1'
+        ]);
+
+        DishIngredient::updateOrCreate([
+            'dish_id' => $dish->id,
+            'ingredient_id' => $ingredient->id
+        ], ['amount' => $input['amount']]);
+
+        return $this->show($dish);
+    }
+
+    /**
+     * Удалить ингредиент.
+     *
+     * @param Dish $dish
+     * @param Ingredient $ingredient
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function destroyIngredient(Dish $dish, Ingredient $ingredient): JsonResponse
+    {
+        $this->authorize('destroyIngredient', [$dish, $ingredient]);
+
+        $dish->ingredients()->detach([$ingredient->id]);
+
+        return $this->show($dish);
     }
 
     /**

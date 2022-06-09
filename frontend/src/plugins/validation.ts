@@ -8,7 +8,7 @@ extend('required', {
       valid: ['', null, undefined].indexOf(value) === -1
     };
   },
-  message: 'Поле обязательно для заполнения',
+  message: 'Обязательное поле',
   computesRequired: true
 });
 
@@ -28,6 +28,19 @@ extend('integer', {
     };
   },
   message: 'Неверный формат числа'
+});
+
+extend('min', {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  validate(value: string, {min}) {
+    const number = Number(value);
+    return {
+      valid: Number.isNaN(number) ? value.length >= min : number >= min,
+    };
+  },
+  params: ['min'],
+  message: 'Минимум: {min}'
 });
 
 

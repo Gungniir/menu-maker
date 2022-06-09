@@ -1,4 +1,5 @@
 import {BaseType} from "@/models/common/BaseType";
+import {DishIngredientPivot} from "@/models/pivots/DishIngredientPivot";
 
 export enum IngredientUnit {
   Kilograms = 'кг',
@@ -17,6 +18,10 @@ export type IngredientEntity = {
 
 export type Ingredient = BaseType & IngredientEntity & {
   creator_id: number
+}
+
+export type IngredientWithDishPivot = Ingredient & {
+  pivot: DishIngredientPivot
 }
 
 export type IngredientIndex = Ingredient

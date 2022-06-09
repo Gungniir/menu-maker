@@ -4,7 +4,7 @@ import {Category} from "@/models/Category";
 import {RecipeItem} from "@/models/RecipeItem";
 import {Preparation} from "@/models/Preparation";
 import {Tool} from "@/models/Tool";
-import {Ingredient} from "@/models/Ingredient";
+import {IngredientWithDishPivot} from "@/models/Ingredient";
 
 export type DishEntity = {
   name: string,
@@ -28,7 +28,7 @@ export type DishIndex = Dish & {
 
 export type DishShow = Dish & {
   images: Image[],
-  ingredients: Ingredient[],
+  ingredients: IngredientWithDishPivot[],
   categories: Category[],
   recipe_items: RecipeItem[],
   preparations: Preparation[],
