@@ -20,17 +20,83 @@
           <div class="dish-edit__recipe-header dish-edit__h2">
             Способ приготовления:
           </div>
-          <div class="dish-edit__recipe-item">
 
+          <div v-for="(recipeItem, index) of dish.recipe_items" :key="recipeItem.id" class="dish-edit__recipe-item">
+            <div class="dish-edit__recipe-item-index">
+              {{ index + 1 }}
+            </div>
+            <div class="dish-edit__recipe-item-name">
+              {{ recipeItem.item }}
+            </div>
+            <div class="dish-edit__recipe-item-actions">
+              <v-tooltip
+                bottom
+                open-delay="300"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    v-bind="attrs"
+                    @click="
+                      addRecipeItemId = recipeItem.id;
+                      addRecipeItemValue = recipeItem.item;
+                      addRecipeItemShow = true;
+                      $refs.addRecipeItemInput.focus();
+                    "
+                  >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </template>
+                Изменить
+              </v-tooltip>
+              <v-tooltip
+                bottom
+                open-delay="300"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-on="on"
+                    v-bind="attrs"
+                    @click="destroyRecipeItem(recipeItem.id)"
+                  >
+                    <v-icon>mdi-minus</v-icon>
+                  </v-btn>
+                </template>
+                Удалить
+              </v-tooltip>
+            </div>
           </div>
-          <v-btn icon>
+          <validation-observer v-if="addRecipeItemShow" slim v-slot="{ invalid }">
+            <div class="dish-edit__recipe-item-add">
+              <validation-provider rules="required" slim v-slot="{ errors }">
+                <v-text-field
+                  v-model="addRecipeItemValue"
+                  ref="addRecipeItemInput"
+                  :prefix="addEditRecipeItemPrefix"
+                  :error-messages="errors"
+                  autofocus
+                />
+              </validation-provider>
+              <v-btn
+                class="ml-4"
+                color="primary"
+                :outlined="invalid"
+                @click="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem()"
+              >
+                {{ invalid ? 'Отмена' : addRecipeItemId ? 'Изменить' : 'Добавить' }}
+              </v-btn>
+            </div>
+          </validation-observer>
+          <v-btn v-else icon @click="addRecipeItemShow = true">
             <v-icon>$add</v-icon>
           </v-btn>
         </div>
       </div>
       <div class="dish-edit__right">
         <div class="dish-edit__name-container">
-          <template v-if="!editNameShow" >
+          <template v-if="!editNameShow">
             <div
               class="dish-edit__name"
               :title="dish.name"
@@ -44,7 +110,8 @@
                 open-delay="300"
               >
                 <template #activator="{ on, attrs }">
-                  <v-btn icon v-on="on" v-bind="attrs" @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())">
+                  <v-btn icon v-on="on" v-bind="attrs"
+                         @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())">
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
                 </template>
@@ -193,6 +260,10 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
   private addIngredientAmount = 1;
   private addIngredientFakeUnit = IngredientUnit.Grams;
 
+  private addRecipeItemShow = false;
+  private addRecipeItemId = 0;
+  private addRecipeItemValue = '';
+
   private editNameShow = false;
 
   get addIngredientValue(): Ingredient | undefined {
@@ -207,6 +278,14 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
     return this.dish?.ingredients.find(({id}) => id === this.addIngredientId) ? 'Изменить' : 'Добавить'
   }
 
+  get addEditRecipeItemPrefix(): string {
+    if (!this.dish) {
+      return "1";
+    }
+
+    return (this.addRecipeItemId ? this.dish.recipe_items.findIndex(({id}) => id === this.addRecipeItemId) + 1 : this.dish.recipe_items.length + 1).toString();
+  }
+
   mounted(): void {
     this.loadDish();
     this.loadAvailableIngredients();
@@ -219,7 +298,12 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
 
   closeAddIngredient(): void {
     this.addIngredientShow = false;
-    return;
+  }
+
+  closeAddRecipeItem(): void {
+    this.addRecipeItemShow = false;
+    this.addRecipeItemValue = '';
+    this.addRecipeItemId = 0;
   }
 
   async loadDish(): Promise<void> {
@@ -251,6 +335,21 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
     }
   }
 
+  async addOrUpdateRecipeItem(): Promise<void> {
+    let response;
+    if (this.addRecipeItemId) {
+      response = await DishRepository.updateRecipe(this.dishId, this.addRecipeItemId, this.addRecipeItemValue);
+    } else {
+      response = await DishRepository.storeRecipe(this.dishId, this.addRecipeItemValue);
+    }
+
+    this.dish = response.data;
+
+    this.addRecipeItemShow = false;
+    this.addRecipeItemId = 0;
+    this.addRecipeItemValue = '';
+  }
+
   async addIngredient(): Promise<void> {
     const {data} = await DishRepository.storeIngredient(this.dishId, this.addIngredientId, this.addIngredientAmount);
 
@@ -258,10 +357,17 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
 
     this.addIngredientShow = false;
     this.addIngredientId = 0;
+    this.addIngredientAmount = 1;
   }
 
   async destroyIngredient(ingredient_id: number): Promise<void> {
     const {data} = await DishRepository.destroyIngredient(this.dishId, ingredient_id);
+
+    this.dish = data;
+  }
+
+  async destroyRecipeItem(recipe_item_id: number): Promise<void> {
+    const {data} = await DishRepository.destroyRecipe(this.dishId, recipe_item_id);
 
     this.dish = data;
   }
@@ -317,6 +423,55 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
           background: #FFEDD3;
         }
       }
+
+      .dish-edit__recipe-header {
+        margin-bottom: 20px;
+      }
+
+      .dish-edit__recipe-item {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 80px;
+        padding-left: 40px;
+        padding-top: 30px;
+        padding-bottom: 10px;
+
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+
+        &:last-of-type {
+          border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        &:hover {
+          .dish-edit__recipe-item-actions {
+            display: flex;
+          }
+        }
+
+        .dish-edit__recipe-item-index {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+
+          font-size: 24px;
+          font-weight: 600;
+          line-height: 29px;
+          letter-spacing: 0;
+          text-align: left;
+        }
+
+        .dish-edit__recipe-item-actions {
+          margin-right: 12px;
+          display: none;
+        }
+      }
+
+      .dish-edit__recipe-item-add {
+        display: flex;
+        align-items: center;
+      }
     }
 
     .dish-edit__right {
@@ -346,7 +501,7 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
           }
 
           .dish-edit__name {
-            background: rgba(0,0,0,0.1);
+            background: rgba(0, 0, 0, 0.1);
           }
         }
 

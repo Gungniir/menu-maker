@@ -28,4 +28,13 @@ export default {
   destroyIngredient(dish_id: number, ingredient_id: number): AxiosPromise<DishShow> {
     return Repository.delete(base + '/' + dish_id + '/ingredient/' + ingredient_id);
   },
+  storeRecipe(dish_id: number, item: string): AxiosPromise<DishShow> {
+    return Repository.post(base + '/' + dish_id + '/recipe', {item});
+  },
+  updateRecipe(dish_id: number, recipe_item_id: number, item: string): AxiosPromise<DishShow> {
+    return Repository.put(base + '/' + dish_id + '/recipe/' + recipe_item_id, {item});
+  },
+  destroyRecipe(dish_id: number, recipe_item_id: number): AxiosPromise<DishShow> {
+    return Repository.delete(base + '/' + dish_id + '/recipe/' + recipe_item_id);
+  },
 }
