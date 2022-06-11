@@ -4,15 +4,18 @@
       <div class="dish-edit__left">
         <div class="dish-edit__images-container">
           <div class="dish-edit__image">
-            <v-img v-if="dish.images[0]" :src="dish.images[0].filename" />
+            <v-img v-if="dish.images[0]" :src="selectedImageUrl" height="100%" />
             <div v-else class="dish-edit__image-placeholder" />
           </div>
           <div class="dish-edit__images">
             <div v-for="image of dish.images" :key="image.id" class="dish-edit__images-item">
-              <v-img :src="image.filename" />
+              <v-img :src="image.url" height="100%" @click="selectedImageId = image.id"/>
             </div>
-            <div v-if="dish.images.length < 7" class="dish-edit__images-item">
-              <div class="dish-edit__image-placeholder" />
+            <div v-if="dish.images.length < 7" class="dish-edit__images-item" v-ripple @click="$refs.imageAddInput.click()">
+              <input ref="imageAddInput" type="file" style="display: none" @input="storeImage"/>
+              <div class="dish-edit__image-placeholder">
+                <v-icon>$add</v-icon>
+              </div>
             </div>
           </div>
         </div>
@@ -256,6 +259,8 @@ import {Ingredient, IngredientUnit} from "@/models/Ingredient";
 import {nextEnum} from "@/models/common/Enum";
 import {mixins} from "vue-class-component";
 import OutsideClickMixin from "@/mixins/OutsideClickMixin";
+import ImageRepository from "@/repositories/ImageRepository";
+import {Image} from "@/models/Image";
 
 @Component({})
 export default class DishesEdit extends mixins(OutsideClickMixin) {
@@ -271,7 +276,29 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
   private addRecipeItemId = 0;
   private addRecipeItemValue = '';
 
+  private selectedImageId = 0;
+
   private editNameShow = false;
+
+  get selectedImageUrl(): string {
+    if (!this.dish) {
+      return '';
+    }
+
+    let image: Image | undefined;
+
+    if (this.selectedImageId) {
+      image = this.dish.images.find(({id}) => id === this.selectedImageId);
+    } else {
+      image = this.dish.images[0];
+    }
+
+    if (!image) {
+      return '';
+    }
+
+    return image.url;
+  }
 
   get addIngredientValue(): Ingredient | undefined {
     return this.availableIngredients.find(({id}) => id === this.addIngredientId);
@@ -379,6 +406,21 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
     this.dish = data;
   }
 
+  async storeImage(a: InputEvent): Promise<void> {
+    const target = a.target as HTMLInputElement;
+
+    if (!target.files || target.files.length < 1) {
+      return;
+    }
+
+    const file = target.files[0];
+
+    const {data: imageData} = await ImageRepository.store('Image for dish ' + this.dishId, file);
+    const {data: dish} = await DishRepository.attachImage(this.dishId, imageData.id);
+
+    this.dish = dish;
+  }
+
   @Prop({required: true}) readonly dishId!: number;
 }
 </script>
@@ -426,6 +468,10 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
         .dish-edit__image-placeholder {
           width: 100%;
           height: 100%;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
           background: #FFEDD3;
         }

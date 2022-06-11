@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -58,9 +59,9 @@ class ImageController extends Controller
      * @param Image $image
      * @return StreamedResponse
      */
-    public function show(Image $image): StreamedResponse
+    public function show(Image $image): string
     {
-        return Storage::download('images/' . Auth::id() . '/' . $image->filename);
+        return Storage::temporaryUrl('images/' . Auth::id() . '/' . $image->filename, Carbon::now()->addHour());
     }
 
     /**

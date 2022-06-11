@@ -37,4 +37,10 @@ export default {
   destroyRecipe(dish_id: number, recipe_item_id: number): AxiosPromise<DishShow> {
     return Repository.delete(base + '/' + dish_id + '/recipe/' + recipe_item_id);
   },
+  attachImage(dish_id: number, image_id: number): AxiosPromise<DishShow> {
+    return Repository.put(base + '/' + dish_id + '/image/' + image_id);
+  },
+  detachImage(dish_id: number, image_id: number): AxiosPromise<DishShow> {
+    return Repository.put(base + '/' + dish_id + '/image/' + image_id);
+  },
 }

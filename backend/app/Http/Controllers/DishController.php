@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dish;
+use App\Models\DishImage;
 use App\Models\DishIngredient;
+use App\Models\Image;
 use App\Models\Ingredient;
 use App\Models\RecipeItem;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -211,6 +213,43 @@ class DishController extends Controller
         $this->authorize('destroyRecipeItem', [$dish, $recipeItem]);
 
         $recipeItem->delete();
+
+        return $this->show($dish);
+    }
+
+    /**
+     * Прикрепить изображение к блюду
+     *
+     * @param Dish $dish
+     * @param Image $image
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function attachImage(Dish $dish, Image $image): JsonResponse
+    {
+        $this->authorize('attachImage', [$dish, $image]);
+
+        DishImage::firstOrCreate([
+            'dish_id' => $dish->id,
+            'image_id' => $image->id
+        ]);
+
+        return $this->show($dish);
+    }
+
+    /**
+     * Открепить изображение от блюда
+     *
+     * @param Dish $dish
+     * @param Image $image
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function detachImage(Dish $dish, Image $image): JsonResponse
+    {
+        $this->authorize('detachImage', [$dish, $image]);
+
+        DishImage::where('dish_id')->where('image_id')->delete();
 
         return $this->show($dish);
     }

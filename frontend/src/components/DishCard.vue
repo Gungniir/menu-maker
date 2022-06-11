@@ -1,6 +1,6 @@
 <template>
   <div class="dc">
-    <v-img v-if="dish.images[0]" width="100%" height="100%" :src="dish.images[0]" />
+    <v-img v-if="dish.images[0]" width="100%" height="100%" :src="dish.images[0].url" />
     <div v-else class="dc__background"/>
     <div class="dc__actions">
       <v-tooltip bottom open-delay="300">

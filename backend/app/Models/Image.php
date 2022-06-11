@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\Image
@@ -39,9 +40,15 @@ class Image extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $appends = ['url'];
 
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function getUrlAttribute(): string
+    {
+        return Storage::temporaryUrl($this->filename, now()->addMinutes(5));
     }
 }

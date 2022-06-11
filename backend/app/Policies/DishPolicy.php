@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Dish;
+use App\Models\Image;
 use App\Models\Ingredient;
 use App\Models\RecipeItem;
 use App\Models\User;
@@ -157,5 +158,27 @@ class DishPolicy
     public function updateRecipeItem(User $user, Dish $dish, RecipeItem $recipeItem) : Response|bool
     {
         return $dish->creator_id === $user->id && $recipeItem->dish_id === $dish->id;
+    }
+
+    /**
+     * @param User $user
+     * @param Dish $dish
+     * @param Image $image
+     * @return Response|bool
+     */
+    public function attachImage(User $user, Dish $dish, Image $image) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $image->creator_id === $user->id;
+    }
+
+    /**
+     * @param User $user
+     * @param Dish $dish
+     * @param Image $image
+     * @return Response|bool
+     */
+    public function detachImage(User $user, Dish $dish, Image $image) : Response|bool
+    {
+        return $dish->creator_id === $user->id && $image->creator_id === $user->id;
     }
 }

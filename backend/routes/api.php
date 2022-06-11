@@ -38,6 +38,8 @@ Route::group([
         Route::post('{dish}/recipe', [DishController::class, 'storeRecipeItem']);
         Route::put('{dish}/recipe/{recipeItem}', [DishController::class, 'updateRecipeItem']);
         Route::delete('{dish}/recipe/{recipeItem}', [DishController::class, 'destroyRecipeItem']);
+        Route::put('{dish}/image/{image}', [DishController::class, 'attachImage']);
+        Route::delete('{dish}/image/{image}', [DishController::class, 'detachImage']);
     });
 
     Route::apiResource('user', UserController::class);

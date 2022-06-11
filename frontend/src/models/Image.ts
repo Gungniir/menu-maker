@@ -4,4 +4,5 @@ export type Image = BaseType & {
   creator_id: number,
   name: string,
   filename: string,
+  url: string,
 }
