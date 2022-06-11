@@ -249,7 +249,7 @@ class DishController extends Controller
     {
         $this->authorize('detachImage', [$dish, $image]);
 
-        DishImage::where('dish_id')->where('image_id')->delete();
+        DishImage::where('dish_id', $dish->id)->where('image_id', $image->id)->delete();
 
         return $this->show($dish);
     }

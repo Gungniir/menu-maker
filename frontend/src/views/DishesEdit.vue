@@ -4,7 +4,22 @@
       <div class="dish-edit__left">
         <div class="dish-edit__images-container">
           <div class="dish-edit__image">
-            <v-img v-if="dish.images[0]" :src="selectedImageUrl" height="100%" />
+            <template v-if="dish.images[0]">
+              <v-img :src="selectedImage.url" height="100%" />
+              <div class="dish-edit__image-actions">
+                <v-tooltip
+                  bottom
+                  open-delay="300"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-btn icon v-on="on" v-bind="attrs" @click="detachImage(selectedImage.id)">
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </template>
+                  Удалить
+                </v-tooltip>
+              </div>
+            </template>
             <div v-else class="dish-edit__image-placeholder" />
           </div>
           <div class="dish-edit__images">
@@ -280,9 +295,9 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
 
   private editNameShow = false;
 
-  get selectedImageUrl(): string {
+  get selectedImage(): Image | undefined {
     if (!this.dish) {
-      return '';
+      return undefined;
     }
 
     let image: Image | undefined;
@@ -293,11 +308,7 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
       image = this.dish.images[0];
     }
 
-    if (!image) {
-      return '';
-    }
-
-    return image.url;
+    return image;
   }
 
   get addIngredientValue(): Ingredient | undefined {
@@ -421,6 +432,13 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
     this.dish = dish;
   }
 
+  async detachImage(id: number): Promise<void> {
+    const {data: dish} = await DishRepository.detachImage(this.dishId, id);
+
+    this.selectedImageId = 0;
+    this.dish = dish;
+  }
+
   @Prop({required: true}) readonly dishId!: number;
 }
 </script>
@@ -444,9 +462,16 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
         flex-direction: column;
 
         .dish-edit__image {
+          position: relative;
           border-radius: 25px;
           overflow: hidden;
           aspect-ratio: 1.5;
+
+          .dish-edit__image-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+          }
         }
 
         .dish-edit__images {

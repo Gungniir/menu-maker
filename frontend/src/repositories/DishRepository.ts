@@ -41,6 +41,6 @@ export default {
     return Repository.put(base + '/' + dish_id + '/image/' + image_id);
   },
   detachImage(dish_id: number, image_id: number): AxiosPromise<DishShow> {
-    return Repository.put(base + '/' + dish_id + '/image/' + image_id);
+    return Repository.delete(base + '/' + dish_id + '/image/' + image_id);
   },
 }
