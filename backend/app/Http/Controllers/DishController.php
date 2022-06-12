@@ -41,12 +41,12 @@ class DishController extends Controller
     {
         $input = $request->validate([
             'name' => 'required|string|max:255',
-            'cooking_time' => 'numeric|min:0|max:1440',
-            'kcal' => 'numeric|min:0|max:32767',
-            'proteins' => 'numeric|min:0|max:32767',
-            'fats' => 'numeric|min:0|max:32767',
-            'carbohydrates' => 'numeric|min:0|max:32767',
-            'link' => 'string|max:1000'
+            'cooking_time' => 'nullable|numeric|min:0|max:1440',
+            'kcal' => 'nullable|numeric|min:0|max:32767',
+            'proteins' => 'nullable|numeric|min:0|max:32767',
+            'fats' => 'nullable|numeric|min:0|max:32767',
+            'carbohydrates' => 'nullable|numeric|min:0|max:32767',
+            'link' => 'nullable|string|max:1000'
         ]);
 
         $dish = Dish::create([
@@ -81,12 +81,12 @@ class DishController extends Controller
     {
         $input = $request->validate([
             'name' => 'required|string|max:255',
-            'cooking_time' => 'numeric|min:0|max:1440',
-            'kcal' => 'numeric|min:0|max:32767',
-            'proteins' => 'numeric|min:0|max:32767',
-            'fats' => 'numeric|min:0|max:32767',
-            'carbohydrates' => 'numeric|min:0|max:32767',
-            'link' => 'string|max:1000',
+            'cooking_time' => 'nullable|numeric|min:0|max:1440',
+            'kcal' => 'nullable|numeric|min:0|max:32767',
+            'proteins' => 'nullable|numeric|min:0|max:32767',
+            'fats' => 'nullable|numeric|min:0|max:32767',
+            'carbohydrates' => 'nullable|numeric|min:0|max:32767',
+            'link' => 'nullable|string|max:1000',
 
             'is_archive' => 'boolean'
         ]);

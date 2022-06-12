@@ -1,23 +1,62 @@
 <template>
   <div class="dishes">
-    <div class="dishes__header">
-      Все блюда
+    <div class="dishes__wrapper">
+      <div class="dishes__header">
+        Все блюда
+      </div>
+      <div ref="intersectionObserverRoot" class="dishes__container">
+        <DishCard v-for="(dish, index) of dishes" :key="dish.id" :dish="dish" @click="$router.push(`/dishes/${dish.id}`)" @deleted="dishes.splice(index, 1)" />
+        <div ref="intersectionObserver" class="dishes__intersection-observer"/>
+      </div>
     </div>
-    <div ref="intersectionObserverRoot" class="dishes__container">
-      <DishCard v-for="(dish, index) of dishes" :key="dish.id" :dish="dish" @click="$router.push(`/dishes/${dish.id}`)" @deleted="dishes.splice(index, 1)" />
-      <div ref="intersectionObserver" class="dishes__intersection-observer"/>
-    </div>
+    <v-tooltip
+      open-delay="300"
+      bottom
+    >
+      <template #activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          fab
+          absolute
+          bottom
+          right
+          style="bottom: 50px"
+          v-on="on"
+          v-bind="attrs"
+          @click="showAddDialog = true; newDishName = ''; $refs.addDialog.reset()"
+        >
+          <v-icon color="white">mdi-plus</v-icon>
+        </v-btn>
+      </template>
+      Добавить блюдо
+    </v-tooltip>
+    <dialog-card ref="addDialog" v-model="showAddDialog" with-observer title="Добавить блюдо" v-slot="{ invalid }">
+      <v-row no-gutters>
+        <v-col>
+          <validation-provider slim vid="name" name="название" rules="required" v-slot="{ errors }">
+            <v-text-field v-model="newDishName" outlined color="primary" label="Название" persistent-placeholder :error-messages="errors"/>
+          </validation-provider>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col class="d-flex justify-end">
+          <v-btn color="primary" outlined large @click="showAddDialog = false">Отмена</v-btn>
+          <v-btn class="ml-4" color="primary" large :disabled="invalid" @click="storeDish">Создать</v-btn>
+        </v-col>
+      </v-row>
+    </dialog-card>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator'
 import DishRepository from "@/repositories/DishRepository";
-import {DishIndex} from "@/models/Dish";
+import {DishEntity, DishIndex} from "@/models/Dish";
 import DishCard from "@/components/DishCard.vue";
+import DialogCard from "@/components/DialogCard.vue";
 
 @Component({
-  components: {DishCard}
+  components: {DialogCard, DishCard}
 })
 export default class Dishes extends Vue {
   private dishes: DishIndex[] = [];
@@ -29,6 +68,8 @@ export default class Dishes extends Vue {
   }, {
     root: this.$refs.intersectionObserverRoot as Element,
   })
+  private showAddDialog = false;
+  private newDishName = '';
 
   mounted(): void {
     this.fetchMoreDishes();
@@ -45,6 +86,12 @@ export default class Dishes extends Vue {
     }
 
     this.fetchMoreDishes();
+  }
+
+  async storeDish(): Promise<void> {
+    const {data} = await DishRepository.store({name: this.newDishName} as DishEntity);
+
+    await this.$router.push(`/dishes/${data.id}/edit`)
   }
 
   async fetchMoreDishes(): Promise<void> {
@@ -64,22 +111,27 @@ export default class Dishes extends Vue {
 
 <style scoped lang="scss">
 .dishes {
+  position: relative;
   width: 100%;
-  .dishes__header {
-    font-size: 40px;
-    font-weight: 400;
-    line-height: 49px;
-    letter-spacing: 0;
-    text-align: center;
+  height: 100%;
 
-    margin-bottom: 40px;
-  }
+  .dishes__wrapper {
+    .dishes__header {
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 49px;
+      letter-spacing: 0;
+      text-align: center;
 
-  .dishes__container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .dishes__container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-gap: 30px;
+    }
   }
 }
 </style>
