@@ -1,5 +1,5 @@
 <template>
-  <div class="dc">
+  <div class="dc" @click="clickEvent">
     <v-img v-if="dish.images[0]" width="100%" height="100%" :src="dish.images[0].url" />
     <div v-else class="dc__background"/>
     <div class="dc__actions">
@@ -27,12 +27,17 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from 'vue-property-decorator'
+import {Component, Emit, Prop, Vue} from 'vue-property-decorator'
 import {DishIndex} from "@/models/Dish";
 
 @Component({})
 export default class DishCard extends Vue {
   @Prop() readonly dish!: DishIndex
+
+  @Emit('click')
+  clickEvent(event: MouseEvent): MouseEvent {
+    return event;
+  }
 }
 </script>
 
@@ -43,6 +48,7 @@ export default class DishCard extends Vue {
   border: #0000000A 1px solid;
   aspect-ratio: 1.5;
   overflow: hidden;
+  cursor: pointer;
 
   .dc__name {
     position: absolute;

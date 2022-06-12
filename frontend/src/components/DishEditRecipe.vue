@@ -11,7 +11,7 @@
       <div class="recipe__item-name">
         {{ recipeItem.item }}
       </div>
-      <div class="recipe__item-actions">
+      <div v-if="editMode" class="recipe__item-actions">
         <v-tooltip
           bottom
           open-delay="300"
@@ -51,33 +51,35 @@
         </v-tooltip>
       </div>
     </div>
-    <validation-observer v-if="addRecipeItemShow" slim v-slot="{ invalid }">
-      <div class="recipe__item-add">
-        <validation-provider rules="required" slim v-slot="{ errors }">
-          <v-text-field
-            v-model="addRecipeItemValue"
-            ref="addRecipeItemInput"
-            :prefix="addEditRecipeItemPrefix"
-            :error-messages="errors"
-            @focus="ocRegister('recipe__item-add', () => {
+    <template v-if="editMode">
+      <validation-observer v-if="addRecipeItemShow" slim v-slot="{ invalid }">
+        <div class="recipe__item-add">
+          <validation-provider rules="required" slim v-slot="{ errors }">
+            <v-text-field
+              v-model="addRecipeItemValue"
+              ref="addRecipeItemInput"
+              :prefix="addEditRecipeItemPrefix"
+              :error-messages="errors"
+              @focus="ocRegister('recipe__item-add', () => {
                       closeAddRecipeItem();
                     })"
-            @keyup.enter="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem(); ocDrop('recipe__item-add')"
-          />
-        </validation-provider>
-        <v-btn
-          class="ml-4"
-          color="primary"
-          :outlined="invalid"
-          @click="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem(); ocDrop('recipe__item-add')"
-        >
-          {{ invalid ? 'Отмена' : addRecipeItemId ? 'Изменить' : 'Добавить' }}
-        </v-btn>
-      </div>
-    </validation-observer>
-    <v-btn v-else icon @click="addRecipeItemShow = true; $nextTick(() => $refs.addRecipeItemInput.focus())">
-      <v-icon>$add</v-icon>
-    </v-btn>
+              @keyup.enter="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem(); ocDrop('recipe__item-add')"
+            />
+          </validation-provider>
+          <v-btn
+            class="ml-4"
+            color="primary"
+            :outlined="invalid"
+            @click="invalid ? closeAddRecipeItem() : addOrUpdateRecipeItem(); ocDrop('recipe__item-add')"
+          >
+            {{ invalid ? 'Отмена' : addRecipeItemId ? 'Изменить' : 'Добавить' }}
+          </v-btn>
+        </div>
+      </validation-observer>
+      <v-btn v-else icon @click="addRecipeItemShow = true; $nextTick(() => $refs.addRecipeItemInput.focus())">
+        <v-icon>$add</v-icon>
+      </v-btn>
+    </template>
   </div>
 </template>
 
@@ -90,6 +92,7 @@ import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 @Component({})
 export default class DishEditRecipe extends mixins(OutsideClickMixin) {
   @Prop({required: true}) recipe_items!: RecipeItem[];
+  @Prop({default: false}) editMode!: boolean;
 
   private addRecipeItemId = 0;
   private addRecipeItemValue = '';

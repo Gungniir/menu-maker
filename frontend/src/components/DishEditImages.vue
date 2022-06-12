@@ -3,7 +3,7 @@
     <div class="images__image">
       <template v-if="images[0]">
         <v-img :src="selectedImage.url" height="100%" />
-        <div class="images__image-actions">
+        <div v-if="editMode" class="images__image-actions">
           <v-tooltip
             bottom
             open-delay="300"
@@ -23,7 +23,7 @@
       <div v-for="image of images" :key="image.id" class="images__images-item">
         <v-img :src="image.url" height="100%" @click="selectedImageId = image.id" />
       </div>
-      <div v-if="images.length < 7" class="images__images-item" v-ripple @click="$refs.imageAddInput.click()">
+      <div v-if="editMode && images.length < 7" class="images__images-item" v-ripple @click="$refs.imageAddInput.click()">
         <input ref="imageAddInput" type="file" style="display: none" @input="handleInputEvent" />
         <div class="images__image-placeholder">
           <v-icon>$add</v-icon>
@@ -40,6 +40,8 @@ import {Image} from "@/models/Image";
 @Component({})
 export default class DishEditImages extends Vue {
   @Prop({required: true}) images!: Image[]
+  @Prop({default: false}) editMode!: boolean
+
   private selectedImageId = 0;
 
   get selectedImage(): Image | undefined {

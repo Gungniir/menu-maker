@@ -8,7 +8,7 @@
         {{ ingredient.name }}
       </div>
       <div class="ingredients__ingredient-amount-actions">
-        <div class="ingredients__ingredient-actions">
+        <div v-if="editMode" class="ingredients__ingredient-actions">
           <v-tooltip
             bottom
             open-delay="300"
@@ -52,49 +52,51 @@
         </div>
       </div>
     </div>
-    <validation-observer v-if="addIngredientShow" slim v-slot="{ invalid }">
-      <div class="ingredients__ingredient-add">
-        <div>
-          <validation-provider slim rules="required" v-slot="{ errors }">
-            <v-autocomplete
-              v-model="addIngredientId"
-              ref="addIngredientIdInput"
-              :items="availableIngredients"
-              label="Ингредиент"
-              item-text="name"
-              item-value="id"
-              :error-messages="errors"
-              @focus="ocRegister('ingredients__ingredient-add', () => {
+    <template v-if="editMode">
+      <validation-observer v-if="addIngredientShow" slim v-slot="{ invalid }">
+        <div class="ingredients__ingredient-add">
+          <div>
+            <validation-provider slim rules="required" v-slot="{ errors }">
+              <v-autocomplete
+                v-model="addIngredientId"
+                ref="addIngredientIdInput"
+                :items="availableIngredients"
+                label="Ингредиент"
+                item-text="name"
+                item-value="id"
+                :error-messages="errors"
+                @focus="ocRegister('ingredients__ingredient-add', () => {
                       closeAddIngredient();
                     }, true)"
-              @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
-            />
-          </validation-provider>
-        </div>
-        <validation-provider slim rules="required|min:1" v-slot="{ errors }">
-          <div style="width: 20%" class="ml-4">
-            <v-text-field
-              v-model="addIngredientAmount"
-              ref="addIngredientAmountInput"
-              :error="errors.length > 0"
-              :suffix="addIngredientUnit"
-              @keyup.enter="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
-            />
+                @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
+              />
+            </validation-provider>
           </div>
-        </validation-provider>
-        <v-btn
-          class="ml-4"
-          color="primary"
-          :outlined="invalid"
-          @click="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
-        >
-          {{ invalid ? 'Отмена' : addIngredientButtonText }}
-        </v-btn>
-      </div>
-    </validation-observer>
-    <v-btn v-else icon @click="addIngredientShow = true; $nextTick(() => $refs.addIngredientIdInput.focus())">
-      <v-icon>$add</v-icon>
-    </v-btn>
+          <validation-provider slim rules="required|min:1" v-slot="{ errors }">
+            <div style="width: 20%" class="ml-4">
+              <v-text-field
+                v-model="addIngredientAmount"
+                ref="addIngredientAmountInput"
+                :error="errors.length > 0"
+                :suffix="addIngredientUnit"
+                @keyup.enter="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
+              />
+            </div>
+          </validation-provider>
+          <v-btn
+            class="ml-4"
+            color="primary"
+            :outlined="invalid"
+            @click="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
+          >
+            {{ invalid ? 'Отмена' : addIngredientButtonText }}
+          </v-btn>
+        </div>
+      </validation-observer>
+      <v-btn v-else icon @click="addIngredientShow = true; $nextTick(() => $refs.addIngredientIdInput.focus())">
+        <v-icon>$add</v-icon>
+      </v-btn>
+    </template>
   </div>
 </template>
 
@@ -109,6 +111,7 @@ import IngredientRepository from "@/repositories/IngredientRepository";
 @Component({})
 export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   @Prop({required: true}) ingredients!: IngredientWithDishPivot[];
+  @Prop({default: false}) editMode!: boolean;
 
   private availableIngredients: Ingredient[] = [];
 

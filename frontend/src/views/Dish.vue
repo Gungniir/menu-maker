@@ -1,16 +1,44 @@
 <template>
   <div class="dish-edit">
+    <div class="dish-edit__actions">
+      <v-tooltip
+        v-if="!editMode"
+        bottom
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-on="on" v-bind="attrs" @click="$router.push(`/dishes/${dishId}/edit`)">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+        </template>
+        Редактировать
+      </v-tooltip>
+      <v-tooltip
+        v-if="editMode"
+        bottom
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-on="on" v-bind="attrs" @click="$router.push(`/dishes/${dishId}`)">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+        Закончить редактирование
+      </v-tooltip>
+    </div>
     <div v-if="dish" class="dish-edit__container">
       <div class="dish-edit__left">
         <DishEditImages
           class="dish-edit__images-container"
           :images="dish.images"
+          :edit-mode="editMode"
           @store-image="storeImage"
           @detach-image="detachImage"
         />
         <DishEditRecipe
           class="dish-edit__recipe"
           :recipe_items="dish.recipe_items"
+          :edit-mode="editMode"
           @destroy-recipe-item="destroyRecipeItem"
           @store-recipe-item="storeRecipeItem"
           @update-recipe-item="updateRecipeItem"
@@ -18,49 +46,59 @@
       </div>
       <div class="dish-edit__right">
         <div class="dish-edit__name-container">
-          <template v-if="!editNameShow">
-            <div
-              class="dish-edit__name"
-              :title="dish.name"
-              @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())"
-            >
-              {{ dish.name }}
-            </div>
-            <div class="dish-edit__name-actions">
-              <v-tooltip
-                bottom
-                open-delay="300"
+          <template v-if="editMode">
+            <template v-if="!editNameShow">
+              <div
+                class="dish-edit__name edit"
+                :title="dish.name"
+                @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())"
               >
-                <template #activator="{ on, attrs }">
-                  <v-btn icon v-on="on" v-bind="attrs"
-                         @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())">
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                </template>
-                Редактировать
-              </v-tooltip>
-            </div>
-          </template>
-          <div v-else class="dish-edit__name-input">
-            <v-text-field
-              v-model="dish.name"
-              ref="editNameInput"
-              label="Название"
-              @focus="ocRegister('dish-edit__name-input', () => {
+                {{ dish.name }}
+              </div>
+              <div class="dish-edit__name-actions">
+                <v-tooltip
+                  bottom
+                  open-delay="300"
+                >
+                  <template #activator="{ on, attrs }">
+                    <v-btn icon v-on="on" v-bind="attrs"
+                           @click="editNameShow = true; $nextTick(() => $refs.editNameInput.focus())">
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                  Редактировать
+                </v-tooltip>
+              </div>
+            </template>
+            <div v-else class="dish-edit__name-input">
+              <v-text-field
+                v-model="dish.name"
+                ref="editNameInput"
+                label="Название"
+                @focus="ocRegister('dish-edit__name-input', () => {
                 editNameShow = false;
                 updateDish();
               })"
-              @keyup.enter.esc="
+                @keyup.enter.esc="
                 ocDrop('dish-edit__name-input');
                 editNameShow = false;
                 updateDish();
               "
-            />
+              />
+            </div>
+          </template>
+          <div
+            v-else
+            class="dish-edit__name"
+            :title="dish.name"
+          >
+            {{ dish.name }}
           </div>
         </div>
         <DishEditIngredients
           class="dish-edit__ingredients-container"
           :ingredients="dish.ingredients"
+          :edit-mode="editMode"
           @add-ingredient="addIngredient"
           @destroy-ingredient="destroyIngredient"
         />
@@ -91,10 +129,14 @@ import DishEditIngredients from "@/components/DishEditIngredients.vue";
 @Component({
   components: {DishEditIngredients, DishEditRecipe, DishEditImages}
 })
-export default class DishesEdit extends mixins(OutsideClickMixin) {
+export default class Dish extends mixins(OutsideClickMixin) {
   private dish: DishShow | null = null;
 
   private editNameShow = false;
+
+  get editMode(): boolean {
+    return this.$route.name === 'DishEdit';
+  }
 
   mounted(): void {
     this.loadDish();
@@ -154,7 +196,6 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
   async detachImage(id: number): Promise<void> {
     const {data: dish} = await DishRepository.detachImage(this.dishId, id);
 
-    this.selectedImageId = 0;
     this.dish = dish;
   }
 
@@ -164,7 +205,14 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
 
 <style scoped lang="scss">
 .dish-edit {
+  position: relative;
   width: 100%;
+
+  .dish-edit__actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 
   .dish-edit__container {
     width: 100%;
@@ -196,9 +244,12 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
           line-height: 44px;
           letter-spacing: 0;
           text-align: center;
-          cursor: pointer;
           border-radius: 10px;
           transition: background-color cubic-bezier(0.25, 0.1, 0.25, 1) 300ms;
+
+          &.edit {
+            cursor: pointer;
+          }
         }
 
         &:hover {
@@ -206,7 +257,7 @@ export default class DishesEdit extends mixins(OutsideClickMixin) {
             opacity: 1;
           }
 
-          .dish-edit__name {
+          .dish-edit__name.edit {
             background: rgba(0, 0, 0, 0.1);
           }
         }

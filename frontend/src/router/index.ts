@@ -44,8 +44,19 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/dishes/:dishId(\\d+)/edit',
-    name: 'DishesEdit',
-    component: () => import(/* webpackChunkName: "dishes" */ '../views/DishesEdit.vue'),
+    name: 'DishEdit',
+    component: () => import(/* webpackChunkName: "dish" */ '../views/Dish.vue'),
+    props: route => ({dishId: Number(route.params.dishId)}),
+    meta: {
+      fullPage: false,
+      withoutBackground: false,
+      showInMenu: false,
+    }
+  },
+  {
+    path: '/dishes/:dishId(\\d+)',
+    name: 'Dish',
+    component: () => import(/* webpackChunkName: "dish" */ '../views/Dish.vue'),
     props: route => ({dishId: Number(route.params.dishId)}),
     meta: {
       fullPage: false,
