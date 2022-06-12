@@ -13,8 +13,8 @@
       </v-tooltip>
       <v-tooltip bottom open-delay="300">
         <template #activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
-            <v-icon>mdi-close</v-icon>
+          <v-btn icon v-bind="attrs" v-on="on" @click.stop="destroyDishPrompt">
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
         Удалить
@@ -23,20 +23,41 @@
     <div class="dc__name">
       {{ dish.name }}
     </div>
+    <dialog-confirm v-model="showDeletePrompt" title="Удаление блюда" text="Вы действительно хотите удалить это блюдо?" @confirm="destroyDish"/>
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Emit, Prop, Vue} from 'vue-property-decorator'
 import {DishIndex} from "@/models/Dish";
+import DialogConfirm from "@/components/DialogConfirm.vue";
+import DishRepository from "@/repositories/DishRepository";
 
-@Component({})
+@Component({
+  components: {DialogConfirm}
+})
 export default class DishCard extends Vue {
   @Prop() readonly dish!: DishIndex
+
+  private showDeletePrompt = false;
 
   @Emit('click')
   clickEvent(event: MouseEvent): MouseEvent {
     return event;
+  }
+
+  @Emit('deleted')
+  deletedEvent(): boolean {
+    return true;
+  }
+
+  destroyDishPrompt(): void {
+    this.showDeletePrompt = true;
+  }
+
+  async destroyDish(): Promise<void> {
+    await DishRepository.destroy(this.dish.id);
+    this.deletedEvent();
   }
 }
 </script>

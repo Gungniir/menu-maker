@@ -6,7 +6,7 @@
     <template #activator="options">
       <slot name="activator" v-bind="options" />
     </template>
-    <div class="dialog">
+    <div class="dialog" :class="{mini}">
       <div class="dialog__close">
         <v-tooltip
           open-delay="300"
@@ -47,6 +47,7 @@ export default class DialogCard extends Vue {
   @Prop({default: 'Заголовок окна'}) title!: string;
   @Prop({default: false}) value!: boolean;
   @Prop({default: false}) withObserver!: boolean;
+  @Prop({default: false}) mini!: boolean;
 
   public get observer(): InstanceType<typeof ValidationObserver> {
     return this.$refs.observer;
@@ -82,6 +83,15 @@ export default class DialogCard extends Vue {
   width: 100%;
   padding: 65px 130px;
   background: var(--v-background-base);
+
+  &.mini {
+    padding: 32px 65px;
+
+    .dialog__close {
+      right: 18px;
+      top: 18px;
+    }
+  }
 
   .dialog__close {
     position: absolute;

@@ -4,7 +4,7 @@
       Все блюда
     </div>
     <div ref="intersectionObserverRoot" class="dishes__container">
-      <DishCard v-for="dish of dishes" :key="dish.id" :dish="dish" @click="$router.push(`/dishes/${dish.id}`)" />
+      <DishCard v-for="(dish, index) of dishes" :key="dish.id" :dish="dish" @click="$router.push(`/dishes/${dish.id}`)" @deleted="dishes.splice(index, 1)" />
       <div ref="intersectionObserver" class="dishes__intersection-observer"/>
     </div>
   </div>

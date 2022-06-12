@@ -25,6 +25,17 @@
         </template>
         Закончить редактирование
       </v-tooltip>
+      <v-tooltip
+        bottom
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-on="on" v-bind="attrs" @click="destroyDishPrompt">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        Удалить блюдо
+      </v-tooltip>
     </div>
     <div v-if="dish" class="dish-edit__container">
       <div class="dish-edit__left">
@@ -112,6 +123,7 @@
         </div>
       </div>
     </div>
+    <dialog-confirm v-model="showDeletePrompt" title="Удаление блюда" text="Вы действительно хотите удалить это блюдо?" @confirm="destroyDish"/>
   </div>
 </template>
 
@@ -125,14 +137,16 @@ import ImageRepository from "@/repositories/ImageRepository";
 import DishEditImages from "@/components/DishEditImages.vue";
 import DishEditRecipe from "@/components/DishEditRecipe.vue";
 import DishEditIngredients from "@/components/DishEditIngredients.vue";
+import DialogConfirm from "@/components/DialogConfirm.vue";
 
 @Component({
-  components: {DishEditIngredients, DishEditRecipe, DishEditImages}
+  components: {DialogConfirm, DishEditIngredients, DishEditRecipe, DishEditImages}
 })
 export default class Dish extends mixins(OutsideClickMixin) {
   private dish: DishShow | null = null;
 
   private editNameShow = false;
+  private showDeletePrompt = false;
 
   get editMode(): boolean {
     return this.$route.name === 'DishEdit';
@@ -197,6 +211,16 @@ export default class Dish extends mixins(OutsideClickMixin) {
     const {data: dish} = await DishRepository.detachImage(this.dishId, id);
 
     this.dish = dish;
+  }
+
+  destroyDishPrompt(): void {
+    this.showDeletePrompt = true;
+  }
+
+  async destroyDish(): Promise<void> {
+    await DishRepository.destroy(this.dishId);
+
+    await this.$router.push('/dishes');
   }
 
   @Prop({required: true}) readonly dishId!: number;
