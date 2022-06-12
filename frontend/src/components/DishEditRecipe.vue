@@ -44,7 +44,7 @@
               v-bind="attrs"
               @click="destroyRecipeItem(recipeItem.id)"
             >
-              <v-icon>mdi-minus</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
           Удалить

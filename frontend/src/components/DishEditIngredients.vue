@@ -41,7 +41,7 @@
                 v-bind="attrs"
                 @click="destroyIngredient(ingredient.id)"
               >
-                <v-icon>mdi-minus</v-icon>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </template>
             Удалить

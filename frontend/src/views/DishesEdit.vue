@@ -5,7 +5,6 @@
         <DishEditImages
           class="dish-edit__images-container"
           :images="dish.images"
-          :selected-image-id="selectedImageId"
           @store-image="storeImage"
           @detach-image="detachImage"
         />
@@ -94,8 +93,6 @@ import DishEditIngredients from "@/components/DishEditIngredients.vue";
 })
 export default class DishesEdit extends mixins(OutsideClickMixin) {
   private dish: DishShow | null = null;
-
-  private selectedImageId = 0;
 
   private editNameShow = false;
 

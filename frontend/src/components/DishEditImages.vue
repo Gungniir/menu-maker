@@ -10,7 +10,7 @@
           >
             <template #activator="{ on, attrs }">
               <v-btn icon v-on="on" v-bind="attrs" @click="detachImage(selectedImage.id)">
-                <v-icon>mdi-minus</v-icon>
+                <v-icon color="text">mdi-delete</v-icon>
               </v-btn>
             </template>
             Удалить
@@ -40,10 +40,12 @@ import {Image} from "@/models/Image";
 @Component({})
 export default class DishEditImages extends Vue {
   @Prop({required: true}) images!: Image[]
-  @Prop({default: 0}) selectedImageId!: number
+  private selectedImageId = 0;
 
   get selectedImage(): Image | undefined {
-    return this.images[this.selectedImageId];
+    const image = this.images.find(({id}) => id === this.selectedImageId)
+
+    return image ?? this.images[0];
   }
 
   private handleInputEvent(event: InputEvent): void {
