@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read string $url
  * @method static Builder|Image whereCreatedAt(Carbon $value)
  * @method static Builder|Image whereCreatorId(int $value)
  * @method static Builder|Image whereDeletedAt(Carbon $value)

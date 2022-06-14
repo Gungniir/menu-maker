@@ -6,6 +6,7 @@ use App\Enums\IngredientUnit;
 use Database\Factories\IngredientFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read Collection|Dish[] $dishes
+ * @property-read int|null $dishes_count
  * @method static Builder|Ingredient whereAmount(int $value)
  * @method static Builder|Ingredient whereCreatedAt(Carbon $value)
  * @method static Builder|Ingredient whereCreatorId(int $value)
@@ -38,6 +41,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ingredient whereIsPerishable(bool $value)
  * @method static Builder|Ingredient whereName(string $value)
  * @method static Builder|Ingredient whereUpdatedAt(Carbon $value)
+ * @method static Builder|Ingredient whereUnit(IngredientUnit $value)
  */
 class Ingredient extends Model
 {

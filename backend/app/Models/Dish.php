@@ -46,6 +46,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read Collection|Ingredient[] $ingredients
+ * @property-read int|null $ingredients_count
  * @method static Builder|Dish whereCarbohydrates(int $value)
  * @method static Builder|Dish whereCookingTime(int $value)
  * @method static Builder|Dish whereCreatedAt(Carbon $value)
@@ -59,6 +61,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Dish whereName(string $value)
  * @method static Builder|Dish whereProteins(int $value)
  * @method static Builder|Dish whereUpdatedAt(Carbon $value)
+ * @method static \Illuminate\Database\Query\Builder|Dish onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Dish withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Dish withoutTrashed()
  */
 class Dish extends Model
 {
