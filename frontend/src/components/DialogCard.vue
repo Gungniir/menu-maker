@@ -81,7 +81,7 @@ export default class DialogCard extends Vue {
 .dialog {
   position: relative;
   width: 100%;
-  padding: 65px 130px;
+  padding: 65px 95px;
   background: var(--v-background-base);
 
   &.mini {

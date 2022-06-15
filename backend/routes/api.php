@@ -49,5 +49,5 @@ Route::group([
     ]);
     Route::apiResource('tool', ToolController::class);
     Route::apiResource('ingredient', IngredientController::class);
-    Route::apiResource('scheme', MenuSchemeController::class);
+    Route::apiResource('menu_scheme', MenuSchemeController::class);
 });

@@ -23,7 +23,7 @@ class MenuSchemeController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(MenuScheme::whereUserId(Auth::id())->with('groups', 'meals.items')->get());
+        return response()->json(MenuScheme::whereUserId(Auth::id())->get());
     }
 
     /**
@@ -40,7 +40,7 @@ class MenuSchemeController extends Controller
             'meals.*' => 'required|string',
             'groups' => 'required|array',
             'groups.*' => 'required|array',
-            'groups.*.*.meal' => 'required|numeric|integer|in_array:meals.*',
+            'groups.*.*.meal' => 'required|string|in_array:meals.*',
             'groups.*.*.day' => 'required|numeric|integer|min:0|max:6'
         ]);
 
@@ -60,7 +60,7 @@ class MenuSchemeController extends Controller
      */
     public function show(MenuScheme $menuScheme): JsonResponse
     {
-        return response()->json($menuScheme->load('groups', 'meals.items'));
+        return response()->json($menuScheme->load('groups.items', 'meals'));
     }
 
     /**
@@ -78,7 +78,7 @@ class MenuSchemeController extends Controller
             'meals.*' => 'required|string',
             'groups' => 'required|array',
             'groups.*' => 'required|array',
-            'groups.*.*.meal' => 'required|numeric|integer|in_array:meals.*',
+            'groups.*.*.meal' => 'required|string|in_array:meals.*',
             'groups.*.*.day' => 'required|numeric|integer|min:0|max:6'
         ]);
 
@@ -125,7 +125,7 @@ class MenuSchemeController extends Controller
                 MenuSchemeRepeatItem::insert([
                     'group_id' => $groupId,
                     'meal_id' => MenuSchemeMeal::whereName($item['meal'])->first()->id,
-                    'day' => $input['day'],
+                    'day' => $item['day'],
                 ]);
             }
         }

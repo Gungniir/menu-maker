@@ -12,6 +12,21 @@ class MenuSchemePolicy
     use HandlesAuthorization;
 
     /**
+     * @param User $user
+     * @param string $ability
+     * @return bool|null
+     */
+    public function before(User $user, string $ability): null|bool
+    {
+        info("$user->id: $ability");
+
+        if ($user->is_admin) {
+            return true;
+        }
+        return null;
+    }
+
+    /**
      * Determine whether the user can view any models.
      *
      * @param User $user
@@ -26,12 +41,12 @@ class MenuSchemePolicy
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param MenuScheme $menuScheme
+     * @param MenuScheme $scheme
      * @return bool
      */
-    public function view(User $user, MenuScheme $menuScheme): bool
+    public function view(User $user, MenuScheme $scheme): bool
     {
-        return $menuScheme->user_id === $user->id;
+        return $scheme->user_id === $user->id;
     }
 
     /**
@@ -90,6 +105,6 @@ class MenuSchemePolicy
      */
     public function forceDelete(User $user, MenuScheme $menuScheme): Response|bool
     {
-        return false;
+        return $user->id === $menuScheme->user_id;
     }
 }
