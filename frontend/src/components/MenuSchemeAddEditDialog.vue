@@ -3,9 +3,9 @@
     <table class="scheme__table">
       <thead>
         <tr>
-          <th/>
+          <th />
           <th v-for="day of days" :key="day">{{ day }}</th>
-          <th/>
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -67,11 +67,11 @@
     <validation-observer tag="div" v-slot="{ invalid }">
       <div class="mt-4">
         <validation-provider slim rules="required">
-          <v-text-field class="hide-messages" v-model="name" outlined label="Название" persistent-placeholder />
+          <v-text-field :loading="loading" class="hide-messages" v-model="name" outlined label="Название" persistent-placeholder />
         </validation-provider>
       </div>
       <div class="mt-4">
-        <v-btn block color="primary" large :disabled="invalid" @click="onContinueClick">Применить</v-btn>
+        <v-btn block color="primary" large :disabled="invalid || loading" @click="onContinueClick">Применить</v-btn>
       </div>
     </validation-observer>
   </dialog-card>
@@ -84,14 +84,17 @@ import {mixins} from "vue-class-component";
 import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 import {MenuSchemeEntity, MenuSchemeShow} from "@/models/MenuScheme";
 import MenuSchemeRepository from "@/repositories/MenuSchemeRepository";
+import {MenuSchemeMeal} from "@/models/MenuSchemeMeal";
 
 @Component({
   components: {DialogCard}
 })
 export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
   @Prop({default: false}) value!: boolean;
+  @Prop({default: 0}) schemeId!: number;
 
   private opened = false;
+  private loading = false;
   private showAddMealInput = false;
   private addMealValue = '';
   private name = '';
@@ -145,22 +148,11 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
   ] as {
     id: number,
     color: string
-  }[]
+  }[];
 
   mounted(): void {
     this.opened = this.value;
-
-    this.items = [];
-
-    for (let i = 0; i < this.meals.length; i++) {
-      this.items.push([]);
-      for (let j = 0; j < this.days.length; j++) {
-        this.items[i].push({
-          id: 0,
-          color: '#FFFFFF'
-        });
-      }
-    }
+    this.reset();
   }
 
   private onCellClick(mealIndex: number, dayIndex: number): void {
@@ -171,7 +163,11 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
   }
 
   private onContinueClick(): void {
-    this.storeScheme();
+    if (this.schemeId) {
+      this.updateScheme();
+    } else {
+      this.storeScheme();
+    }
     this.opened = false;
   }
 
@@ -227,12 +223,70 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
   }
 
   async storeScheme(): Promise<void> {
+    this.loading = true;
     const {data} = await MenuSchemeRepository.store(this.getSchemeEntity());
     this.createdEvent(data);
+    this.loading = false;
+  }
+
+  async updateScheme(): Promise<void> {
+    this.loading = true;
+    const {data} = await MenuSchemeRepository.update(this.schemeId, this.getSchemeEntity());
+    this.updatedEvent(data);
+    this.loading = false;
+  }
+
+  async loadScheme(): Promise<void> {
+    this.loading = true;
+    const {data} = await MenuSchemeRepository.show(this.schemeId);
+
+    this.name = data.name;
+    this.meals = data.meals.map(meal => meal.name);
+    this.resetItems();
+
+    for (let i = 0; i < this.meals.length; i++) {
+      const meal = data.meals.find(meal => meal.name === this.meals[i]) as MenuSchemeMeal;
+
+      for (let j = 0; j < this.days.length; j++) {
+        for (const groupIndex in data.groups) {
+          for (const item of data.groups[groupIndex].items) {
+            if (item.day === j && item.meal_id === meal.id) {
+              this.$set(this.items[i], j, this.groups[groupIndex]);
+            }
+          }
+        }
+      }
+    }
+    this.loading = false;
+  }
+
+  private reset(): void {
+    this.meals = ['Завтрак', 'Обед', 'Ужин'];
+    this.selectedGroup = null;
+    this.name = '';
+    this.resetItems();
+  }
+
+  private resetItems(): void {
+    this.items = [];
+    for (let i = 0; i < this.meals.length; i++) {
+      this.items.push([]);
+      for (let j = 0; j < this.days.length; j++) {
+        this.items[i].push({
+          id: 0,
+          color: '#FFFFFF'
+        });
+      }
+    }
   }
 
   @Emit('created')
   createdEvent(scheme: MenuSchemeShow): MenuSchemeShow {
+    return scheme;
+  }
+
+  @Emit('updated')
+  updatedEvent(scheme: MenuSchemeShow): MenuSchemeShow {
     return scheme;
   }
 
@@ -244,6 +298,14 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
   @Watch('value')
   onValueChanged(value: boolean): void {
     this.opened = value;
+
+    if (value) {
+      this.reset();
+
+      if (this.schemeId) {
+        this.loadScheme();
+      }
+    }
   }
 }
 </script>

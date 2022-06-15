@@ -86,6 +86,10 @@ class MenuSchemeController extends Controller
         $menuScheme->meals()->delete();
         $menuScheme->groups()->delete();
 
+        $menuScheme->update([
+           'name' => $input['name'],
+        ]);
+
         return $this->fillSchemeFromInput($input, $menuScheme);
     }
 
@@ -109,8 +113,10 @@ class MenuSchemeController extends Controller
      */
     private function fillSchemeFromInput(array $input, MenuScheme $menuScheme): JsonResponse
     {
+        $meals = [];
+
         foreach ($input['meals'] as $meal) {
-            MenuSchemeMeal::insert([
+            $meals[$meal] = MenuSchemeMeal::insertGetId([
                 'scheme_id' => $menuScheme->id,
                 'name' => $meal,
             ]);
@@ -124,7 +130,7 @@ class MenuSchemeController extends Controller
             foreach ($group as $item) {
                 MenuSchemeRepeatItem::insert([
                     'group_id' => $groupId,
-                    'meal_id' => MenuSchemeMeal::whereName($item['meal'])->first()->id,
+                    'meal_id' => $meals[$item['meal']],
                     'day' => $item['day'],
                 ]);
             }

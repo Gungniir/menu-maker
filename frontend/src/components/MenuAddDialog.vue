@@ -46,7 +46,7 @@
                     open-delay="300"
                   >
                     <template #activator="{ on, attrs }">
-                      <v-btn icon v-on="on" v-bind="attrs">
+                      <v-btn icon v-on="on" v-bind="attrs" @click.stop="schemeId = scheme.id; showSchemeAddEditDialog = true">
                         <v-icon>mdi-pencil</v-icon>
                       </v-btn>
                     </template>
@@ -72,13 +72,13 @@
           class="ma-0 pa-0"
           plain
           color="primary"
-          @click="showSchemeAddEditDialog = true"
+          @click="schemeId = 0; showSchemeAddEditDialog = true"
         >
           Создать новую схему
         </v-btn>
       </v-col>
     </v-row>
-    <MenuSchemeAddEditDialog v-model="showSchemeAddEditDialog" @created="schemes.push($event)"/>
+    <MenuSchemeAddEditDialog v-model="showSchemeAddEditDialog" :scheme-id="schemeId" @created="schemes.push($event)" @updated="updatedScheme"/>
     <dialog-confirm v-model="showSchemeDeleteConfirm" title="Удалить схему меню" text="Вы действительно хотите удалить эту схему меню?" @confirm="destroyScheme"/>
   </dialog-card>
 </template>
@@ -87,7 +87,7 @@
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
 import DialogCard from "@/components/DialogCard.vue";
 import MenuSchemeAddEditDialog from "@/components/MenuSchemeAddEditDialog.vue";
-import {MenuSchemeIndex} from "@/models/MenuScheme";
+import {MenuSchemeIndex, MenuSchemeShow} from "@/models/MenuScheme";
 import MenuSchemeRepository from "@/repositories/MenuSchemeRepository";
 import DialogConfirm from "@/components/DialogConfirm.vue";
 
@@ -98,6 +98,7 @@ export default class MenuAddDialog extends Vue {
   @Prop({default: false}) value!: boolean;
 
   private selectedScheme = 0;
+  private schemeId = 0;
   private opened = false;
   private showSchemeAddEditDialog = false;
   private schemes: MenuSchemeIndex[] = [];
@@ -111,7 +112,6 @@ export default class MenuAddDialog extends Vue {
 
   async loadSchemes(): Promise<void> {
     const {data} = await MenuSchemeRepository.index();
-    await MenuSchemeRepository.show(1);
 
     this.schemes = data;
   }
@@ -120,6 +120,12 @@ export default class MenuAddDialog extends Vue {
     await MenuSchemeRepository.destroy(this.schemes[this.schemeDeleteIndex].id);
 
     this.schemes.splice(this.schemeDeleteIndex, 1);
+  }
+
+  updatedScheme(scheme: MenuSchemeShow): void {
+    const index = this.schemes.findIndex(scheme => scheme.id === this.schemeId);
+
+    this.$set(this.schemes, index, scheme);
   }
 
   @Watch('opened')
