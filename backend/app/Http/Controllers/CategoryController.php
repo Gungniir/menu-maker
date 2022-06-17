@@ -73,7 +73,6 @@ class CategoryController extends Controller
         ]);
 
         $category->update([
-            'creator_id' => Auth::id(),
             'name' => $input['name']
         ]);
 
