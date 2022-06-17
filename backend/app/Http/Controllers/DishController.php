@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Dish;
 use App\Models\DishImage;
 use App\Models\DishIngredient;
@@ -9,6 +10,7 @@ use App\Models\Image;
 use App\Models\Ingredient;
 use App\Models\RecipeItem;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +24,27 @@ class DishController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
+     * @throws AuthenticationException
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->orderBy('name')->paginate(9);
+        $input = $request->validate([
+            'category_id' => 'numeric|integer|exists:categories,id',
+        ]);
+
+        if ($request->has('category_id')) {
+            $category = Category::findOrFail($input['category_id']);
+
+            if ($category->creator_id !== Auth::id()) {
+                throw new AuthenticationException();
+            }
+
+            $pagination = $category->dishes()->where('creator_id', Auth::id())->with('images', 'categories')->orderBy('name')->paginate(9);
+        } else {
+            $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->orderBy('name')->paginate(9);
+        }
 
         return response()->json($pagination);
     }
