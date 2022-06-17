@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "moment": "^2.29.3",
     "register-service-worker": "^1.7.1",
     "vee-validate": "^3.4.14",
     "vue": "^2.6.11",
