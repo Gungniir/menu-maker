@@ -51,5 +51,6 @@ Route::group([
     Route::apiResource('tool', ToolController::class);
     Route::apiResource('ingredient', IngredientController::class);
     Route::apiResource('menu_scheme', MenuSchemeController::class);
+    Route::get('menu/date/{date}', [MenuController::class, 'showForDate']);
     Route::apiResource('menu', MenuController::class);
 });

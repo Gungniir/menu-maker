@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Nette\NotImplementedException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MenuController extends Controller
 {
@@ -41,6 +42,7 @@ class MenuController extends Controller
             'categories.*' => 'required|numeric|integer|exists:categories,id',
             'amount' => 'required|numeric|integer|min:1',
             'wishes' => 'nullable|array',
+            'start_date' => 'required|date',
             'wishes.*' => 'required|numeric|integer|exists:categories,id',
             'meal_categories' => 'nullable|array',
             'meal_categories.*.meal_id' => 'required|numeric|integer|exists:menu_scheme_meals,id',
@@ -163,7 +165,7 @@ class MenuController extends Controller
         $menu = Menu::create([
             'user_id' => Auth::id(),
             'amount' => $input['amount'],
-            'start_date' => '2022-06-15'
+            'start_date' => $input['start_date']
         ]);
 
         $mealMap = [];
@@ -199,6 +201,23 @@ class MenuController extends Controller
         $menu->load('meals.items.dish.images');
 
         return response()->json($menu);
+    }
+
+    /**
+     * Получить меню по дате
+     *
+     * @param string $date
+     * @return JsonResponse
+     */
+    public function showForDate(string $date): JsonResponse
+    {
+        $menu = Menu::whereStartDate($date)->whereUserId(Auth::id())->first();
+
+        if (!$menu) {
+            throw new NotFoundHttpException();
+        }
+
+        return $this->show($menu);
     }
 
     /**
