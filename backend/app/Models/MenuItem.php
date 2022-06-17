@@ -28,8 +28,13 @@ class MenuItem extends Model
 {
     public $timestamps = false;
 
-    public function meal() :BelongsTo
+    public function meal(): BelongsTo
     {
         return $this->belongsTo(MenuMeal::class, 'meal_id');
+    }
+
+    public function dish(): BelongsTo
+    {
+        return $this->belongsTo(Dish::class);
     }
 }

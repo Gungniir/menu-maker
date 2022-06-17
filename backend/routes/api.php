@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\IngredientController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuSchemeController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\UserController;
@@ -50,4 +51,5 @@ Route::group([
     Route::apiResource('tool', ToolController::class);
     Route::apiResource('ingredient', IngredientController::class);
     Route::apiResource('menu_scheme', MenuSchemeController::class);
+    Route::apiResource('menu', MenuController::class);
 });

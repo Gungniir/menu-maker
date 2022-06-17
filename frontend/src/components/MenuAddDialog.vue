@@ -1,6 +1,6 @@
 <template>
   <dialog-card title="Автоматическое создание меню" v-model="opened">
-    <v-row no-gutters>
+    <v-row v-if="false" no-gutters>
       <v-col>Выберите категории, из которых будет составлено меню:</v-col>
     </v-row>
     <v-row no-gutters class="mt-4">
@@ -20,7 +20,7 @@
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <v-radio-group v-model="selectedScheme" class="ma-0 hide-messages">
+        <v-radio-group v-model="selectedSchemeId" class="ma-0 hide-messages">
           <v-radio v-for="(scheme, index) of schemes" :key="scheme.id" :value="scheme.id">
             <template #label>
               <div class="d-flex align-center" style="width: 100%">
@@ -78,6 +78,11 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-btn block color="primary" large @click="storeMenu">Создать</v-btn>
+      </v-col>
+    </v-row>
     <MenuSchemeAddEditDialog v-model="showSchemeAddEditDialog" :scheme-id="schemeId" @created="schemes.push($event)" @updated="updatedScheme"/>
     <dialog-confirm v-model="showSchemeDeleteConfirm" title="Удалить схему меню" text="Вы действительно хотите удалить эту схему меню?" @confirm="destroyScheme"/>
   </dialog-card>
@@ -90,6 +95,7 @@ import MenuSchemeAddEditDialog from "@/components/MenuSchemeAddEditDialog.vue";
 import {MenuSchemeIndex, MenuSchemeShow} from "@/models/MenuScheme";
 import MenuSchemeRepository from "@/repositories/MenuSchemeRepository";
 import DialogConfirm from "@/components/DialogConfirm.vue";
+import MenuRepository from "@/repositories/MenuRepository";
 
 @Component({
   components: {DialogConfirm, MenuSchemeAddEditDialog, DialogCard}
@@ -97,7 +103,7 @@ import DialogConfirm from "@/components/DialogConfirm.vue";
 export default class MenuAddDialog extends Vue {
   @Prop({default: false}) value!: boolean;
 
-  private selectedScheme = 0;
+  private selectedSchemeId = 0;
   private schemeId = 0;
   private opened = false;
   private showSchemeAddEditDialog = false;
@@ -120,6 +126,16 @@ export default class MenuAddDialog extends Vue {
     await MenuSchemeRepository.destroy(this.schemes[this.schemeDeleteIndex].id);
 
     this.schemes.splice(this.schemeDeleteIndex, 1);
+  }
+
+  async storeMenu(): Promise<void> {
+    await MenuRepository.store({
+      amount: 1,
+      categories: [],
+      meal_categories: [],
+      wishes: [],
+      scheme_id: this.selectedSchemeId
+    });
   }
 
   updatedScheme(scheme: MenuSchemeShow): void {

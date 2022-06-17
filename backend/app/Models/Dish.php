@@ -48,6 +48,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $deleted_at
  * @property-read Collection|Ingredient[] $ingredients
  * @property-read int|null $ingredients_count
+ * @property-read Collection|MenuItem[] $menu_items
+ * @property-read int|null $menu_items_count
  * @method static Builder|Dish whereCarbohydrates(int $value)
  * @method static Builder|Dish whereCookingTime(int $value)
  * @method static Builder|Dish whereCreatedAt(Carbon $value)
@@ -105,5 +107,9 @@ class Dish extends Model
     public function ingredients(): BelongsToMany
     {
         return $this->belongsToMany(Ingredient::class)->using(DishIngredient::class)->withTimestamps()->withPivot('id', 'amount');
+    }
+
+    public function menu_items(): HasMany {
+        return $this->hasMany(MenuItem::class);
     }
 }

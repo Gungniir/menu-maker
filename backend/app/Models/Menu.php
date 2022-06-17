@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Date;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property int $amount На сколько человек готовится меню
  * @property-read Collection|MenuMeal[] $meals
  * @property-read int|null $meals_count
  * @property-read User $user
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\Date;
  * @method static Builder|Menu whereStartDate(Carbon|Date|string $value)
  * @method static Builder|Menu whereUpdatedAt(Carbon|string $value)
  * @method static Builder|Menu whereUserId(int $value)
+ * @method static Builder|Menu whereAmount(int $value)
  * @method static Builder|Menu newModelQuery()
  * @method static Builder|Menu newQuery()
  * @method static Builder|Menu query()
@@ -41,6 +43,8 @@ use Illuminate\Support\Facades\Date;
 class Menu extends Model
 {
     use SoftDeletes;
+
+    protected $guarded = ['id'];
 
     public function meals(): HasMany
     {
