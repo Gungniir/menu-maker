@@ -17,10 +17,10 @@
         <v-btn
           color="primary"
           fab
-          absolute
+          fixed
           bottom
           right
-          style="bottom: 50px"
+          style="bottom: 50px; right: calc(13vw + 25px)"
           v-on="on"
           v-bind="attrs"
           @click="showAddDialog = true; newDishName = ''; $refs.addDialog.reset()"
