@@ -39,7 +39,7 @@ const routes: Array<RouteConfig> = [
     meta: {
       fullPage: false,
       withoutBackground: true,
-      showInMenu: true,
+      showInMenu: false,
       icon: '$dishes',
     }
   },
@@ -83,6 +83,17 @@ const routes: Array<RouteConfig> = [
       fullPage: false,
       showInMenu: true,
       icon: '$ingredients',
+    }
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: () => import(/* webpackChunkName: "categories" */ '../views/Categories.vue'),
+    meta: {
+      fullPage: false,
+      withoutBackground: true,
+      showInMenu: true,
+      icon: '$dishes',
     }
   },
 ]
