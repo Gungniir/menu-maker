@@ -27,6 +27,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "menus" */ '../views/Menus.vue'),
     meta: {
       fullPage: false,
+      withoutBackground: true,
       showInMenu: true,
       icon: '$menu',
     }

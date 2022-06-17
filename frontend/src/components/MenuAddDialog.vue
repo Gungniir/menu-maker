@@ -111,6 +111,7 @@ export default class MenuAddDialog extends Vue {
   }
 
   @Prop({default: false}) value!: boolean;
+  @Prop({required: true}) startDate!: string;
 
   private selectedSchemeId = 0;
   private schemeId = 0;
@@ -140,6 +141,7 @@ export default class MenuAddDialog extends Vue {
   async storeMenu(): Promise<void> {
     await MenuRepository.store({
       amount: 1,
+      start_date: this.startDate,
       categories: [],
       meal_categories: [],
       wishes: [],

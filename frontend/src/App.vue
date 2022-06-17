@@ -44,5 +44,11 @@ export default class App extends Vue {
   .v-icon {
     color: var(--v-icon-base);
   }
+
+  .hide-messages {
+    .v-text-field__details {
+      display: none;
+    }
+  }
 }
 </style>
