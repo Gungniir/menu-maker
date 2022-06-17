@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\IngredientController;
@@ -53,4 +54,5 @@ Route::group([
     Route::apiResource('menu_scheme', MenuSchemeController::class);
     Route::get('menu/date/{date}', [MenuController::class, 'showForDate']);
     Route::apiResource('menu', MenuController::class);
+    Route::apiResource('category', CategoryController::class);
 });
