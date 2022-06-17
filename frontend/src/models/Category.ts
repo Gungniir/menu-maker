@@ -5,3 +5,12 @@ export type Category = BaseType & {
   name: string,
   group: string
 }
+
+export type CategoryIndex = Category
+
+export type CategoryShow = Category
+
+export type CategoryEntity = {
+  name: string,
+  dishes: number[]
+}
