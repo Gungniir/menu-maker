@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AutoMenuException;
+use App\Models\Category;
 use App\Models\Dish;
 use App\Models\Menu;
 use App\Models\MenuItem;
@@ -127,14 +128,15 @@ class MenuController extends Controller
             if ($dishes->count() === 0) {
                 throw new AutoMenuException(
                     'Не удалось найти блюдо, входящее в следующие категории: ' .
-                    implode(', ', $requirement['categories']) .
+                    implode(', ', Category::whereIn('id', $requirement['categories'])->get('name')->pluck('name')->all()) .
                     ', но не являющееся: ' .
-                    implode(', ', $usedDishes)
+                    implode(', ', Dish::whereIn('id', $usedDishes)->get('name')->pluck('name')->all())
                 );
             }
 
-            $dishes->load('menu_items', 'categories');
-            $dishes->sortBy('menu_items_count');
+            $dishes->load( 'categories');
+            $dishes->loadCount('menu_items');
+            $dishes = $dishes->sortBy('menu_items_count')->values();
 
             $dish = $dishes[0];
 
