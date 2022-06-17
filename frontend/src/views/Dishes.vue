@@ -1,10 +1,15 @@
 <template>
   <div class="dishes">
     <div class="dishes__wrapper">
-      <div class="dishes__header">
-        Все блюда
+      <div class="dishes__header d-flex justify-center">
+        <v-skeleton-loader v-if="categoryId && !category" type="image" height="50" width="250"/>
+        <template v-else-if="category">{{ category.name }}</template>
+        <template v-else>Все блюда</template>
       </div>
       <div ref="intersectionObserverRoot" class="dishes__container">
+        <template v-if="loading && dishes.length === 0">
+          <v-skeleton-loader v-for="index in 5" :key="index" class="fluid" type="image" style="aspect-ratio: 1.5" />
+        </template>
         <DishCard v-for="(dish, index) of dishes" :key="dish.id" :dish="dish" @click="$router.push(`/dishes/${dish.id}`)" @deleted="dishes.splice(index, 1)" />
         <div ref="intersectionObserver" class="dishes__intersection-observer"/>
       </div>
@@ -49,17 +54,22 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
 import DishRepository from "@/repositories/DishRepository";
 import {DishEntity, DishIndex} from "@/models/Dish";
 import DishCard from "@/components/DishCard.vue";
 import DialogCard from "@/components/DialogCard.vue";
+import {Category} from "@/models/Category";
+import CategoryRepository from "@/repositories/CategoryRepository";
 
 @Component({
   components: {DialogCard, DishCard}
 })
 export default class Dishes extends Vue {
+  @Prop({default: 0}) categoryId!: number;
+
   private dishes: DishIndex[] = [];
+  private category: Category|null = null;
   private lastPage = 1;
   private page = 1;
   private loading = true;
@@ -74,6 +84,10 @@ export default class Dishes extends Vue {
   mounted(): void {
     this.fetchMoreDishes();
     this.intersectionObserver.observe(this.$refs.intersectionObserver as Element);
+
+    if (this.categoryId) {
+      this.loadCategory();
+    }
   }
 
   beforeDestroy(): void {
@@ -100,11 +114,18 @@ export default class Dishes extends Vue {
     }
     this.loading = true;
 
-    const {data} = await DishRepository.paginate(this.page++);
+    const {data} = await DishRepository.paginate(this.page++, this.categoryId ?? undefined);
 
     this.dishes.push(...data.data);
     this.lastPage = data.last_page;
     this.loading = false;
+  }
+
+  @Watch('categoryId')
+  async loadCategory(): Promise<void> {
+    const {data} = await CategoryRepository.show(this.categoryId);
+
+    this.category = data;
   }
 }
 </script>

@@ -2,7 +2,18 @@
   <div class="dishes">
     <div class="dishes__wrapper">
       <div ref="intersectionObserverRoot" class="dishes__container">
-        <CategoryCard v-for="(category, index) of categories" :key="category.id" :category="category" @click="$router.push(`/category/${category.id}`)" @deleted="categories.splice(index, 1)" />
+        <template v-if="loading && categories.length === 0">
+          <v-skeleton-loader class="fluid" type="image" style="aspect-ratio: 1.5" />
+          <div/>
+          <div/>
+          <v-skeleton-loader v-for="index in 5" :key="index" class="fluid" type="image" style="aspect-ratio: 1.5" />
+        </template>
+        <template v-else>
+          <CategoryCard hide-actions :category="fakeCategory" @click="$router.push('/dishes')"/>
+          <div/>
+          <div/>
+          <CategoryCard v-for="(category, index) of categories" :key="category.id" :category="category" @click="$router.push(`/categories/${category.id}`)" @deleted="categories.splice(index, 1)" />
+        </template>
         <div ref="intersectionObserver" class="dishes__intersection-observer"/>
       </div>
     </div>
@@ -14,10 +25,10 @@
         <v-btn
           color="primary"
           fab
-          absolute
+          fixed
           bottom
           right
-          style="bottom: 50px"
+          style="bottom: 50px; right: calc(13vw + 25px)"
           v-on="on"
           v-bind="attrs"
           @click="showAddDialog = true; newCategoryName = ''; $refs.addDialog.reset()"
@@ -57,6 +68,9 @@ import CategoryRepository from "@/repositories/CategoryRepository";
   components: {CategoryCard, DialogCard, DishCard}
 })
 export default class Categories extends Vue {
+  private fakeCategory = {
+    name: 'Все блюда'
+  } as CategoryIndex
   private categories: CategoryIndex[] = [];
   private lastPage = 1;
   private page = 1;

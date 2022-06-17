@@ -50,5 +50,10 @@ export default class App extends Vue {
       display: none;
     }
   }
+
+  .v-skeleton-loader.fluid > div {
+    height: 100%;
+    width: 100%;
+  }
 }
 </style>

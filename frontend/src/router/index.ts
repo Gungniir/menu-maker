@@ -66,6 +66,17 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: '/categories',
+    name: 'Categories',
+    component: () => import(/* webpackChunkName: "categories" */ '../views/Categories.vue'),
+    meta: {
+      fullPage: false,
+      withoutBackground: true,
+      showInMenu: true,
+      icon: '$dishes',
+    }
+  },
+  {
     path: '/products',
     name: 'Products',
     component: () => import(/* webpackChunkName: "products" */ '../views/Products.vue'),
@@ -86,14 +97,14 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
-    path: '/categories',
-    name: 'Categories',
-    component: () => import(/* webpackChunkName: "categories" */ '../views/Categories.vue'),
+    path: '/categories/:categoryId(\\d+)',
+    name: 'Dishes',
+    component: () => import(/* webpackChunkName: "dishes" */ '../views/Dishes.vue'),
+    props: route => ({categoryId: Number(route.params.categoryId)}),
     meta: {
       fullPage: false,
       withoutBackground: true,
-      showInMenu: true,
-      icon: '$dishes',
+      showInMenu: false,
     }
   },
 ]
