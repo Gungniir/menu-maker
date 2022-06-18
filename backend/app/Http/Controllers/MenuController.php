@@ -211,7 +211,7 @@ class MenuController extends Controller
      */
     public function showForDate(string $date): JsonResponse
     {
-        $menu = Menu::whereStartDate($date)->whereUserId(Auth::id())->first();
+        $menu = Menu::whereStartDate($date)->whereUserId(Auth::id())->orderByDesc('id')->first();
 
         if (!$menu) {
             throw new NotFoundHttpException();
