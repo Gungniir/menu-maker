@@ -1,7 +1,14 @@
 <template>
   <div class="ingredients">
-    <div class="ingredients__ingredients-header ingredients__h2">
-      Ингредиенты (на одну порцию):
+    <div class="ingredients__ingredients-header ingredients__h2 d-flex">
+      Ингредиенты (на
+      <template v-if="this.editMode">
+        <v-text-field v-model="portions" outlined class="mx-1 flex-grow-0 hide-messages min-height" style="width: 40px; height: 20px" />
+      </template>
+      <template v-else>
+        одну
+      </template>
+      порцию):
     </div>
     <div v-for="ingredient of sortedIngredients" :key="ingredient.id" class="ingredients__ingredient">
       <div class="ingredients__ingredient-name">
@@ -20,7 +27,7 @@
                 v-bind="attrs"
                 @click="
                   addIngredientId = ingredient.id;
-                  addIngredientAmount = ingredient.pivot.amount;
+                  addIngredientAmount = ingredient.pivot.amount * portions;
                   addIngredientShow = true;
                   $nextTick(() => $refs.addIngredientAmountInput.focus());
                 "
@@ -48,7 +55,7 @@
           </v-tooltip>
         </div>
         <div class="ingredients__ingredient-amount">
-          {{ ingredient.pivot.amount }} {{ ingredient.unit }}
+          {{ ingredient.pivot.amount * portions }} {{ ingredient.unit }}
         </div>
       </div>
     </div>
@@ -115,6 +122,7 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   private availableIngredients: Ingredient[] = [];
 
+  private portions = 1;
   private addIngredientId = 0;
   private addIngredientAmount = 1;
   private addIngredientShow = false;
@@ -170,9 +178,15 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   @Emit('add-ingredient')
   addIngredient(): {id: number, amount: number} {
+    let amount = Math.round(this.addIngredientAmount / this.portions);
+    if (amount === 0) {
+      amount = 1;
+    }
+
+
     return {
       id: this.addIngredientId,
-      amount: this.addIngredientAmount,
+      amount: amount,
     };
   }
 

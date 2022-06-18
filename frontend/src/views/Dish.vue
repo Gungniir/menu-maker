@@ -87,9 +87,9 @@
                 ref="editNameInput"
                 label="Название"
                 @focus="ocRegister('dish-edit__name-input', () => {
-                editNameShow = false;
-                updateDish();
-              })"
+                  editNameShow = false;
+                  updateDish();
+                })"
                 @keyup.enter.esc="
                 ocDrop('dish-edit__name-input');
                 editNameShow = false;

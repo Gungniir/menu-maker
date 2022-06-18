@@ -45,6 +45,12 @@ export default class App extends Vue {
     color: var(--v-icon-base);
   }
 
+  .v-input.min-height {
+    .v-input__slot {
+      min-height: auto !important;
+    }
+  }
+
   .hide-messages {
     .v-text-field__details {
       display: none;
