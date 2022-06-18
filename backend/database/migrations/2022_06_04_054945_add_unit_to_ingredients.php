@@ -14,8 +14,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('ingredients', function (Blueprint $table) {
-            $table->enum('unit', IngredientUnit::values());
+        Schema::table('ingredients', static function (Blueprint $table) {
+            $table->enum('unit', IngredientUnit::values())->default(IngredientUnit::Grams);
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('ingredients', function (Blueprint $table) {
+        Schema::table('ingredients', static function (Blueprint $table) {
             $table->dropColumn('unit');
         });
     }
