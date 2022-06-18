@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop} from 'vue-property-decorator'
+import {Component, Emit, Prop, Watch} from 'vue-property-decorator'
 import {Ingredient, IngredientUnit, IngredientWithDishPivot} from "@/models/Ingredient";
 import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 import {mixins} from "vue-class-component";
@@ -193,6 +193,11 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   @Emit('destroy-ingredient')
   destroyIngredient(id: number): number {
     return id;
+  }
+
+  @Watch('editMode')
+  editModeWatcher(): void {
+    this.portions = 1;
   }
 }
 </script>
