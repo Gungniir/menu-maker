@@ -21,8 +21,17 @@
           </v-menu>
         </v-col>
       </v-row>
-      <template v-if="menuForShow">
-        <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" />
+      <template v-if="loading">
+        <v-skeleton-loader v-for="day in 7" :key="day" class="fluid mb-4" type="image" height="200" style="border-radius: 25px"/>
+      </template>
+      <template v-else>
+        <template v-if="menuForShow">
+          <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" />
+        </template>
+        <div v-else class="d-flex align-center flex-column menu__not-found">
+          <v-img class="flex-grow-0" height="400" width="400" :src="require('@/assets/woman.svg')"/>
+          Создай своё неповторимое меню!
+        </div>
       </template>
     </div>
     <v-tooltip
@@ -70,6 +79,7 @@ export default class Menus extends Vue {
   private date = '';
   private menu: MenuShow | null = null;
   private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  private loading = true;
 
   get firstDayOfWeek(): string {
     if (!this.date) {
@@ -123,9 +133,21 @@ export default class Menus extends Vue {
 
   @Watch('firstDayOfWeek')
   async loadMenu(): Promise<void> {
-    const {data} = await MenuRepository.showForDate(this.firstDayOfWeek);
+    this.loading = true;
 
-    this.menu = data;
+    try {
+      const {data} = await MenuRepository.showForDate(this.firstDayOfWeek);
+      this.menu = data;
+
+    } catch (e) {
+      this.menu = null;
+
+      if (e.response.status !== 404) {
+        throw e;
+      }
+    }
+
+    this.loading = false;
   }
 }
 </script>
@@ -135,5 +157,11 @@ export default class Menus extends Vue {
   position: relative;
   height: 100%;
   overflow: hidden;
+
+  .menu__not-found {
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: 0.0125em;
+  }
 }
 </style>
