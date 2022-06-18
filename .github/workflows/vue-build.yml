@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     
     defaults:
@@ -32,3 +31,16 @@ jobs:
       with:
         name: dist
         path: dist/
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: up9cloud/action-rsync@master
+      env:
+        HOST: gungniir.ru
+        USER: menumaker-cicd
+        KEY: ${{secrets.DEPLOY_KEY}}
+        TARGET: ~/var/www/menumaker
+        ARGS_MORE: --exclude /backend/storage --exclude .env
+      
+    
