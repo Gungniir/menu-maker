@@ -1,5 +1,5 @@
 <template>
-  <div class="md">
+  <div class="md" :class="{current: currentDay}">
     <div class="md__row" v-for="(meal, index) of day.meals" :key="index">
       <div class="md__row-day">
         <template v-if="index === centerIndex">
@@ -47,6 +47,7 @@ export type Day = {
 export default class MenuDay extends Vue {
   @Prop({required: true}) readonly day!: Day;
   @Prop({required: true}) readonly dayName!: string;
+  @Prop({default: false}) readonly currentDay!: boolean;
 
   get centerIndex(): number {
     const len = this.day.meals.length;
@@ -66,6 +67,10 @@ export default class MenuDay extends Vue {
   border: 1px solid #00000033;
   border-radius: 25px;
   padding: 15px 0;
+
+  &.current {
+    background: #FFEDD3;
+  }
 
   .md__row {
     display: flex;

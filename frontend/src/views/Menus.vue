@@ -26,7 +26,7 @@
       </template>
       <template v-else>
         <template v-if="menuForShow">
-          <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" />
+          <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" :current-day="index === currentWeekDay" />
         </template>
         <div v-else class="d-flex align-center flex-column menu__not-found">
           <v-img class="flex-grow-0" height="400" width="400" :src="require('@/assets/woman.svg')"/>
@@ -80,6 +80,10 @@ export default class Menus extends Vue {
   private menu: MenuShow | null = null;
   private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
   private loading = true;
+
+  get currentWeekDay(): number {
+    return moment().startOf('week').format('YYYY-MM-DD') === this.firstDayOfWeek ? moment().weekday() : -1;
+  }
 
   get firstDayOfWeek(): string {
     if (!this.date) {
