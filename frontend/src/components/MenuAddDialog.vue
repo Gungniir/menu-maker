@@ -2,19 +2,17 @@
     <dialog-card title="Автоматическое создание меню" v-model="opened">
       <validation-observer ref="observer" slim v-slot="{ invalid }">
         <div>
-          <v-row v-if="false" no-gutters>
+          <v-row no-gutters>
             <v-col>Выберите категории, из которых будет составлено меню:</v-col>
           </v-row>
-          <v-row v-if="false" no-gutters class="mt-4">
+          <v-row no-gutters class="mt-4">
             <v-col>
-              <v-checkbox label="Группа 1" class="ma-0 hide-messages" />
-              <v-checkbox label="Группа 2" class="ma-0 hide-messages" />
-              <v-checkbox label="Группа 3" class="ma-0 hide-messages" />
-            </v-col>
-            <v-col>
-              <v-checkbox label="Группа 4" class="ma-0 hide-messages" />
-              <v-checkbox label="Группа 5" class="ma-0 hide-messages" />
-              <v-checkbox label="Группа 6" class="ma-0 hide-messages" />
+              <template v-if="loadingCategories">
+                <v-skeleton-loader v-for="index in 3" :key="index" class="fluid mb-2" type="text" height="20" />
+              </template>
+              <template v-else>
+                <v-checkbox v-model="categoriesSelect[index]" v-for="(category, index) of categories" :key="category.id" :label="category.name" class="ma-0 hide-messages" />
+              </template>
             </v-col>
           </v-row>
           <v-row no-gutters class="mt-4">
@@ -22,7 +20,10 @@
           </v-row>
           <v-row no-gutters>
             <v-col>
-              <validation-provider slim rules="required|min:1">
+              <template v-if="loadingSchemes">
+                <v-skeleton-loader v-for="index in 3" :key="index" class="fluid mb-2" type="text" height="25" />
+              </template>
+              <validation-provider v-else slim rules="required|min:1">
                 <v-radio-group v-model="selectedSchemeId" class="ma-0 hide-messages">
                   <v-radio v-for="(scheme, index) of schemes" :key="scheme.id" :value="scheme.id">
                     <template #label>
@@ -88,7 +89,7 @@
                 block
                 color="primary"
                 large
-                :disabled="invalid"
+                :disabled="invalid || loadingSchemes || loadingCategories"
                 :loading="loading"
                 @click="storeMenu"
               >
@@ -113,6 +114,8 @@ import DialogConfirm from "@/components/DialogConfirm.vue";
 import MenuRepository from "@/repositories/MenuRepository";
 import {ValidationObserver} from "vee-validate";
 import {MenuShow} from "@/models/Menu";
+import CategoryRepository from "@/repositories/CategoryRepository";
+import {CategoryIndex} from "@/models/Category";
 
 @Component({
   components: {DialogConfirm, MenuSchemeAddEditDialog, DialogCard}
@@ -126,6 +129,12 @@ export default class MenuAddDialog extends Vue {
   @Prop({required: true}) startDate!: string;
 
   private loading = false;
+  private loadingSchemes = false;
+  private loadingCategories = false;
+
+  private categories: CategoryIndex[] = [];
+  private categoriesSelect: boolean[] = [];
+
   private selectedSchemeId = 0;
   private schemeId = 0;
   private opened = false;
@@ -137,6 +146,7 @@ export default class MenuAddDialog extends Vue {
   mounted(): void {
     this.opened = this.value;
     this.loadSchemes();
+    this.loadCategories();
   }
 
   private reset(): void {
@@ -146,9 +156,29 @@ export default class MenuAddDialog extends Vue {
   }
 
   async loadSchemes(): Promise<void> {
+    this.loadingSchemes = true;
     const {data} = await MenuSchemeRepository.index();
 
     this.schemes = data;
+    this.loadingSchemes = false;
+  }
+
+  async loadCategories(): Promise<void> {
+    this.loadingCategories = true;
+    let page = 1;
+    let lastPage = 1;
+
+    this.categories = [];
+    this.categoriesSelect = [];
+
+    while (page <= lastPage) {
+      const {data} = await CategoryRepository.paginate(page++);
+      lastPage = data.last_page;
+      this.categoriesSelect.push(...data.data.map(() => false));
+      this.categories.push(...data.data);
+    }
+
+    this.loadingCategories = false;
   }
 
   async destroyScheme(): Promise<void> {
@@ -164,7 +194,7 @@ export default class MenuAddDialog extends Vue {
       const {data} = await MenuRepository.store({
         amount: 1,
         start_date: this.startDate,
-        categories: [],
+        categories: this.categories.filter((c, index) => this.categoriesSelect[index]).map(c => c.id),
         meal_categories: [],
         wishes: [],
         scheme_id: this.selectedSchemeId
@@ -174,9 +204,9 @@ export default class MenuAddDialog extends Vue {
       this.opened = false;
     } catch (e) {
       throw e;
+    } finally {
+      this.loading = false;
     }
-
-    this.loading = false;
   }
 
   updatedScheme(scheme: MenuSchemeShow): void {

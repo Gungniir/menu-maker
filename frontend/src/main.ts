@@ -19,6 +19,12 @@ Vue.config.errorHandler = (err, vm, info) => {
 
   if (axiosError.response) {
     switch (axiosError.response.status) {
+      case 400:
+        store.commit('notify', {
+          type: 'error',
+          text: axiosError.response.data.message
+        });
+        return;
       case 500:
         store.commit('notify', {
           type: 'error',
