@@ -13,6 +13,7 @@ const config = {
 };
 
 const _axios = axios.create(config);
+const __axios = axios.create(config);
 
 _axios.interceptors.request.use(
   (cfg) => {
@@ -35,16 +36,31 @@ _axios.interceptors.response.use(
     // Do something with response data
     return res;
   },
-  (err) => {
+  async (err) => {
     // Do something with response error
     if (err.response.status === 403) {
+      try {
+        if (localStorage.getItem('jwt')) {
+          const {data} = await __axios.post('/auth/refresh', {}, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('jwt')
+            }
+          });
+
+          localStorage.setItem('jwt', data.access_token);
+          err.config.headers.Authorization = 'Bearer ' + localStorage.getItem('jwt');
+          return _axios.request(err.config);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+
       router.push({
         path: '/login',
         query: {
           returnto: router.currentRoute.path
         }
       });
-      return;
     }
 
     return Promise.reject(err);
