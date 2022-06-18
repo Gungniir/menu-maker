@@ -6,6 +6,7 @@
       </page>
       <router-view v-else />
     </v-main>
+    <notification />
   </v-app>
 </template>
 
@@ -13,9 +14,10 @@
 import {Component, Vue} from 'vue-property-decorator'
 import Page from "@/components/Page.vue";
 import {PageMenuItem} from "@/models/PageMenuItem";
+import Notification from "@/components/Notification.vue";
 
 @Component({
-  components: {Page}
+  components: {Notification, Page}
 })
 export default class App extends Vue {
   get usePage(): boolean {
