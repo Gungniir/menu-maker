@@ -21,6 +21,9 @@
           </v-menu>
         </v-col>
       </v-row>
+      <template v-if="menuForShow">
+        <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" />
+      </template>
     </div>
     <v-tooltip
       bottom
@@ -30,10 +33,10 @@
         <v-btn
           color="primary"
           fab
-          absolute
+          fixed
           bottom
           right
-          style="bottom: 50px; right: 50px"
+          style="bottom: 50px; right: calc(13vw + 25px)"
           v-on="on"
           v-bind="attrs"
           @click="showAddDialog = true"
@@ -53,27 +56,20 @@ import MenuAddDialog from "@/components/MenuAddDialog.vue";
 import moment from "moment";
 import MenuRepository from "@/repositories/MenuRepository";
 import {MenuShow} from "@/models/Menu";
-import {Dish} from "@/models/Dish";
-import {Image} from "@/models/Image";
+import MenuDay, {Day} from "@/components/MenuDay.vue";
 
 type MenuForShow = {
-  days: {
-    meals: {
-      name: string,
-      dish: Dish & {
-        images: Image[]
-      }
-    }[]
-  }[]
+  days: Day[]
 }
 
 @Component({
-  components: {MenuAddDialog}
+  components: {MenuDay, MenuAddDialog}
 })
 export default class Menus extends Vue {
   private showAddDialog = false;
   private date = '';
-  private menu: MenuShow | undefined = undefined;
+  private menu: MenuShow | null = null;
+  private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
   get firstDayOfWeek(): string {
     if (!this.date) {
@@ -93,9 +89,9 @@ export default class Menus extends Vue {
       moment(this.date).endOf('week').format('DD MMMM YYYY');
   }
 
-  get menuForShow(): MenuForShow | undefined {
+  get menuForShow(): MenuForShow | null {
     if (!this.menu) {
-      return undefined;
+      return null;
     }
 
     const result: MenuForShow = {
