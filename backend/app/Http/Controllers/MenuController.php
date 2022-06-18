@@ -90,17 +90,19 @@ class MenuController extends Controller
             ];
         }
 
-        foreach ($items as $menu_id => $days) {
+        foreach ($items as $meal_id => $days) {
             foreach ($days as $dayIndex => $day) {
                 if ($day === -1) {
-                    $items[$menu_id][$dayIndex] = 0;
+                    $items[$meal_id][$dayIndex] = 0;
+
+                    $mealCategories = collect($input['meal_categories'])->where('meal_id', $meal_id)->pluck('category_id')->all();
 
                     $requirements[] = [
                         'places' => [[
-                            'meal_id' => $menu_id,
+                            'meal_id' => $meal_id,
                             'day' => $dayIndex
                         ]],
-                        'categories' => $categories
+                        'categories' => $categories->concat($mealCategories)->unique()->values()->all(),
                     ];
                 }
             }

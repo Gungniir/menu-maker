@@ -23,7 +23,7 @@ class MenuSchemeController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(MenuScheme::whereUserId(Auth::id())->get());
+        return response()->json(MenuScheme::whereUserId(Auth::id())->with('meals')->get());
     }
 
     /**

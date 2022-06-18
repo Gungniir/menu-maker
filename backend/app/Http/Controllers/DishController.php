@@ -48,7 +48,7 @@ class DishController extends Controller
         }
 
         if ($request->has('filter')) {
-            $builder = $builder->where('name', 'like', '%' . $input['filter'] . '%');
+            $builder = $builder->where('name', 'ilike', '%' . $input['filter'] . '%');
         }
 
         return response()->json($builder->orderBy('name')->paginate(9));
