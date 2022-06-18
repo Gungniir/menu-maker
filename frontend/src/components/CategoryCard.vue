@@ -6,7 +6,7 @@
     <div v-if="hideActions === false" class="dc__actions">
       <v-tooltip bottom open-delay="300">
         <template #activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn icon v-bind="attrs" v-on="on" @click.stop="editEvent">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
         </template>
@@ -48,6 +48,11 @@ export default class CategoryCard extends Vue {
   @Emit('deleted')
   deletedEvent(): boolean {
     return true;
+  }
+
+  @Emit('edit')
+  editEvent(): number {
+    return this.category.id;
   }
 
   destroyCategoryPrompt(): void {

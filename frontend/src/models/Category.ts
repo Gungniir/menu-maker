@@ -1,4 +1,5 @@
 import {BaseType} from "@/models/common/BaseType";
+import {Dish} from "@/models/Dish";
 
 export type Category = BaseType & {
   creator_id: number,
@@ -8,7 +9,9 @@ export type Category = BaseType & {
 
 export type CategoryIndex = Category
 
-export type CategoryShow = Category
+export type CategoryShow = Category & {
+  dishes: Dish[],
+}
 
 export type CategoryEntity = {
   name: string,

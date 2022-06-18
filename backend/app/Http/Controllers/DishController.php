@@ -32,6 +32,7 @@ class DishController extends Controller
     {
         $input = $request->validate([
             'category_id' => 'numeric|integer|exists:categories,id',
+            'filter' => 'string'
         ]);
 
         if ($request->has('category_id')) {
@@ -41,12 +42,16 @@ class DishController extends Controller
                 throw new AuthenticationException();
             }
 
-            $pagination = $category->dishes()->where('creator_id', Auth::id())->with('images', 'categories')->orderBy('name')->paginate(9);
+            $builder = $category->dishes()->where('creator_id', Auth::id())->with('images', 'categories')->orderBy('name');
         } else {
-            $pagination = Dish::whereCreatorId(Auth::id())->with('images', 'categories')->orderBy('name')->paginate(9);
+            $builder = Dish::whereCreatorId(Auth::id())->with('images', 'categories');
         }
 
-        return response()->json($pagination);
+        if ($request->has('filter')) {
+            $builder = $builder->where('name', 'like', '%' . $input['filter'] . '%');
+        }
+
+        return response()->json($builder->orderBy('name')->paginate(9));
     }
 
     /**

@@ -6,8 +6,11 @@ import {Dish, DishEntity, DishIndex, DishShow} from "@/models/Dish";
 const base = 'dish';
 
 export default {
-  paginate(page = 1, category_id: number | undefined = undefined): AxiosPromise<Pagination<DishIndex>> {
-    return Repository.get(base + '?page=' + page + (category_id ? '&category_id=' + category_id : ''));
+  paginate(page = 1, category_id: number | undefined = undefined, filter: string | undefined = undefined): AxiosPromise<Pagination<DishIndex>> {
+    return Repository.get(base + '?page=' + page +
+      (category_id ? '&category_id=' + category_id : '') +
+      (filter ? '&filter=' + filter : '')
+    );
   },
   show(id: number): AxiosPromise<DishShow> {
     return Repository.get(base + '/' + id);
