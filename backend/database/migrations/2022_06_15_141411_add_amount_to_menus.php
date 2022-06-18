@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('menus', static function (Blueprint $table) {
-            $table->smallInteger('amount');
+            $table->smallInteger('amount')->default(1);
         });
     }
 
