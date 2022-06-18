@@ -55,7 +55,7 @@
       </template>
       Создать меню
     </v-tooltip>
-    <menu-add-dialog v-model="showAddDialog" :start-date="firstDayOfWeek"/>
+    <menu-add-dialog v-model="showAddDialog" :start-date="firstDayOfWeek" @created="menu = $event"/>
   </div>
 </template>
 

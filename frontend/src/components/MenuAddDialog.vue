@@ -84,7 +84,16 @@
           </v-row>
           <v-row>
             <v-col>
-              <v-btn block color="primary" large :disabled="invalid" @click="storeMenu">Создать</v-btn>
+              <v-btn
+                block
+                color="primary"
+                large
+                :disabled="invalid"
+                :loading="loading"
+                @click="storeMenu"
+              >
+                Создать
+              </v-btn>
             </v-col>
           </v-row>
         </div>
@@ -95,7 +104,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import {Component, Emit, Prop, Vue, Watch} from 'vue-property-decorator'
 import DialogCard from "@/components/DialogCard.vue";
 import MenuSchemeAddEditDialog from "@/components/MenuSchemeAddEditDialog.vue";
 import {MenuSchemeIndex, MenuSchemeShow} from "@/models/MenuScheme";
@@ -103,6 +112,7 @@ import MenuSchemeRepository from "@/repositories/MenuSchemeRepository";
 import DialogConfirm from "@/components/DialogConfirm.vue";
 import MenuRepository from "@/repositories/MenuRepository";
 import {ValidationObserver} from "vee-validate";
+import {MenuShow} from "@/models/Menu";
 
 @Component({
   components: {DialogConfirm, MenuSchemeAddEditDialog, DialogCard}
@@ -115,6 +125,7 @@ export default class MenuAddDialog extends Vue {
   @Prop({default: false}) value!: boolean;
   @Prop({required: true}) startDate!: string;
 
+  private loading = false;
   private selectedSchemeId = 0;
   private schemeId = 0;
   private opened = false;
@@ -126,6 +137,12 @@ export default class MenuAddDialog extends Vue {
   mounted(): void {
     this.opened = this.value;
     this.loadSchemes();
+  }
+
+  private reset(): void {
+    this.loading = false;
+    this.selectedSchemeId = 0;
+    this.schemeId = 0;
   }
 
   async loadSchemes(): Promise<void> {
@@ -141,14 +158,25 @@ export default class MenuAddDialog extends Vue {
   }
 
   async storeMenu(): Promise<void> {
-    await MenuRepository.store({
-      amount: 1,
-      start_date: this.startDate,
-      categories: [],
-      meal_categories: [],
-      wishes: [],
-      scheme_id: this.selectedSchemeId
-    });
+    this.loading = true;
+
+    try {
+      const {data} = await MenuRepository.store({
+        amount: 1,
+        start_date: this.startDate,
+        categories: [],
+        meal_categories: [],
+        wishes: [],
+        scheme_id: this.selectedSchemeId
+      });
+
+      this.createdEvent(data);
+      this.opened = false;
+    } catch (e) {
+      throw e;
+    }
+
+    this.loading = false;
   }
 
   updatedScheme(scheme: MenuSchemeShow): void {
@@ -165,6 +193,15 @@ export default class MenuAddDialog extends Vue {
   @Watch('value')
   onValueChanged(value: boolean): void {
     this.opened = value;
+
+    if (value) {
+      this.reset();
+    }
+  }
+
+  @Emit('created')
+  createdEvent(menu: MenuShow): MenuShow {
+    return menu;
   }
 }
 </script>

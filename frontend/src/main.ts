@@ -13,6 +13,8 @@ moment.locale('ru');
 
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => {
+  console.error(err, vm, info);
+
   const axiosError = err as AxiosError;
 
   if (axiosError.response) {
@@ -37,8 +39,6 @@ Vue.config.errorHandler = (err, vm, info) => {
     type: 'error',
     text: 'Произошла ошибка'
   })
-
-  console.error(err, vm, info);
 }
 
 
