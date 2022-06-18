@@ -15,7 +15,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ingredients', static function (Blueprint $table) {
-            $table->enum('unit', IngredientUnit::values())->default(IngredientUnit::Grams);
+            $table->enum('unit', IngredientUnit::values())->default(IngredientUnit::values()[0]);
         });
     }
 
