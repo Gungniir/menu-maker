@@ -35,12 +35,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: up9cloud/action-rsync@master
+    - uses: Pendect/action-rsyncer@v1.1.0
       env:
-        HOST: gungniir.ru
-        USER: menumaker-cicd
         KEY: ${{secrets.DEPLOY_KEY}}
-        TARGET: ~/var/www/menumaker
-        ARGS_MORE: --exclude /backend/storage --exclude .env
+      with:
+        dest: menumaker-cicd@gungniir.ru:var/www/menumaker
+        flags: '-avzr --delete --exclude=.env'
       
     
