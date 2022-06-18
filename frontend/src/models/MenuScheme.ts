@@ -15,7 +15,9 @@ export type MenuSchemeShow = MenuScheme & {
   }[],
 }
 
-export type MenuSchemeIndex = MenuScheme;
+export type MenuSchemeIndex = MenuScheme & {
+  meals: MenuSchemeMeal[]
+};
 
 export type MenuSchemeEntity = {
   name: string,

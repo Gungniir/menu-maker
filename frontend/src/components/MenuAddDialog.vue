@@ -83,6 +83,27 @@
               </v-btn>
             </v-col>
           </v-row>
+          <template v-if="selectedScheme">
+            <v-row no-gutters class="mt-4">
+              <v-col>Выберите категории для отдельных приёмов пищи:</v-col>
+            </v-row>
+            <v-row no-gutters class="mt-2">
+              <v-col>
+                <v-autocomplete
+                  v-for="(meal, index) of selectedScheme.meals"
+                  v-model="mealCategories[index]"
+                  :key="meal.id"
+                  item-value="id"
+                  item-text="name"
+                  clearable
+                  persistent-placeholder
+                  placeholder="Любая категория"
+                  :items="categories"
+                  :label="meal.name"
+                />
+              </v-col>
+            </v-row>
+          </template>
           <v-row>
             <v-col>
               <v-btn
@@ -142,11 +163,18 @@ export default class MenuAddDialog extends Vue {
   private schemes: MenuSchemeIndex[] = [];
   private schemeDeleteIndex = 0;
   private showSchemeDeleteConfirm = false;
+  private mealCategories: (number | null)[] = [];
 
   mounted(): void {
     this.opened = this.value;
     this.loadSchemes();
     this.loadCategories();
+  }
+
+  get selectedScheme(): MenuSchemeIndex | null {
+    const scheme = this.schemes.find(scheme => scheme.id === this.selectedSchemeId);
+
+    return scheme ?? null;
   }
 
   private reset(): void {
@@ -195,7 +223,12 @@ export default class MenuAddDialog extends Vue {
         amount: 1,
         start_date: this.startDate,
         categories: this.categories.filter((c, index) => this.categoriesSelect[index]).map(c => c.id),
-        meal_categories: [],
+        meal_categories: this.mealCategories.filter(a => a !== null).map((c_id, index) => ({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          meal_id: this.selectedScheme!.meals[index].id,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          category_id: c_id!
+        })),
         wishes: [],
         scheme_id: this.selectedSchemeId
       });
@@ -227,6 +260,16 @@ export default class MenuAddDialog extends Vue {
     if (value) {
       this.reset();
     }
+  }
+
+  @Watch('selectedScheme')
+  onSelectedSchemeChanged(): void {
+    if (!this.selectedScheme) {
+      this.mealCategories = [];
+      return;
+    }
+
+    this.mealCategories = this.selectedScheme.meals.map(() => null);
   }
 
   @Emit('created')
