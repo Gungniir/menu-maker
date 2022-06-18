@@ -46,7 +46,7 @@ Route::group([
     });
 
     Route::apiResource('user', UserController::class);
-    Route::apiResource('image', ImageController::class, [
+    Route::middleware('optimizeImages')->apiResource('image', ImageController::class, [
         'except' => ['update']
     ]);
     Route::apiResource('tool', ToolController::class);

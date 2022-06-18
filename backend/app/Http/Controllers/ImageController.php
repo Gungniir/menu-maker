@@ -38,7 +38,7 @@ class ImageController extends Controller
     {
         $input = $request->validate([
             'name' => 'required|string|max:255',
-            'file' => 'required|dimensions:min_width=200,min_height=200'
+            'file' => 'required|dimensions:min_width=200,min_height=200|mimes:jpg,tiff,png,webp'
         ]);
 
         /** @noinspection NullPointerExceptionInspection */
