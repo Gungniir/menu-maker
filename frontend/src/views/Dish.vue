@@ -1,5 +1,19 @@
 <template>
   <div class="dish-edit">
+    <div class="dish-edit__actions-left">
+      <v-tooltip
+        v-if="!editMode && previousPath"
+        bottom
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-on="on" v-bind="attrs" @click="$router.push(previousPath)">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </template>
+        Вернуться назад
+      </v-tooltip>
+    </div>
     <div class="dish-edit__actions">
       <v-tooltip
         v-if="!editMode"
@@ -114,7 +128,7 @@
           @add-ingredient="addIngredient"
           @destroy-ingredient="destroyIngredient"
         />
-        <div class="dish-edit__cooking-time-container">
+        <div v-if="false" class="dish-edit__cooking-time-container">
           <div class="dish-edit__cooking-time-header dish-edit__h2">
             Время приготовления:
           </div>
@@ -149,6 +163,7 @@ export default class Dish extends mixins(OutsideClickMixin) {
   private editNameShow = false;
   private showDeletePrompt = false;
   private imageLoading = false;
+  private previousPath = '';
 
   get editMode(): boolean {
     return this.$route.name === 'DishEdit';
@@ -156,6 +171,11 @@ export default class Dish extends mixins(OutsideClickMixin) {
 
   mounted(): void {
     this.loadDish();
+
+    const route = this.$store.state.history[this.$store.state.history.length - 1];
+    if (['Category', 'Dishes'].includes(route.name)) {
+      this.previousPath = route.path;
+    }
   }
 
   async loadDish(): Promise<void> {
@@ -246,6 +266,12 @@ export default class Dish extends mixins(OutsideClickMixin) {
     position: absolute;
     top: 10px;
     right: 10px;
+  }
+
+  .dish-edit__actions-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
   }
 
   .dish-edit__container {

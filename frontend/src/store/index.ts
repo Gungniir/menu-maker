@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {Route} from "vue-router";
 
 Vue.use(Vuex)
 
@@ -12,7 +13,8 @@ export default new Vuex.Store({
   state: {
     notificationType: 'info',
     notificationText: 'Hello world!',
-    notificationShowed: false
+    notificationShowed: false,
+    history: [] as Route[],
   },
   mutations: {
     notify(state, payload: NotifyPayload) {
