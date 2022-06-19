@@ -24,7 +24,18 @@
     </div>
     <div class="page__right-panel">
       <div class="right-panel__profile">
-        <v-icon size="60" color="primary">mdi-account-circle</v-icon>
+        <v-menu bottom offset-y nudge-bottom="15">
+          <template #activator="{ on, attrs }">
+            <v-btn icon v-on="on" v-bind="attrs">
+              <v-icon size="60" color="primary">mdi-account-circle</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="logout">
+              <v-list-item-title>Выйти</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </div>
     </div>
   </div>
@@ -38,6 +49,11 @@ import {PageMenuItem} from "@/models/PageMenuItem";
 export default class Page extends Vue {
   @Prop({default: () => ([])}) readonly pages!: PageMenuItem[]
   @Prop({default: false}) readonly withoutBackground!: boolean;
+
+  private logout(): void {
+    localStorage.setItem('jwt', '');
+    this.$router.push('/');
+  }
 }
 </script>
 
