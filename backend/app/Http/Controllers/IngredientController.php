@@ -22,7 +22,7 @@ class IngredientController extends Controller
      */
     public function index(): JsonResponse
     {
-        $paginate = Ingredient::whereCreatorId(Auth::id())->paginate(9);
+        $paginate = Ingredient::whereCreatorId(Auth::id())->orderBy('name')->paginate(50);
 
         return response()->json($paginate);
     }
