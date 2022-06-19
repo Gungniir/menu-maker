@@ -9,6 +9,9 @@ export default {
   paginate(page = 1): AxiosPromise<Pagination<IngredientIndex>> {
     return Repository.get(base + '?page=' + page);
   },
+  types(): AxiosPromise<string[]> {
+    return Repository.get(base + '/types');
+  },
   show(id: number): AxiosPromise<IngredientShow> {
     return Repository.get(base + '/' + id);
   },

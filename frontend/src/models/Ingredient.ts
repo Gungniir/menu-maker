@@ -12,6 +12,7 @@ export enum IngredientUnit {
 export type IngredientEntity = {
   name: string,
   is_perishable: boolean,
+  type: string | null,
   amount: number,
   unit: IngredientUnit
 }
