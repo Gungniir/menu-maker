@@ -18,16 +18,18 @@
           </li>
         </ul>
       </div>
-      <div v-else class="products__category">
-        <div class="products__category-header">
-          Без категории
+      <template v-else>
+        <div v-for="(typeItems, index) of typedItems" :key="index" class="products__category">
+          <div class="products__category-header">
+            {{ typeItems.type }}
+          </div>
+          <ul style="padding-left: 16px;">
+            <li v-for="item of typeItems.items" :key="item.id" class="products__category-item">
+              {{ item.ingredient.name }} - {{ item.amount }} {{ item.ingredient.unit }}
+            </li>
+          </ul>
         </div>
-        <ul style="padding-left: 16px;">
-          <li v-for="item of filteredItems" :key="item.id" class="products__category-item">
-            {{ item.ingredient.name }} - {{ item.amount }} {{ item.ingredient.unit }}
-          </li>
-        </ul>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -52,6 +54,35 @@ export default class Products extends Vue {
 
   get filteredItems(): CartItemIndex[] {
     return this.sortedItems;
+  }
+
+  get typedItems(): {
+    type: string,
+    items: CartItemIndex[],
+  }[] {
+    const result: {
+      type: string,
+      items: CartItemIndex[],
+    }[] = [];
+
+    for (const item of this.filteredItems) {
+      let index = result.findIndex(a => a.type === (item.ingredient.type ?? 'Без категории'));
+
+      if (index === -1) {
+        index = result.length;
+
+        result.push({
+          type: item.ingredient.type ?? 'Без категории',
+          items: []
+        })
+      }
+
+      result[index].items.push(item);
+    }
+
+    result.sort((a, b) => a.type.localeCompare(b.type));
+
+    return result;
   }
 
   mounted(): void {
