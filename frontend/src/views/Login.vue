@@ -67,7 +67,11 @@ export default class Login extends Vue {
     try {
       const {data} = await AuthRepository.login(this.login, this.password);
       localStorage.setItem('jwt', data.access_token);
-      await this.$router.push('/dishes');
+
+      const returnTo = this.$route.query.returnto;
+
+      // noinspection TypeScriptValidateTypes
+      await this.$router.push(returnTo ?? '/menus');
     } catch (e) {
       this.$refs.observer.setErrors({
         'password': ['Неверный логин или пароль']
