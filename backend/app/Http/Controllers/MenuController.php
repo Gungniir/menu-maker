@@ -231,7 +231,35 @@ class MenuController extends Controller
      */
     public function update(Request $request, Menu $menu): JsonResponse
     {
-        throw new NotImplementedException();
+        $input = $request->validate([
+            'meal_id' => 'required|numeric|integer|exists:menu_meals,id',
+            'day' => 'required|numeric|integer|min:0|max:6',
+            'dish_id' => 'required|numeric|integer|exists:dishes,id',
+        ]);
+
+        $menu->load('meals.items');
+
+        $meal = $menu->meals->where('id', $input['meal_id'])->first();
+
+        if (!$meal) {
+            throw new NotFoundHttpException();
+        }
+
+        assert($meal instanceof MenuMeal, '');
+
+        $item = $meal->items->where('day', $input['day'])->first();
+
+        if (!$item) {
+            throw new NotFoundHttpException();
+        }
+
+        assert($item instanceof MenuItem, '');
+
+        $item->update([
+            'dish_id' => $input['dish_id'],
+        ]);
+
+        return $this->show($menu);
     }
 
     /**

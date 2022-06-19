@@ -28,6 +28,8 @@ class MenuItem extends Model
 {
     public $timestamps = false;
 
+    protected $guarded = ['id'];
+
     public function meal(): BelongsTo
     {
         return $this->belongsTo(MenuMeal::class, 'meal_id');

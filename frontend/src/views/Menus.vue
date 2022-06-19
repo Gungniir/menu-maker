@@ -26,7 +26,15 @@
       </template>
       <template v-else>
         <template v-if="menuForShow">
-          <menu-day class="mb-4" v-for="(day, index) of menuForShow.days" :key="index" :day="day" :day-name="days[index]" :current-day="index === currentWeekDay" />
+          <menu-day
+            v-for="(day, index) of menuForShow.days"
+            :key="index"
+            class="mb-4"
+            :day="day"
+            :day-name="days[index]"
+            :current-day="index === currentWeekDay"
+            @updated="updateMeal"
+          />
         </template>
         <div v-else class="d-flex align-center flex-column menu__not-found">
           <v-img class="flex-grow-0" height="400" width="400" :src="require('@/assets/woman.svg')"/>
@@ -35,7 +43,7 @@
       </template>
     </div>
     <v-speed-dial
-      v-if="!loading && menu"
+      v-if="!loading && !softLoading && menu"
       v-model="speedDeal"
       fixed
       bottom
@@ -103,7 +111,7 @@
           bottom
           right
           style="bottom: 50px; right: calc(13vw + 25px)"
-          :loading="loading"
+          :loading="loading || softLoading"
           v-on="on"
           v-bind="attrs"
           @click="showAddDialog = true"
@@ -142,6 +150,7 @@ export default class Menus extends Vue {
   private menu: MenuShow | null = null;
   private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
   private loading = true;
+  private softLoading = false;
 
   get currentWeekDay(): number {
     return moment().startOf('week').format('YYYY-MM-DD') === this.firstDayOfWeek ? moment().weekday() : -1;
@@ -176,13 +185,15 @@ export default class Menus extends Vue {
 
     for (let i = 0; i < 7; i++) {
       result.days.push({
-        meals: []
+        meals: [],
+        number: i,
       })
     }
 
     for (const meal of this.menu.meals) {
       for (const item of meal.items) {
         result.days[item.day].meals.push({
+          id: meal.id,
           name: meal.name,
           dish: item.dish
         })
@@ -196,6 +207,18 @@ export default class Menus extends Vue {
     this.loadMenu()
   }
 
+  async updateMeal(props: {meal_id: number, dish_id: number, day: number}): Promise<void> {
+    this.softLoading = true;
+
+    if (!this.menu) {
+      return;
+    }
+
+    const {data} = await MenuRepository.update(this.menu.id, props.meal_id, props.day, props.dish_id);
+
+    this.menu = data;
+    this.softLoading = false;
+  }
 
   @Watch('firstDayOfWeek')
   async loadMenu(): Promise<void> {

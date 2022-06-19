@@ -17,6 +17,13 @@ export default {
   store(entity: MenuEntity): AxiosPromise<MenuShow> {
     return Repository.post(base, entity);
   },
+  update(menu_id: number, meal_id: number, day: number, dish_id: number): AxiosPromise<MenuShow> {
+    return Repository.put(base + '/' + menu_id, {
+      meal_id,
+      day,
+      dish_id,
+    });
+  },
   destroy(id: number): AxiosPromise<MenuShow> {
     return Repository.delete(base + '/' + id);
   },
