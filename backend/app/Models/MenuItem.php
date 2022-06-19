@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static Builder|MenuItem newQuery()
  * @method static Builder|MenuItem query()
  * @mixin Eloquent
+ * @property-read \App\Models\Dish $dish
  */
 class MenuItem extends Model
 {

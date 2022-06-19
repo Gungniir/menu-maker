@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -33,6 +34,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $deleted_at
  * @property-read Collection|Dish[] $dishes
  * @property-read int|null $dishes_count
+ * @property-read Collection|CartItem[] $cart_items
+ * @property-read int|null $cart_items_count
  * @method static Builder|Ingredient whereAmount(int $value)
  * @method static Builder|Ingredient whereCreatedAt(Carbon $value)
  * @method static Builder|Ingredient whereCreatorId(int $value)
@@ -61,5 +64,10 @@ class Ingredient extends Model
     public function dishes(): BelongsToMany
     {
         return $this->belongsToMany(Dish::class);
+    }
+
+    public function cart_items(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

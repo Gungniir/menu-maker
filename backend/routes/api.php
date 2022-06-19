@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DishController;
 use App\Http\Controllers\ImageController;
@@ -55,4 +56,9 @@ Route::group([
     Route::get('menu/date/{date}', [MenuController::class, 'showForDate']);
     Route::apiResource('menu', MenuController::class);
     Route::apiResource('category', CategoryController::class);
+
+    Route::prefix('cart')->group(static function() {
+        Route::get('', [CartController::class, 'index']);
+        Route::post('', [CartController::class, 'store']);
+    });
 });

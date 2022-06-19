@@ -52,6 +52,8 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
  * @property-read int|null $menu_schemes_count
  * @property-read Collection|Menu[] $menus
  * @property-read int|null $menus_count
+ * @property-read Collection|CartItem[] $cart_items
+ * @property-read int|null $cart_items_count
  * @property-read bool $is_admin
  * @method static UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
@@ -164,6 +166,11 @@ class User extends Authenticatable implements JWTSubject
     public function menu_schemes(): HasMany
     {
         return $this->hasMany(MenuScheme::class);
+    }
+
+    public function cart_items(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
     }
 
     public function getIsAdminAttribute(): bool
