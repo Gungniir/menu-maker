@@ -42,7 +42,7 @@ class ImageController extends Controller
         ]);
 
         /** @noinspection NullPointerExceptionInspection */
-        $path = $request->file('file')->store('images/' . Auth::id());
+        $path = $request->file('file')->store('images/' . Auth::id(), 'public');
 
         $image = Image::create([
             'creator_id' => Auth::id(),

@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 /**
  * App\Models\Image
@@ -50,6 +53,14 @@ class Image extends Model
 
     public function getUrlAttribute(): string
     {
-        return Storage::temporaryUrl($this->filename, now()->addMinutes(5));
+        $url = Request::getSchemeAndHttpHost() . Storage::url($this->filename);
+
+        $subfolder = env('APP_SUBFOLDER');
+
+        if ($subfolder) {
+            $url = Str::before($url, '/storage/') . '/' . $subfolder . '/storage/' . Str::after($url, '/storage/');
+        }
+
+        return $url;
     }
 }
