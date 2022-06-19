@@ -36,17 +36,34 @@ class CartController extends Controller
 
         CartItem::whereUserId(Auth::id())->delete();
 
+        $results = [];
+
         foreach ($ingredients as $ingredient) {
             assert($ingredient instanceof Ingredient, '');
 
-            $item = CartItem::firstOrCreate([
+            if (!isset($results[$ingredient->id])) {
+                $results[$ingredient->id] = 0;
+            }
+
+            $results[$ingredient->id] += $ingredient->pivot->amount;
+        }
+
+        if ($input['consider_fridge']) {
+            $ingredients = Ingredient::whereIn('id', array_keys($results))->get();
+
+            foreach ($results as $ingId => $amount) {
+                $results[$ingId] -= $ingredients->where('id', $ingId)->first()->amount;
+            }
+
+            $results = collect($results)->filter(static fn ($a) => $a > 0)->all();
+        }
+
+        foreach ($results as $ingId => $amount) {
+            CartItem::insert([
                 'user_id' => Auth::id(),
-                'ingredient_id' => $ingredient->id,
+                'ingredient_id' => $ingId,
+                'amount' => $amount,
             ]);
-
-            $item->amount += $ingredient->pivot->amount;
-
-            $item->save();
         }
 
         return $this->index();
