@@ -42,8 +42,16 @@ export default class Products extends Vue {
   private loading = false;
   private items: CartItemIndex[] = [];
 
+  get sortedItems(): CartItemIndex[] {
+    const result = this.items.slice();
+
+    result.sort((a, b) => a.ingredient.name.localeCompare(b.ingredient.name));
+
+    return result;
+  }
+
   get filteredItems(): CartItemIndex[] {
-    return this.items;
+    return this.sortedItems;
   }
 
   mounted(): void {
