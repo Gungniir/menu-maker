@@ -50,11 +50,15 @@ Route::group([
     Route::middleware('optimizeImages')->apiResource('image', ImageController::class, [
         'except' => ['update']
     ]);
-    Route::apiResource('tool', ToolController::class);
+
+    Route::get('ingredient/types', [IngredientController::class, 'indexTypes']);
     Route::apiResource('ingredient', IngredientController::class);
-    Route::apiResource('menu_scheme', MenuSchemeController::class);
+
     Route::get('menu/date/{date}', [MenuController::class, 'showForDate']);
     Route::apiResource('menu', MenuController::class);
+
+    Route::apiResource('tool', ToolController::class);
+    Route::apiResource('menu_scheme', MenuSchemeController::class);
     Route::apiResource('category', CategoryController::class);
 
     Route::prefix('cart')->group(static function() {

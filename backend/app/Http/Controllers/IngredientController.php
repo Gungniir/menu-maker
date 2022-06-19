@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Enums\IngredientUnit;
 use App\Models\Ingredient;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class IngredientController extends Controller
@@ -28,6 +30,23 @@ class IngredientController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function indexTypes(): JsonResponse
+    {
+        $this->authorize('viewAny', Ingredient::class);
+
+        $types = collect(DB::select(/** @lang PostgreSQL */ 'SELECT DISTINCT type FROM ingredients WHERE creator_id = :user_id', [
+            'user_id' => Auth::id(),
+        ]))->pluck('type')->values();
+
+        return response()->json($types);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
@@ -39,6 +58,7 @@ class IngredientController extends Controller
             'name' => 'required|string|max:255',
             'is_perishable' => 'required|boolean',
             'amount' => 'required|numeric|integer|min:0',
+            'type' => 'nullable|string',
             'unit' => [
                 'required',
                 Rule::in(IngredientUnit::values()),
@@ -77,6 +97,7 @@ class IngredientController extends Controller
             'name' => 'required|string|max:255',
             'is_perishable' => 'required|boolean',
             'amount' => 'required|numeric|integer|min:0',
+            'type' => 'nullable|string',
             'unit' => [
                 'required',
                 Rule::in(IngredientUnit::values()),

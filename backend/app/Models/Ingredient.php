@@ -17,21 +17,17 @@ use Illuminate\Support\Carbon;
 /**
  * App\Models\Ingredient
  *
- * @property-read User|null $creator
- * @method static IngredientFactory factory(...$parameters)
- * @method static Builder|Ingredient newModelQuery()
- * @method static Builder|Ingredient newQuery()
- * @method static Builder|Ingredient query()
- * @mixin Eloquent
  * @property int $id
  * @property int $creator_id
  * @property string $name Название продукта
  * @property bool $is_perishable Скоропортящийся ли продукт
  * @property int $amount Количество у создателя
  * @property IngredientUnit $unit Единица измерения продукта
+ * @property string|null $type Категория
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property-read User|null $creator
  * @property-read Collection|Dish[] $dishes
  * @property-read int|null $dishes_count
  * @property-read Collection|CartItem[] $cart_items
@@ -45,6 +41,12 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Ingredient whereName(string $value)
  * @method static Builder|Ingredient whereUpdatedAt(Carbon $value)
  * @method static Builder|Ingredient whereUnit(IngredientUnit $value)
+ * @method static Builder|Ingredient whereType(string $value)
+ * @method static IngredientFactory factory(...$parameters)
+ * @method static Builder|Ingredient newModelQuery()
+ * @method static Builder|Ingredient newQuery()
+ * @method static Builder|Ingredient query()
+ * @mixin Eloquent
  */
 class Ingredient extends Model
 {

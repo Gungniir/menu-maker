@@ -2,11 +2,9 @@
 
 namespace App\Policies;
 
-use App\Models\Dish;
-use App\Models\Image;
+use App\Models\Ingredient;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 
 class IngredientPolicy
 {
@@ -37,12 +35,12 @@ class IngredientPolicy
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param Image $image
+     * @param Ingredient $item
      * @return bool
      */
-    public function view(User $user, Image $image): bool
+    public function view(User $user, Ingredient $item): bool
     {
-        return $image->creator_id === $user->id;
+        return $item->creator_id === $user->id;
     }
 
     /**
@@ -60,46 +58,46 @@ class IngredientPolicy
      * Determine whether the user can update the model.
      *
      * @param User $user
-     * @param Image $image
+     * @param Ingredient $item
      * @return bool
      */
-    public function update(User $user, Image $image): bool
+    public function update(User $user, Ingredient $item): bool
     {
-        return $user->id === $image->creator_id;
+        return $user->id === $item->creator_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param User $user
-     * @param Image $image
+     * @param Ingredient $item
      * @return bool
      */
-    public function delete(User $user, Image $image): bool
+    public function delete(User $user, Ingredient $item): bool
     {
-        return $user->id === $image->creator_id;
+        return $user->id === $item->creator_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param User $user
-     * @param Image $image
+     * @param Ingredient $item
      * @return bool
      */
-    public function restore(User $user, Image $image): bool
+    public function restore(User $user, Ingredient $item): bool
     {
-        return $user->id === $image->creator_id;
+        return $user->id === $item->creator_id;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param User $user
-     * @param Dish $dish
+     * @param Ingredient $item
      * @return bool
      */
-    public function forceDelete(User $user, Dish $dish): bool
+    public function forceDelete(User $user, Ingredient $item): bool
     {
         return false;
     }
