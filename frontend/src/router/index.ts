@@ -98,7 +98,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/categories/:categoryId(\\d+)',
-    name: 'Dishes',
+    name: 'Category',
     component: () => import(/* webpackChunkName: "dishes" */ '../views/Dishes.vue'),
     props: route => ({categoryId: Number(route.params.categoryId)}),
     meta: {

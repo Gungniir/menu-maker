@@ -280,7 +280,4 @@ export default class MenuAddDialog extends Vue {
 </script>
 
 <style scoped lang="scss">
-.hide-messages {
-  margin-bottom: -24px !important;
-}
 </style>

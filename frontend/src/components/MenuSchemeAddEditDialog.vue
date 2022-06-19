@@ -311,10 +311,6 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
 </script>
 
 <style scoped lang="scss">
-.hide-messages {
-  margin-bottom: -24px !important;
-}
-
 .scheme__table {
   width: 100%;
   border-collapse: collapse;
