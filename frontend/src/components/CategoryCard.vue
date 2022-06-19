@@ -1,6 +1,6 @@
 <template>
   <div class="dc" @click="clickEvent">
-    <div class="dc__background">
+    <div class="dc__background" :style="{background: color}">
       {{ category.name }}
     </div>
     <div v-if="hideActions === false" class="dc__actions">
@@ -37,6 +37,7 @@ import CategoryRepository from "@/repositories/CategoryRepository";
 export default class CategoryCard extends Vue {
   @Prop() readonly category!: CategoryIndex
   @Prop({default: false}) readonly hideActions!: boolean
+  @Prop({default: '#FFEDD3'}) readonly color!: string
 
   private showDeletePrompt = false;
 
@@ -78,8 +79,6 @@ export default class CategoryCard extends Vue {
   .dc__background {
     height: 100%;
     width: 100%;
-
-    background: #FFEDD3;
 
     font-size: 26px;
     font-weight: 500;

@@ -16,6 +16,7 @@
             v-for="(category, index) of categories"
             :key="category.id"
             :category="category"
+            :color="colors[index + 2 % colors.length]"
             @click="$router.push(`/categories/${category.id}`)"
             @deleted="categories.splice(index, 1)"
             @edit="selectedCategoryId = category.id; showAddEditDialog = true"
@@ -65,6 +66,7 @@ export default class Categories extends Vue {
   private lastPage = 1;
   private page = 1;
   private loading = true;
+  private colors = ['#CAFCDE', '#FCE8CA', '#E5E5E5', '#FCCACA', '#D8EFFF', '#FBFCCA', '#F9F9F9', '#ECCAFC', '#CBFCCA'];
 
   private fakeCategory = {
     name: 'Все блюда'
