@@ -9,7 +9,7 @@
       <div class="md__row-meal">
         {{ meal.name }}
       </div>
-      <div class="md__row-dish">
+      <div class="md__row-dish" @click="$router.push('/dishes/' + meal.dish.id)">
         {{ meal.dish.name }}
       </div>
       <div class="md__row-actions">
@@ -101,6 +101,7 @@ export default class MenuDay extends Vue {
     }
 
     .md__row-dish {
+      cursor: pointer;
       flex-grow: 1;
     }
 
