@@ -29,16 +29,17 @@ class AppServiceProvider extends ServiceProvider
         Storage::disk('local')->buildTemporaryUrlsUsing(function ($path, $expiration, $options) {
             $subfolder = env('APP_SUBFOLDER');
 
-            if ($subfolder) {
-                $subfolder = Str::replace('/', '.', $subfolder);
-                $subfolder .= '.';
-            }
-
-            return URL::temporarySignedRoute(
+            $url = URL::temporarySignedRoute(
                 $subfolder . 'local.temp',
                 $expiration,
                 array_merge($options, ['path' => $path])
             );
+
+            if ($subfolder) {
+                $url = Str::before($url, '/local/temp/') . '/' . $subfolder . '/local/temp/' . Str::after($url, '/local/temp/');
+            }
+
+            return $url;
         });
     }
 }
