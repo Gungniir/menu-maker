@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/menumaker/',
+  publicPath: process.env.VUE_APP_PUBLIC_PATH,
   transpileDependencies: [
     'vuetify'
   ]
