@@ -45,7 +45,7 @@ class CartController extends Controller
                 $results[$ingredient->id] = 0;
             }
 
-            $results[$ingredient->id] += $ingredient->pivot->amount;
+            $results[$ingredient->id] += $ingredient->pivot->amount * $input['amount'];
         }
 
         if ($input['consider_fridge']) {
