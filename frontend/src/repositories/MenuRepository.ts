@@ -17,4 +17,7 @@ export default {
   store(entity: MenuEntity): AxiosPromise<MenuShow> {
     return Repository.post(base, entity);
   },
+  destroy(id: number): AxiosPromise<MenuShow> {
+    return Repository.delete(base + '/' + id);
+  },
 }

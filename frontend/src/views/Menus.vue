@@ -34,7 +34,64 @@
         </div>
       </template>
     </div>
+    <v-speed-dial
+      v-if="!loading && menu"
+      v-model="speedDeal"
+      fixed
+      bottom
+      right
+      direction="top"
+      transition="slide-y-reverse-transition"
+      style="bottom: 50px; right: calc(13vw + 25px)"
+    >
+      <template #activator>
+        <v-btn
+          v-model="speedDeal"
+          fab
+          color="primary"
+        >
+          <v-icon color="white">mdi-dots-horizontal</v-icon>
+        </v-btn>
+      </template>
+      <v-tooltip
+        left
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-on="on"
+            v-bind="attrs"
+            fab
+            small
+            color="primary"
+            @click="showDeleteDialog = true"
+          >
+            <v-icon color="white">mdi-delete</v-icon>
+          </v-btn>
+        </template>
+        Удалить меню
+      </v-tooltip>
+      <v-tooltip
+        left
+        open-delay="300"
+      >
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-on="on"
+            v-bind="attrs"
+            fab
+            small
+            color="primary"
+            @click="showAddDialog = true"
+          >
+            <v-icon color="white">mdi-cart-outline</v-icon>
+          </v-btn>
+        </template>
+        Сформировать список продуктов
+      </v-tooltip>
+    </v-speed-dial>
     <v-tooltip
+      v-else
       bottom
       open-delay="300"
     >
@@ -46,6 +103,7 @@
           bottom
           right
           style="bottom: 50px; right: calc(13vw + 25px)"
+          :loading="loading"
           v-on="on"
           v-bind="attrs"
           @click="showAddDialog = true"
@@ -56,6 +114,7 @@
       Создать меню
     </v-tooltip>
     <menu-add-dialog v-model="showAddDialog" :start-date="firstDayOfWeek" @created="menu = $event"/>
+    <dialog-confirm v-model="showDeleteDialog" title="Удалить меню" text="Вы действительно хотите удалить меню?" @confirm="destroyMenu"/>
   </div>
 </template>
 
@@ -66,16 +125,19 @@ import moment from "moment";
 import MenuRepository from "@/repositories/MenuRepository";
 import {MenuShow} from "@/models/Menu";
 import MenuDay, {Day} from "@/components/MenuDay.vue";
+import DialogConfirm from "@/components/DialogConfirm.vue";
 
 type MenuForShow = {
   days: Day[]
 }
 
 @Component({
-  components: {MenuDay, MenuAddDialog}
+  components: {DialogConfirm, MenuDay, MenuAddDialog}
 })
 export default class Menus extends Vue {
+  private speedDeal = false;
   private showAddDialog = false;
+  private showDeleteDialog = false;
   private date = '';
   private menu: MenuShow | null = null;
   private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
@@ -152,6 +214,16 @@ export default class Menus extends Vue {
     }
 
     this.loading = false;
+  }
+
+  async destroyMenu(): Promise<void> {
+    if (!this.menu) {
+      return;
+    }
+
+    await MenuRepository.destroy(this.menu.id);
+
+    this.menu = null;
   }
 }
 </script>
