@@ -7,7 +7,7 @@ import router from "@/router";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const config = {
-  baseURL: 'http://localhost:8000/api'
+  baseURL: process.env.VUE_APP_API_URL
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
 };
