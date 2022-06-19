@@ -1,7 +1,7 @@
 <template>
   <div class="images">
     <div class="images__image">
-      <template v-if="images[0]">
+      <template v-if="sortedImages[0]">
         <v-img :src="selectedImage.url" height="100%" />
         <div v-if="editMode" class="images__image-actions">
           <v-tooltip
@@ -20,10 +20,11 @@
       <div v-else class="images__image-placeholder" />
     </div>
     <div class="images__images">
-      <div v-for="image of images" :key="image.id" class="images__images-item">
+      <div v-for="image of sortedImages" :key="image.id" class="images__images-item">
         <v-img :src="image.url" height="100%" @click="selectedImageId = image.id" />
       </div>
-      <div v-if="editMode && images.length < 7" class="images__images-item" v-ripple @click="$refs.imageAddInput.click()">
+      <div v-if="editMode && images.length < 7" class="images__images-item" v-ripple
+           @click="$refs.imageAddInput.click()">
         <input ref="imageAddInput" type="file" style="display: none" @input="handleInputEvent" />
         <div class="images__image-placeholder">
           <v-icon>$add</v-icon>
@@ -44,10 +45,18 @@ export default class DishEditImages extends Vue {
 
   private selectedImageId = 0;
 
+  get sortedImages(): Image[] {
+    const result = this.images.slice();
+
+    result.sort((a, b) => a.id - b.id);
+
+    return result;
+  }
+
   get selectedImage(): Image | undefined {
     const image = this.images.find(({id}) => id === this.selectedImageId)
 
-    return image ?? this.images[0];
+    return image ?? this.sortedImages[0];
   }
 
   private handleInputEvent(event: InputEvent): void {
