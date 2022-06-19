@@ -43,6 +43,7 @@
           class="dish-edit__images-container"
           :images="dish.images"
           :edit-mode="editMode"
+          :loading="imageLoading"
           @store-image="storeImage"
           @detach-image="detachImage"
         />
@@ -147,6 +148,7 @@ export default class Dish extends mixins(OutsideClickMixin) {
 
   private editNameShow = false;
   private showDeletePrompt = false;
+  private imageLoading = false;
 
   get editMode(): boolean {
     return this.$route.name === 'DishEdit';
@@ -201,10 +203,18 @@ export default class Dish extends mixins(OutsideClickMixin) {
   }
 
   async storeImage(file: File): Promise<void> {
-    const {data: imageData} = await ImageRepository.store('Image for dish ' + this.dishId, file);
-    const {data: dish} = await DishRepository.attachImage(this.dishId, imageData.id);
+    this.imageLoading = true;
 
-    this.dish = dish;
+    try {
+      const {data: imageData} = await ImageRepository.store('Image for dish ' + this.dishId, file);
+      const {data: dish} = await DishRepository.attachImage(this.dishId, imageData.id);
+      this.dish = dish;
+
+    } catch (e) {
+      throw e;
+    } finally {
+      this.imageLoading = false;
+    }
   }
 
   async detachImage(id: number): Promise<void> {

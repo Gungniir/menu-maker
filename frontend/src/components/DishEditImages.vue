@@ -1,6 +1,11 @@
 <template>
   <div class="images">
     <div class="images__image">
+      <v-fade-transition>
+        <div v-show="loading" class="images__image-loader">
+          <v-progress-circular indeterminate color="primary"/>
+        </div>
+      </v-fade-transition>
       <template v-if="sortedImages[0]">
         <v-img :src="selectedImage.url" height="100%" />
         <div v-if="editMode" class="images__image-actions">
@@ -42,6 +47,7 @@ import {Image} from "@/models/Image";
 export default class DishEditImages extends Vue {
   @Prop({required: true}) images!: Image[]
   @Prop({default: false}) editMode!: boolean
+  @Prop({default: true}) loading!: boolean
 
   private selectedImageId = 0;
 
@@ -91,6 +97,19 @@ export default class DishEditImages extends Vue {
     border-radius: 25px;
     overflow: hidden;
     aspect-ratio: 1.5;
+
+    .images__image-loader {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #00000030;
+    }
 
     .images__image-actions {
       position: absolute;
