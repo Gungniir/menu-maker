@@ -37,7 +37,7 @@
           />
         </template>
         <div v-else class="d-flex align-center flex-column menu__not-found">
-          <v-img class="flex-grow-0" height="400" width="400" :src="require('@/assets/woman.svg')"/>
+          <v-img class="flex-grow-0 mt-10" height="350" width="350" :src="require('@/assets/smile.svg')"/>
           Создай своё неповторимое меню!
         </div>
       </template>

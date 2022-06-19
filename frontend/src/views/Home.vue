@@ -29,6 +29,9 @@
             </v-col>
           </v-row>
         </v-col>
+        <v-col>
+          <v-img contain :src="require('@/assets/girl.svg')"/>
+        </v-col>
       </v-row>
     </v-container>
   </div>
