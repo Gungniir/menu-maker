@@ -68,9 +68,8 @@ export default class Login extends Vue {
       const {data} = await AuthRepository.login(this.login, this.password);
       localStorage.setItem('jwt', data.access_token);
 
-      const returnTo = this.$route.query.returnto;
+      const returnTo = this.$route.query.returnto as string | undefined;
 
-      // noinspection TypeScriptValidateTypes
       await this.$router.push(returnTo ?? '/menus');
     } catch (e) {
       this.$refs.observer.setErrors({
