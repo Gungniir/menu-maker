@@ -1,6 +1,9 @@
 <template>
   <div class="dishes">
     <div class="dishes__wrapper">
+      <div class="dishes__header d-flex justify-center">
+        Категории
+      </div>
       <div ref="intersectionObserverRoot" class="dishes__container">
         <template v-if="loading && categories.length === 0">
           <v-skeleton-loader class="fluid" type="image" style="aspect-ratio: 1.5" />
