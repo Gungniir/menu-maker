@@ -90,7 +90,7 @@
             fab
             small
             color="primary"
-            @click="showAddDialog = true"
+            @click="showProductsDialog = true"
           >
             <v-icon color="white">mdi-cart-outline</v-icon>
           </v-btn>
@@ -122,6 +122,7 @@
       Создать меню
     </v-tooltip>
     <menu-add-dialog v-model="showAddDialog" :start-date="firstDayOfWeek" @created="menu = $event"/>
+    <menu-products-dialog v-if="menu" v-model="showProductsDialog" :menu-id="menu.id" @created="$router.push('/products')" />
     <dialog-confirm v-model="showDeleteDialog" title="Удалить меню" text="Вы действительно хотите удалить меню?" @confirm="destroyMenu"/>
   </div>
 </template>
@@ -134,18 +135,20 @@ import MenuRepository from "@/repositories/MenuRepository";
 import {MenuShow} from "@/models/Menu";
 import MenuDay, {Day} from "@/components/MenuDay.vue";
 import DialogConfirm from "@/components/DialogConfirm.vue";
+import MenuProductsDialog from "@/components/MenuProductsDialog.vue";
 
 type MenuForShow = {
   days: Day[]
 }
 
 @Component({
-  components: {DialogConfirm, MenuDay, MenuAddDialog}
+  components: {MenuProductsDialog, DialogConfirm, MenuDay, MenuAddDialog}
 })
 export default class Menus extends Vue {
   private speedDeal = false;
   private showAddDialog = false;
   private showDeleteDialog = false;
+  private showProductsDialog = false;
   private date = '';
   private menu: MenuShow | null = null;
   private days = ['Пт', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];

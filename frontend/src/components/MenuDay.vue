@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Emit, Prop, Vue, Watch} from 'vue-property-decorator'
+import {Component, Emit, Prop, Watch} from 'vue-property-decorator'
 import {Dish, DishIndex} from "@/models/Dish";
 import {Image} from "@/models/Image";
 import DishRepository from "@/repositories/DishRepository";
@@ -72,7 +72,7 @@ export default class MenuDay extends mixins(OutsideClickMixin) {
   @Prop({required: true}) readonly day!: Day;
   @Prop({required: true}) readonly dayName!: string;
   @Prop({default: false}) readonly currentDay!: boolean;
-  
+
   private editMealId = 0;
   private dishSelectedId = 0;
   private dishLoading = false;
