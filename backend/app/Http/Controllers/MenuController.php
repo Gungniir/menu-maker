@@ -242,6 +242,8 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu): JsonResponse
     {
-        throw new NotImplementedException();
+        $menu->delete();
+
+        return $this->show($menu);
     }
 }
