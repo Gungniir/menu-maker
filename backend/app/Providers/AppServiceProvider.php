@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             $subfolder = env('APP_SUBFOLDER');
 
             $url = URL::temporarySignedRoute(
-                $subfolder . 'local.temp',
+                'local.temp',
                 $expiration,
                 array_merge($options, ['path' => $path])
             );
