@@ -52,7 +52,7 @@
       </div>
     </div>
     <template v-if="editMode">
-      <validation-observer v-if="addRecipeItemShow" slim v-slot="{ invalid }">
+      <validation-observer ref="observer" v-if="addRecipeItemShow" slim v-slot="{ invalid }">
         <div class="recipe__item-add">
           <validation-provider rules="required" slim v-slot="{ errors }">
             <v-text-field
@@ -88,9 +88,14 @@ import {Component, Emit, Prop} from 'vue-property-decorator'
 import {RecipeItem} from "@/models/RecipeItem";
 import {mixins} from "vue-class-component";
 import OutsideClickMixin from "@/mixins/OutsideClickMixin";
+import {ValidationObserver} from "vee-validate";
 
 @Component({})
 export default class DishEditRecipe extends mixins(OutsideClickMixin) {
+  $refs! : {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
   @Prop({required: true}) recipe_items!: RecipeItem[];
   @Prop({default: false}) editMode!: boolean;
 
@@ -107,11 +112,13 @@ export default class DishEditRecipe extends mixins(OutsideClickMixin) {
   private addOrUpdateRecipeItem(): void {
     if (this.addRecipeItemId) {
       this.updateRecipeItem();
+      this.closeAddRecipeItem();
     } else {
       this.storeRecipeItem();
+      this.addRecipeItemValue = '';
+      this.addRecipeItemId = 0;
+      this.$refs.observer.reset();
     }
-
-    this.closeAddRecipeItem();
   }
 
   get addEditRecipeItemPrefix(): string {
