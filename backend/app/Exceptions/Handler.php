@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'message' => $e->getMessage(),
                 'route' => $request->decodedPath(),
-            ], $e->getCode());
+            ], 404);
         });
 
         $this->reportable(function (Throwable $e) {
