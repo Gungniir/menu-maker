@@ -1,1 +1,10 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.5 100"><defs><style>.cls-1{fill:#1697f6;}.cls-2{fill:#7bc6ff;}.cls-3{fill:#1867c0;}.cls-4{fill:#aeddff;}</style></defs><title>Artboard 46</title><polyline class="cls-1" points="43.75 0 23.31 0 43.75 48.32"/><polygon class="cls-2" points="43.75 62.5 43.75 100 0 14.58 22.92 14.58 43.75 62.5"/><polyline class="cls-3" points="43.75 0 64.19 0 43.75 48.32"/><polygon class="cls-4" points="64.58 14.58 87.5 14.58 43.75 100 43.75 62.5 64.58 14.58"/></svg>
+<svg width="66" height="62" viewBox="0 0 66 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="38.5" cy="17.5" r="4.5" fill="#FF7043"/>
+<circle cx="26.5" cy="12.5" r="3.5" fill="#FF7043"/>
+<circle cx="33.5" cy="2.5" r="2.5" fill="#FF7043"/>
+<rect x="10.1539" y="24" width="45.6923" height="31.8378" fill="#FF7043"/>
+<rect x="10.1539" y="49.6757" width="45.6923" height="12.3243" rx="6.16216" fill="#FF7043"/>
+<rect y="27.0811" width="14.2154" height="7.18919" rx="3.59459" fill="#FF7043"/>
+<rect x="51.7846" y="27.0811" width="14.2154" height="7.18919" rx="3.59459" fill="#FF7043"/>
+<rect x="15.2308" y="27.0811" width="4.06154" height="29.7838" rx="2.03077" fill="white"/>
+</svg>
