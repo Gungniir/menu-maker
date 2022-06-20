@@ -60,7 +60,7 @@
       </div>
     </div>
     <template v-if="editMode">
-      <validation-observer v-if="addIngredientShow" slim v-slot="{ invalid }">
+      <validation-observer v-if="addIngredientShow" slim>
         <div class="ingredients__ingredient-add">
           <div>
             <validation-provider slim rules="required" v-slot="{ errors }">
@@ -88,17 +88,16 @@
                 ref="addIngredientAmountInput"
                 :error="errors.length > 0"
                 :suffix="addIngredientUnit"
-                @keydown.enter="invalid ? closeAddIngredient() : onAddButtonClick();"
+                @keydown.enter="onAddButtonClick();"
               />
             </div>
           </validation-provider>
           <v-btn
             class="ml-4"
             color="primary"
-            :outlined="invalid"
-            @click="invalid ? closeAddIngredient() : onAddButtonClick();"
+            @click="onAddButtonClick();"
           >
-            {{ invalid ? 'Отмена' : addIngredientButtonText }}
+            {{ addIngredientButtonText }}
           </v-btn>
         </div>
       </validation-observer>
