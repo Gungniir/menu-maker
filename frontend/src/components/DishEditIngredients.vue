@@ -117,8 +117,6 @@ import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 import {mixins} from "vue-class-component";
 import {nextEnum} from "@/models/common/Enum";
 import IngredientRepository from "@/repositories/IngredientRepository";
-import VAutocomplete from "vuetify/src/components/VAutocomplete"
-import VTextField from 'vuetify/src/components/VTextField/VTextField';
 import IngredientAddEditDialog from "@/components/IngredientAddEditDialog.vue";
 
 
@@ -127,8 +125,8 @@ import IngredientAddEditDialog from "@/components/IngredientAddEditDialog.vue";
 })
 export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   $refs!: {
-    addIngredientIdInput: InstanceType<typeof VAutocomplete>,
-    addIngredientAmountInput: InstanceType<typeof VTextField>,
+    addIngredientIdInput: InstanceType<typeof HTMLInputElement>,
+    addIngredientAmountInput: InstanceType<typeof HTMLInputElement>,
   }
 
   @Prop({required: true}) ingredients!: IngredientWithDishPivot[];
