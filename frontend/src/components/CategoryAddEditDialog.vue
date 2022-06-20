@@ -26,6 +26,7 @@
           v-model="dishSelectedId"
           item-text="name"
           item-value="id"
+          item-disabled="disabled"
           label="Добавить блюдо в категорию"
           persistent-placeholder
           outlined
@@ -69,6 +70,9 @@ import CategoryRepository from "@/repositories/CategoryRepository";
 import {CategoryShow} from "@/models/Category";
 import DishRepository from "@/repositories/DishRepository";
 
+type DishWithDisabled = DishIndex & {
+  disabled: boolean
+}
 
 @Component({
   components: { DialogCard }
@@ -82,13 +86,13 @@ export default class CategoryAddEditDialog extends Vue {
   private categoryLoading = false;
 
   private categoryName = '';
-  private dishes: DishIndex[] = [];
+  private dishes: DishWithDisabled[] = [];
   private dishLoading = false;
   private dishSearch = '';
   private dishSelectedId = 0;
   private dishesSelected: Dish[] = [];
 
-  get dishSelected(): DishIndex | null {
+  get dishSelected(): DishWithDisabled | null {
     const dish = this.dishes.find(({id}) => id === this.dishSelectedId);
 
     return dish ?? null;
@@ -146,7 +150,10 @@ export default class CategoryAddEditDialog extends Vue {
 
     if (search !== this.dishSearch) return;
 
-    this.dishes = data.data;
+    this.dishes = data.data.map(dish => ({
+      ...dish,
+      disabled: this.dishesSelected.findIndex(d => d.id === dish.id) !== -1
+    }));
     this.dishLoading = false;
   }
 
@@ -155,6 +162,8 @@ export default class CategoryAddEditDialog extends Vue {
     if (!this.dishSelected) return;
 
     this.dishesSelected.push(this.dishSelected);
+    this.dishesSelected.sort((a, b) => a.name.localeCompare(b.name));
+    this.dishSelected.disabled = true;
     this.$nextTick(() => {
       this.dishSelectedId = 0;
       this.dishSearch = '';
