@@ -15,22 +15,22 @@ return [
      */
     'optimizers' => [
 
-//        Jpegoptim::class => [
-//            '-m85', // set maximum quality to 85%
-//            '--strip-all',  // this strips out all text information such as comments and EXIF data
-//            '--all-progressive',  // this will make sure the resulting image is a progressive one
-//        ],
-//
-//        Pngquant::class => [
-//            '--force', // required parameter for this package
-//        ],
-//
-//        Optipng::class => [
-//            '-i0', // this will result in a non-interlaced, progressive scanned image
-//            '-o2',  // this set the optimization level to two (multiple IDAT compression trials)
-//            '-quiet', // required parameter for this package
-//        ],
-//
+        Jpegoptim::class => [
+            '-m85', // set maximum quality to 85%
+            '--strip-all',  // this strips out all text information such as comments and EXIF data
+            '--all-progressive',  // this will make sure the resulting image is a progressive one
+        ],
+
+        Pngquant::class => [
+            '--force', // required parameter for this package
+        ],
+
+        Optipng::class => [
+            '-i0', // this will result in a non-interlaced, progressive scanned image
+            '-o2',  // this set the optimization level to two (multiple IDAT compression trials)
+            '-quiet', // required parameter for this package
+        ],
+
 //        Svgo::class => [
 //            '--disable=cleanupIDs', // disabling because it is know to cause troubles
 //        ],
@@ -40,7 +40,7 @@ return [
 //            '-O3', // this produces the slowest but best results
 //        ],
 
-        CwebpExtended::class => [
+        Cwebp::class => [
             '-m 6', // for the slowest compression method in order to get the best compression.
             '-pass 10', // for maximizing the amount of analysis pass.
             '-mt', // multithreading for some speed improvements.
