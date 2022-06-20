@@ -70,7 +70,6 @@
                 label="Ингредиент"
                 item-text="name"
                 item-value="id"
-                auto-select-first
                 :items="availableIngredients"
                 :error-messages="errors"
                 :search-input.sync="addIngredientFilter"
@@ -176,6 +175,11 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   }
 
   private checkNewIngredient(): void {
+    const index = this.availableIngredients.findIndex(ing => ing.name === this.addIngredientFilter);
+    if (index !== -1) {
+      this.addIngredientId = this.availableIngredients[index].id;
+    }
+
     setTimeout(() => {
         if (this.addIngredientValue && this.addIngredientValue.name === this.addIngredientFilter) {
           this.$refs.addIngredientIdInput.blur();
