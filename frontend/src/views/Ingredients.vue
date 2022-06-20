@@ -58,7 +58,7 @@
           </ul>
         </div>
       </div>
-      <ingredient-add-edit-dialog v-model="showAddDialog" :ingredient-id="selectedIngredientId" @created="onCreated" @updated="onUpdated" />
+      <ingredient-add-edit-dialog v-model="showAddDialog" :ingredient-id="selectedIngredientId" :used-names="ingredients.map(ingredient => ingredient.name)" @created="onCreated" @updated="onUpdated" />
       <dialog-confirm v-model="showDeleteDialog" title="Удаление ингредиента" text="Вы действительно хотите удалить этот ингредиент?" @confirm="destroyIngredient"/>
     </div>
     <v-tooltip

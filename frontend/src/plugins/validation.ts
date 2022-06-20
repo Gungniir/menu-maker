@@ -43,6 +43,22 @@ extend('min', {
   message: 'Минимум: {min}'
 });
 
+extend('unique', {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  validate(value: string, {items}) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const a = items.map(item => item.toUpperCase())
+
+    return {
+      valid: a.indexOf(value.toUpperCase()) === -1,
+    };
+  },
+  params: ['items'],
+  message: 'Уже используется'
+});
+
 
 extend('secret', {
   validate: value => value === 'example',

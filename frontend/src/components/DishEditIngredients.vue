@@ -105,7 +105,7 @@
         <v-icon>$add</v-icon>
       </v-btn>
     </template>
-    <ingredient-add-edit-dialog v-model="showAddDialog" :ingredient-input-name="addIngredientFilter" @created="onCreatedIngredient" />
+    <ingredient-add-edit-dialog v-model="showAddDialog" :ingredient-input-name="addIngredientFilter" :used-names="availableIngredients.map(ingredient => ingredient.name)" @created="onCreatedIngredient" />
   </div>
 </template>
 

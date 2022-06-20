@@ -4,7 +4,12 @@
       <validation-provider
         vid="name"
         name="название ингредиента"
-        rules="required"
+        :rules="{
+          required: true,
+          unique: {
+            items: usedNames
+          },
+        }"
         v-slot="{ errors }"
       >
         <v-text-field
@@ -86,6 +91,7 @@ export default class IngredientAddEditDialog extends Vue {
   @Prop({default: false}) value!: boolean;
   @Prop({default: 0}) ingredientId!: number;
   @Prop({default: ''}) ingredientInputName!: string;
+  @Prop({default: () => []}) usedNames!: string[];
 
   get isEdit(): boolean {
     return !!this.ingredientId;
