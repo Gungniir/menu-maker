@@ -184,7 +184,7 @@ export default class DishEditRecipe extends mixins(OutsideClickMixin) {
 
   &:hover {
     .recipe__item-actions {
-      display: flex;
+      opacity: 1;
     }
   }
 
@@ -201,8 +201,9 @@ export default class DishEditRecipe extends mixins(OutsideClickMixin) {
   }
 
   .recipe__item-actions {
+    display: flex;
     margin-right: 12px;
-    display: none;
+    opacity: 0;
   }
 }
 

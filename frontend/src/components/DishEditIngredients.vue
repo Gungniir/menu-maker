@@ -295,10 +295,12 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
     }
 
     .ingredients__ingredient-name {
-
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .ingredients__ingredient-amount-actions {
+      flex-shrink: 0;
       display: flex;
       align-items: center;
 
