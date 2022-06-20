@@ -140,7 +140,7 @@ export default class IngredientAddEditDialog extends Vue {
     const {data} = await IngredientRepository.store({
       name: this.ingredientName,
       is_perishable: false,
-      type: this.ingredientType,
+      type: this.ingredientType ? this.ingredientType : this.ingredientTypeSearch,
       amount: Number(this.ingredientAmount),
       unit: this.ingredientUnit
     });
@@ -157,7 +157,7 @@ export default class IngredientAddEditDialog extends Vue {
     const {data} = await IngredientRepository.update(this.ingredientId, {
       name: this.ingredientName,
       is_perishable: false,
-      type: this.ingredientType ?? this.ingredientTypeSearch,
+      type: this.ingredientType ? this.ingredientType : this.ingredientTypeSearch,
       amount: Number(this.ingredientAmount),
       unit: this.ingredientUnit
     });
