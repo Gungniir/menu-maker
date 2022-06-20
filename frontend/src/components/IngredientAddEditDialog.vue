@@ -7,7 +7,8 @@
         :rules="{
           required: true,
           unique: {
-            items: usedNames
+            items: usedNames,
+            allowed: ingredientAllowedName,
           },
         }"
         v-slot="{ errors }"
@@ -101,6 +102,7 @@ export default class IngredientAddEditDialog extends Vue {
   private opened = false;
   private loading = false;
 
+  private ingredientAllowedName = '';
   private ingredientName = '';
   private ingredientType: string | null = '';
   private ingredientTypeSearch = '';
@@ -116,6 +118,7 @@ export default class IngredientAddEditDialog extends Vue {
 
   private reset(): void {
     this.ingredientName = '';
+    this.ingredientAllowedName = '';
     this.ingredientType = '';
     this.ingredientTypeSearch = '';
     this.ingredientUnit = IngredientUnit.Grams;
@@ -177,6 +180,7 @@ export default class IngredientAddEditDialog extends Vue {
     const {data} = await IngredientRepository.show(this.ingredientId);
 
     this.loading = false;
+    this.ingredientAllowedName = data.name;
     this.ingredientName = data.name;
     this.ingredientAmount = data.amount.toString();
     this.ingredientType = data.type;

@@ -46,7 +46,9 @@ extend('min', {
 extend('unique', {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  validate(value: string, {items}) {
+  validate(value: string, {items, allowed}) {
+    if (value === allowed) return true;
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const a = items.map(item => item.toUpperCase())
@@ -55,7 +57,7 @@ extend('unique', {
       valid: a.indexOf(value.toUpperCase()) === -1,
     };
   },
-  params: ['items'],
+  params: ['items', 'allowed'],
   message: 'Уже используется'
 });
 
