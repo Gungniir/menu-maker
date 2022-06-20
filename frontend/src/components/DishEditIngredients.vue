@@ -148,7 +148,7 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   get sortedIngredients(): IngredientWithDishPivot[] {
     const i = this.ingredients.slice();
-    i.sort(({id: id_a}, {id: id_b}) => id_a - id_b);
+    i.sort((a, b)=> a.name.localeCompare(b.name));
     return i;
   }
 
