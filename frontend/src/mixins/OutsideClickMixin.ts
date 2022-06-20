@@ -53,7 +53,13 @@ export default class OutsideClickMixin extends Vue {
 
     do {
       for (const item of check) {
-        if (target.classList && (target.classList.contains(item.nodeClass) || item.allowMenu && target.classList.contains('v-list-item'))) {
+        if (target.classList && (target.classList.contains(item.nodeClass) || item.allowMenu && (
+          target.classList.contains('v-list-item') ||
+          target.classList.contains('v-list-item__title') ||
+          target.classList.contains('v-list-item__content') ||
+          target.classList.contains('v-list') ||
+          target.classList.contains('v-menu__content')
+        ))) {
           // not outside click!
           check = check.filter(({nodeClass}) => nodeClass !== item.nodeClass);
         }
