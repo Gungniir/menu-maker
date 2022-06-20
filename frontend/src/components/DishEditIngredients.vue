@@ -88,7 +88,7 @@
                 ref="addIngredientAmountInput"
                 :error="errors.length > 0"
                 :suffix="addIngredientUnit"
-                @keydown.enter="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
+                @keydown.enter="invalid ? closeAddIngredient() : onAddButtonClick();"
               />
             </div>
           </validation-provider>
@@ -96,7 +96,7 @@
             class="ml-4"
             color="primary"
             :outlined="invalid"
-            @click="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
+            @click="invalid ? closeAddIngredient() : onAddButtonClick();"
           >
             {{ invalid ? 'Отмена' : addIngredientButtonText }}
           </v-btn>
@@ -212,6 +212,16 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
       page = data.current_page + 1;
 
       this.availableIngredients.push(...data.data);
+    }
+  }
+
+  private onAddButtonClick(): void {
+    this.ocDrop('ingredients__ingredient-add');
+    if (!this.addIngredientValue) {
+      this.showAddDialog = true;
+    } else {
+      this.addIngredient();
+      this.closeAddIngredient();
     }
   }
 
