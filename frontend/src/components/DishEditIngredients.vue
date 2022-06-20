@@ -117,6 +117,7 @@ import {mixins} from "vue-class-component";
 import {nextEnum} from "@/models/common/Enum";
 import IngredientRepository from "@/repositories/IngredientRepository";
 import IngredientAddEditDialog from "@/components/IngredientAddEditDialog.vue";
+import {ie} from "@/utils";
 
 
 @Component({
@@ -175,7 +176,7 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   }
 
   private checkNewIngredient(): void {
-    const index = this.availableIngredients.findIndex(ing => ing.name === this.addIngredientFilter);
+    const index = this.availableIngredients.findIndex(ing => ie(ing.name, this.addIngredientFilter));
     if (index !== -1) {
       this.addIngredientId = this.availableIngredients[index].id;
     }
