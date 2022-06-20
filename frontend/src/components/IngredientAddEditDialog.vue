@@ -30,6 +30,7 @@
         outlined
         persistent-placeholder
         :items="types"
+        :search-input.sync="ingredientTypeSearch"
       />
     </div>
     <div class="ingredients__input-group">
@@ -102,6 +103,7 @@ export default class IngredientAddEditDialog extends Vue {
 
   private ingredientName = '';
   private ingredientType: string | null = '';
+  private ingredientTypeSearch = '';
   private ingredientUnit = IngredientUnit.Grams;
   private ingredientAmount = '0';
 
@@ -115,6 +117,7 @@ export default class IngredientAddEditDialog extends Vue {
   private reset(): void {
     this.ingredientName = '';
     this.ingredientType = '';
+    this.ingredientTypeSearch = '';
     this.ingredientUnit = IngredientUnit.Grams;
     this.ingredientAmount = '0';
     this.$refs.observer.reset();
@@ -151,7 +154,7 @@ export default class IngredientAddEditDialog extends Vue {
     const {data} = await IngredientRepository.update(this.ingredientId, {
       name: this.ingredientName,
       is_perishable: false,
-      type: this.ingredientType,
+      type: this.ingredientType ?? this.ingredientTypeSearch,
       amount: Number(this.ingredientAmount),
       unit: this.ingredientUnit
     });
