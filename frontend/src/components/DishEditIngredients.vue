@@ -76,7 +76,7 @@
                 @focus="ocRegister('ingredients__ingredient-add', () => {
                       closeAddIngredient();
                     }, true)"
-                @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
+                @input="onInputIngredientId"
                 @keydown.enter="checkNewIngredient"
               />
             </validation-provider>
@@ -176,14 +176,23 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   }
 
   private checkNewIngredient(): void {
-    if (this.addIngredientValue && this.addIngredientValue.name === this.addIngredientFilter) {
+    setTimeout(() => {
+        if (this.addIngredientValue && this.addIngredientValue.name === this.addIngredientFilter) {
+          this.$refs.addIngredientIdInput.blur();
+          this.$refs.addIngredientAmountInput.focus();
+          return;
+        }
+
+        this.ocDrop('ingredients__ingredient-add');
+        this.showAddDialog = true;
+    }, 100);
+  }
+
+  private onInputIngredientId(): void {
+    if (this.addIngredientId) {
       this.$refs.addIngredientIdInput.blur();
       this.$refs.addIngredientAmountInput.focus();
-      return;
     }
-
-    this.ocDrop('ingredients__ingredient-add');
-    this.showAddDialog = true;
   }
 
   private onCreatedIngredient(ingredient: IngredientShow): void {
