@@ -55,9 +55,11 @@
       <validation-observer ref="observer" v-if="addRecipeItemShow" slim v-slot="{ invalid }">
         <div class="recipe__item-add">
           <validation-provider rules="required" slim v-slot="{ errors }">
-            <v-text-field
+            <v-textarea
               v-model="addRecipeItemValue"
               ref="addRecipeItemInput"
+              rows="3"
+              auto-grow
               :prefix="addEditRecipeItemPrefix"
               :error-messages="errors"
               @focus="ocRegister('recipe__item-add', () => {
