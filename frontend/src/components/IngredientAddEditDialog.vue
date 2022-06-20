@@ -186,6 +186,7 @@ export default class IngredientAddEditDialog extends Vue {
 
     if (value) {
       this.reset();
+      this.loadTypes();
 
       if (this.isEdit) {
         this.loadIngredient();
