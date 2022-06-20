@@ -177,6 +177,7 @@ export default class CategoryAddEditDialog extends Vue {
 
     this.categoryName = data.name;
     this.dishesSelected = data.dishes;
+    this.dishesSelected.sort((a, b) => a.name.localeCompare(b.name));
 
     this.categoryLoading = false;
   }
