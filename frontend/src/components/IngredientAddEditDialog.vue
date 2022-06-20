@@ -85,6 +85,7 @@ export default class IngredientAddEditDialog extends Vue {
 
   @Prop({default: false}) value!: boolean;
   @Prop({default: 0}) ingredientId!: number;
+  @Prop({default: ''}) ingredientInputName!: string;
 
   get isEdit(): boolean {
     return !!this.ingredientId;
@@ -187,6 +188,11 @@ export default class IngredientAddEditDialog extends Vue {
     if (value) {
       this.reset();
       this.loadTypes();
+
+
+      if (this.ingredientInputName) {
+        this.ingredientName = this.ingredientInputName;
+      }
 
       if (this.isEdit) {
         this.loadIngredient();

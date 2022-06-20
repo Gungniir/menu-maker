@@ -72,10 +72,12 @@
                 item-text="name"
                 item-value="id"
                 :error-messages="errors"
+                :search-input.sync="addIngredientFilter"
                 @focus="ocRegister('ingredients__ingredient-add', () => {
                       closeAddIngredient();
                     }, true)"
                 @input="$refs.addIngredientIdInput.blur(); $refs.addIngredientAmountInput.focus();"
+                @keydown.enter="checkNewIngredient"
               />
             </validation-provider>
           </div>
@@ -86,7 +88,7 @@
                 ref="addIngredientAmountInput"
                 :error="errors.length > 0"
                 :suffix="addIngredientUnit"
-                @keyup.enter="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
+                @keydown.enter="invalid ? closeAddIngredient() : addIngredient(); closeAddIngredient(); ocDrop('ingredients__ingredient-add')"
               />
             </div>
           </validation-provider>
@@ -104,19 +106,31 @@
         <v-icon>$add</v-icon>
       </v-btn>
     </template>
+    <ingredient-add-edit-dialog v-model="showAddDialog" :ingredient-input-name="addIngredientFilter" @created="onCreatedIngredient" />
   </div>
 </template>
 
 <script lang="ts">
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator'
-import {Ingredient, IngredientUnit, IngredientWithDishPivot} from "@/models/Ingredient";
+import {Ingredient, IngredientShow, IngredientUnit, IngredientWithDishPivot} from "@/models/Ingredient";
 import OutsideClickMixin from "@/mixins/OutsideClickMixin";
 import {mixins} from "vue-class-component";
 import {nextEnum} from "@/models/common/Enum";
 import IngredientRepository from "@/repositories/IngredientRepository";
+import VAutocomplete from "vuetify/src/components/VAutocomplete"
+import VTextField from 'vuetify/src/components/VTextField/VTextField';
+import IngredientAddEditDialog from "@/components/IngredientAddEditDialog.vue";
 
-@Component({})
+
+@Component({
+  components: {IngredientAddEditDialog},
+})
 export default class DishEditIngredients extends mixins(OutsideClickMixin) {
+  $refs!: {
+    addIngredientIdInput: InstanceType<typeof VAutocomplete>,
+    addIngredientAmountInput: InstanceType<typeof VTextField>,
+  }
+
   @Prop({required: true}) ingredients!: IngredientWithDishPivot[];
   @Prop({default: false}) editMode!: boolean;
 
@@ -127,6 +141,8 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   private addIngredientAmount = 1;
   private addIngredientShow = false;
   private addIngredientFakeUnit = IngredientUnit.Grams;
+  private addIngredientFilter = '';
+  private showAddDialog = false;
 
   mounted(): void {
     this.loadAvailableIngredients();
@@ -159,6 +175,22 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   private updateFakeUnit(): void {
     this.addIngredientFakeUnit = nextEnum(IngredientUnit, this.addIngredientFakeUnit);
+  }
+
+  private checkNewIngredient(): void {
+    if (this.addIngredientValue && this.addIngredientValue.name === this.addIngredientFilter) {
+      this.$refs.addIngredientIdInput.blur();
+      this.$refs.addIngredientAmountInput.focus();
+      return;
+    }
+
+    this.ocDrop('ingredients__ingredient-add');
+    this.showAddDialog = true;
+  }
+
+  private onCreatedIngredient(ingredient: IngredientShow): void {
+    this.availableIngredients.push(ingredient);
+    this.addIngredientId = ingredient.id;
   }
 
   async loadAvailableIngredients(): Promise<void> {
@@ -198,6 +230,15 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   @Watch('editMode')
   editModeWatcher(): void {
     this.portions = 1;
+  }
+
+  @Watch('showAddDialog')
+  showAddDialogWatcher(val: boolean): void {
+    if (!val) {
+      this.ocRegister('ingredients__ingredient-add', () => {
+        this.closeAddIngredient();
+      }, true);
+    }
   }
 }
 </script>
