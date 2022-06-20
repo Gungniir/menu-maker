@@ -67,10 +67,11 @@
               <v-autocomplete
                 v-model="addIngredientId"
                 ref="addIngredientIdInput"
-                :items="availableIngredients"
                 label="Ингредиент"
                 item-text="name"
                 item-value="id"
+                auto-select-first
+                :items="availableIngredients"
                 :error-messages="errors"
                 :search-input.sync="addIngredientFilter"
                 @focus="ocRegister('ingredients__ingredient-add', () => {
