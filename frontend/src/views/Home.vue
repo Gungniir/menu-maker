@@ -30,7 +30,7 @@
           </v-row>
         </v-col>
         <v-col>
-          <v-img contain :src="require('@/assets/girl.svg')"/>
+          <v-img max-height="90vh" contain :src="require('@/assets/girl.svg')"/>
         </v-col>
       </v-row>
     </v-container>
