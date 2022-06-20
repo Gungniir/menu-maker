@@ -16,7 +16,6 @@
     </div>
     <div class="dish-edit__actions">
       <v-tooltip
-        v-if="!editMode"
         bottom
         open-delay="300"
       >
