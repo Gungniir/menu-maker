@@ -41,10 +41,12 @@ Vue.config.errorHandler = (err, vm, info) => {
   }
 
 
-  store.commit('notify', {
-    type: 'error',
-    text: 'Произошла ошибка'
-  })
+  if (process.env.NODE_ENV === 'development') {
+    store.commit('notify', {
+      type: 'error',
+      text: 'Произошла ошибка'
+    });
+  }
 }
 
 
