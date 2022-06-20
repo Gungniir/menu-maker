@@ -2,7 +2,7 @@
   <div class="dish-edit">
     <div class="dish-edit__actions-left">
       <v-tooltip
-        v-if="!editMode && previousPath"
+        v-if="previousPath"
         bottom
         open-delay="300"
       >
@@ -16,6 +16,7 @@
     </div>
     <div class="dish-edit__actions">
       <v-tooltip
+        v-if="!editMode"
         bottom
         open-delay="300"
       >
