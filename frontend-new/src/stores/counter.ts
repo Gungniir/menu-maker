@@ -1,12 +1,9 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import type { RouteRecord } from 'vue-router'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
+export const useHistoryStore = defineStore('counter', () => {
+  const history = ref<RouteRecord[]>([]);
 
-  return { count, doubleCount, increment }
+  return { history }
 })

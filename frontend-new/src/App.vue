@@ -1,85 +1,59 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { computed } from 'vue'
+import AppPage from '@/components/AppPage.vue'
+import AppNotification from '@/components/AppNotification.vue'
+
+const router = useRouter()
+const route = useRoute()
+
+const withPage = computed(() => !route.meta?.fullPage)
+const withBackground = computed(() => !route.meta?.withoutBackground)
+
+const pages = computed(() => router.getRoutes().filter(({ meta }) => meta?.showInMenu).map(route => ({
+  link: route.path,
+  selected: this.$route.path === route.path,
+  icon: route.meta.icon ?? 'mdi-close',
+})))
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <v-app id="app">
+    <v-main>
+      <AppPage v-if="withPage" :pages="pages" :without-background="!withBackground">
+        <router-view />
+      </AppPage>
+      <router-view v-else />
+    </v-main>
+    <AppNotification />
+  </v-app>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<style scoped lang="scss">
+#app {
+  color: var(--v-text-base);
+  background: var(--v-app-background-base);
+  font-family: Montserrat, serif;
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  .v-icon {
+    color: var(--v-icon-base);
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
+  .v-input.min-height {
+    .v-input__slot {
+      min-height: auto !important;
+    }
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  .hide-messages {
+    .v-text-field__details {
+      display: none;
+    }
   }
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+  .v-skeleton-loader.fluid > div {
+    height: 100%;
+    width: 100%;
   }
 }
 </style>

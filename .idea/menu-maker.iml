@@ -143,6 +143,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="@mdi/font" level="application" />
   </component>
   <component name="SonarLintModuleSettings">
     <option name="uniqueId" value="36b20826-48fb-45b4-a856-de980fe9232d" />
