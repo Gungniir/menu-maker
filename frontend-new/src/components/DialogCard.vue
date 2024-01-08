@@ -12,8 +12,8 @@
           open-delay="300"
           bottom
         >
-          <template #activator="{ on, attrs }">
-            <v-btn v-on="on" v-bind="attrs" icon @click="opened = false">
+          <template #activator="{ attrs }">
+            <v-btn v-bind="attrs" icon @click="opened = false">
               <v-icon color="text">mdi-close</v-icon>
             </v-btn>
           </template>
@@ -59,7 +59,7 @@ watch(() => props.modelValue, (val) => opened.value = val)
   position: relative;
   width: 100%;
   padding: 65px 95px;
-  background: var(--v-background-base);
+  background: rgb(var(--v-theme-background));
 
   &.mini {
     padding: 32px 65px;

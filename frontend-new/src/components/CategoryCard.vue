@@ -1,12 +1,12 @@
 <template>
-  <div class="dc" @click="clickEvent">
+  <div class="dc" @click="emits('click', $event)">
     <div class="dc__background" :style="{background: color}">
       {{ category.name }}
     </div>
     <div v-if="!hideActions" class="dc__actions">
       <v-tooltip bottom open-delay="300">
         <template #activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on" @click.stop="editEvent">
+          <v-btn icon v-bind="attrs" v-on="on" @click.stop="emits('edit', props.category.id)">
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
         </template>

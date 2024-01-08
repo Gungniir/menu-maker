@@ -32,17 +32,17 @@ const router = createRouter({
     //     icon: '$menu',
     //   }
     // },
-    // {
-    //   path: '/dishes',
-    //   name: 'Dishes',
-    //   component: () => import(/* webpackChunkName: "dishes" */ '@/views/Dishes.vue'),
-    //   meta: {
-    //     fullPage: false,
-    //     withoutBackground: true,
-    //     showInMenu: false,
-    //     icon: '$dishes',
-    //   }
-    // },
+    {
+      path: '/dishes',
+      name: 'Dishes',
+      component: () => import(/* webpackChunkName: "dishes" */ '@/views/DishesView.vue'),
+      meta: {
+        fullPage: false,
+        withoutBackground: true,
+        showInMenu: false,
+        icon: 'custom:DishesIcon',
+      }
+    },
     // {
     //   path: '/dishes/:dishId(\\d+)/edit',
     //   name: 'DishEdit',
