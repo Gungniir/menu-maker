@@ -1,7 +1,7 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {Pagination} from "@/models/common/Pagination";
-import {Ingredient, IngredientEntity, IngredientIndex, IngredientShow} from "@/models/Ingredient";
+import type {AxiosPromise} from "axios";
+import type {Pagination} from "@/models/common/Pagination";
+import type {Ingredient, IngredientEntity, IngredientIndex, IngredientShow} from "@/models/Ingredient";
 
 const base = 'ingredient';
 

@@ -1,6 +1,6 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {MenuSchemeEntity, MenuSchemeIndex, MenuSchemeShow} from "@/models/MenuScheme";
+import type {AxiosPromise} from "axios";
+import type {MenuSchemeEntity, MenuSchemeIndex, MenuSchemeShow} from "@/models/MenuScheme";
 
 const base = 'menu_scheme';
 

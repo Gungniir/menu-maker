@@ -1,7 +1,7 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {Pagination} from "@/models/common/Pagination";
-import {Image} from "@/models/Image";
+import type {AxiosPromise} from "axios";
+import type {Pagination} from "@/models/common/Pagination";
+import type {Image} from "@/models/Image";
 
 const base = 'image';
 

@@ -1,7 +1,7 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {Pagination} from "@/models/common/Pagination";
-import {CategoryEntity, CategoryIndex, CategoryShow} from "@/models/Category";
+import type {AxiosPromise} from "axios";
+import type {Pagination} from "@/models/common/Pagination";
+import type {CategoryEntity, CategoryIndex, CategoryShow} from "@/models/Category";
 
 const base = 'category';
 

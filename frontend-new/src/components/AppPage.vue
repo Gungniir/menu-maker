@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 withDefaults(defineProps<{
   pages: {
     link: string,
@@ -13,7 +17,7 @@ withDefaults(defineProps<{
 
 const logout = () => {
   localStorage.setItem('jwt', '')
-  this.$router.push('/')
+  router.push('/')
 }
 </script>
 
@@ -45,7 +49,7 @@ const logout = () => {
       <div class="right-panel__profile">
         <v-menu bottom offset-y nudge-bottom="15">
           <template #activator="{ props }">
-            <v-btn icon v-bind="props">
+            <v-btn icon size="60" variant="text" v-bind="props">
               <v-icon size="60" color="primary">mdi-account-circle</v-icon>
             </v-btn>
           </template>

@@ -1,6 +1,6 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {MenuEntity, MenuShow} from "@/models/Menu";
+import type {AxiosPromise} from "axios";
+import type {MenuEntity, MenuShow} from "@/models/Menu";
 
 const base = 'menu';
 

@@ -65,17 +65,17 @@ const router = createRouter({
     //     showInMenu: false,
     //   }
     // },
-    // {
-    //   path: '/categories',
-    //   name: 'Categories',
-    //   component: () => import(/* webpackChunkName: "categories" */ '@/views/Categories.vue'),
-    //   meta: {
-    //     fullPage: false,
-    //     withoutBackground: true,
-    //     showInMenu: true,
-    //     icon: '$dishes',
-    //   }
-    // },
+    {
+      path: '/categories',
+      name: 'Categories',
+      component: () => import(/* webpackChunkName: "categories" */ '@/views/CategoriesView.vue'),
+      meta: {
+        fullPage: false,
+        withoutBackground: true,
+        showInMenu: true,
+        icon: 'custom:DishesIcon',
+      }
+    },
     // {
     //   path: '/products',
     //   name: 'Products',

@@ -1,7 +1,7 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {Pagination} from "@/models/common/Pagination";
-import {Dish, DishEntity, DishIndex, DishShow} from "@/models/Dish";
+import type {AxiosPromise} from "axios";
+import type {Pagination} from "@/models/common/Pagination";
+import type {Dish, DishEntity, DishIndex, DishShow} from "@/models/Dish";
 
 const base = 'dish';
 

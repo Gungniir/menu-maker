@@ -1,7 +1,7 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {Pagination} from "@/models/common/Pagination";
-import {Tool, ToolEntity, ToolIndex, ToolShow} from "@/models/Tool";
+import type {AxiosPromise} from "axios";
+import type {Pagination} from "@/models/common/Pagination";
+import type {Tool, ToolEntity, ToolIndex, ToolShow} from "@/models/Tool";
 
 const base = 'tool';
 

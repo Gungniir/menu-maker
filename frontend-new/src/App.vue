@@ -10,10 +10,10 @@ const route = useRoute()
 const withPage = computed(() => !route.meta?.fullPage)
 const withBackground = computed(() => !route.meta?.withoutBackground)
 
-const pages = computed(() => router.getRoutes().filter(({ meta }) => meta?.showInMenu).map(route => ({
-  link: route.path,
-  selected: this.$route.path === route.path,
-  icon: route.meta.icon ?? 'mdi-close',
+const pages = computed(() => router.getRoutes().filter(({ meta }) => meta?.showInMenu).map(r => ({
+  link: r.path,
+  selected: route.path === r.path,
+  icon: r.meta.icon ?? 'mdi-close',
 })))
 </script>
 

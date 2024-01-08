@@ -9,6 +9,8 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import { mdi } from 'vuetify/iconsets/mdi'
+import { customSVGs } from '@/components/icons/customIcons'
 
 const app = createApp(App)
 const pinia = createPinia();
@@ -34,7 +36,14 @@ const vuetify = createVuetify({
     options: {
       customProperties: true
     }
-  }
+  },
+  icons: {
+    defaultSet: "mdi",
+    sets: {
+      mdi,
+      custom: customSVGs,
+    },
+  },
 })
 
 app.use(pinia)

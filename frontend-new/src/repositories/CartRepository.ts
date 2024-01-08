@@ -1,6 +1,6 @@
 import Repository from '../plugins/axios';
-import {AxiosPromise} from "axios";
-import {CartItemIndex} from "@/models/CartItem";
+import type {AxiosPromise} from "axios";
+import type {CartItemIndex} from "@/models/CartItem";
 
 const base = 'cart';
 
