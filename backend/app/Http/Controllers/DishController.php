@@ -146,7 +146,7 @@ class DishController extends Controller
         $this->authorize('storeIngredient', [$dish, $ingredient]);
 
         $input = $request->validate([
-            'amount' => 'required|numeric|min:1'
+            'amount' => 'required|decimal:0,3|min:0.001'
         ]);
 
         DishIngredient::updateOrCreate([

@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property int $creator_id
  * @property string $name Название продукта
  * @property bool $is_perishable Скоропортящийся ли продукт
- * @property int $amount Количество у создателя
+ * @property string $amount Количество у создателя (decimal)
  * @property IngredientUnit $unit Единица измерения продукта
  * @property string|null $type Категория
  * @property Carbon|null $created_at

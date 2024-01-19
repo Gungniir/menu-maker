@@ -1,6 +1,8 @@
 import {BaseType} from "@/models/common/BaseType";
 import {DishIngredientPivot} from "@/models/pivots/DishIngredientPivot";
 
+type decimal = string;
+
 export enum IngredientUnit {
   Kilograms = 'кг',
   Grams = 'г',
@@ -13,7 +15,7 @@ export type IngredientEntity = {
   name: string,
   is_perishable: boolean,
   type: string | null,
-  amount: number,
+  amount: decimal,
   unit: IngredientUnit
 }
 

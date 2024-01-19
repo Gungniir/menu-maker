@@ -1,53 +1,73 @@
-import Vue from "vue";
-import {ValidationProvider, ValidationObserver, extend} from "vee-validate";
+import Vue from 'vue'
+import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 
 extend('required', {
-  validate(value) {
+  validate (value) {
     return {
       required: true,
-      valid: ['', null, undefined].indexOf(value) === -1
-    };
+      valid: ['', null, undefined].indexOf(value) === -1,
+    }
   },
   message: 'Обязательное поле',
-  computesRequired: true
-});
+  computesRequired: true,
+})
 
 extend('email', {
-  validate(value: string) {
+  validate (value: string) {
     return {
-      valid: value.length >= 3 && value.indexOf('@') !== -1
-    };
+      valid: value.length >= 3 && value.indexOf('@') !== -1,
+    }
   },
-  message: 'Неверный формат почты'
-});
+  message: 'Неверный формат почты',
+})
 
 extend('integer', {
-  validate(value: string) {
+  validate (value: string) {
     return {
-      valid: /^\d+$/.test(value)
-    };
+      valid: /^\d+$/.test(value),
+    }
   },
-  message: 'Неверный формат числа'
-});
+  message: 'Неверный формат числа',
+})
+
+extend('decimal', {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  validate (value: string, { digits }) {
+    const regex = new RegExp(`^\\d+([,.]\\d{1,${digits}})?$`)
+
+    return {
+      valid: regex.test(value),
+    }
+  },
+  params: ['digits'],
+  message: (_, params) => {
+    if (!/^\d+([,.]\d+)?$/.test(params._value_)) {
+      return 'Неверный формат числа'
+    }
+
+    return `Максимум цифр после запятой: ${params.digits}`
+  },
+})
 
 extend('min', {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  validate(value: string, {min}) {
-    const number = Number(value);
+  validate (value: string, { min }) {
+    const number = Number(value)
     return {
       valid: Number.isNaN(number) ? value.length >= min : number >= min,
-    };
+    }
   },
   params: ['min'],
-  message: 'Минимум: {min}'
-});
+  message: 'Минимум: {min}',
+})
 
 extend('unique', {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  validate(value: string, {items, allowed}) {
-    if (value === allowed) return true;
+  validate (value: string, { items, allowed }) {
+    if (value === allowed) return true
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -55,17 +75,16 @@ extend('unique', {
 
     return {
       valid: a.indexOf(value.toUpperCase()) === -1,
-    };
+    }
   },
   params: ['items', 'allowed'],
-  message: 'Уже используется'
-});
-
+  message: 'Уже используется',
+})
 
 extend('secret', {
   validate: value => value === 'example',
-  message: 'This is not the magic word'
-});
+  message: 'This is not the magic word',
+})
 
-Vue.component('ValidationObserver', ValidationObserver);
-Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver)
+Vue.component('ValidationProvider', ValidationProvider)

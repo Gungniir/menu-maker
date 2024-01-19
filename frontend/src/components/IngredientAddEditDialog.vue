@@ -56,7 +56,7 @@
       <validation-provider
         vid="amount"
         name="количество"
-        rules="required|integer"
+        rules="required|decimal:3"
         v-slot="{ errors }"
       >
         <v-text-field
@@ -141,7 +141,7 @@ export default class IngredientAddEditDialog extends Vue {
       name: this.ingredientName,
       is_perishable: false,
       type: this.ingredientType ? this.ingredientType : this.ingredientTypeSearch,
-      amount: Number(this.ingredientAmount),
+      amount: this.ingredientAmount.replace(',', '.'),
       unit: this.ingredientUnit
     });
 
@@ -158,7 +158,7 @@ export default class IngredientAddEditDialog extends Vue {
       name: this.ingredientName,
       is_perishable: false,
       type: this.ingredientType ? this.ingredientType : this.ingredientTypeSearch,
-      amount: Number(this.ingredientAmount),
+      amount: this.ingredientAmount.replace(',', '.'),
       unit: this.ingredientUnit
     });
 
@@ -182,7 +182,7 @@ export default class IngredientAddEditDialog extends Vue {
     this.loading = false;
     this.ingredientAllowedName = data.name;
     this.ingredientName = data.name;
-    this.ingredientAmount = data.amount.toString();
+    this.ingredientAmount = Number(data.amount).toString();
     this.ingredientType = data.type;
     this.ingredientUnit = data.unit;
 

@@ -2,7 +2,7 @@
   <div class="ingredients">
     <div class="ingredients__ingredients-header ingredients__h2 d-flex">
       Ингредиенты (на
-      <template v-if="this.editMode">
+      <template v-if="editMode">
         <v-text-field v-model="portions" outlined class="mx-1 flex-grow-0 hide-messages min-height" style="width: 40px; height: 20px" />
       </template>
       <template v-else>
@@ -27,7 +27,7 @@
                 v-bind="attrs"
                 @click="
                   addIngredientId = ingredient.id;
-                  addIngredientAmount = ingredient.pivot.amount * portions;
+                  addIngredientAmount = Number((Number(ingredient.pivot.amount) * portions).toFixed(3)).toString();
                   addIngredientShow = true;
                   $nextTick(() => $refs.addIngredientAmountInput.focus());
                 "
@@ -55,7 +55,7 @@
           </v-tooltip>
         </div>
         <div class="ingredients__ingredient-amount">
-          {{ ingredient.pivot.amount * portions }} {{ ingredient.unit }}
+          {{ Number(ingredient.pivot.amount) * portions }} {{ ingredient.unit }}
         </div>
       </div>
     </div>
@@ -81,7 +81,7 @@
               />
             </validation-provider>
           </div>
-          <validation-provider slim rules="required|min:1" v-slot="{ errors }">
+          <validation-provider slim rules="required|decimal:3|min:0" v-slot="{ errors }">
             <div style="width: 20%" class="ml-4">
               <v-text-field
                 v-model="addIngredientAmount"
@@ -136,7 +136,7 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   private portions = 1;
   private addIngredientId = 0;
-  private addIngredientAmount = 1;
+  private addIngredientAmount = '0';
   private addIngredientShow = false;
   private addIngredientFakeUnit = IngredientUnit.Grams;
   private addIngredientFilter = '';
@@ -167,7 +167,7 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
 
   private closeAddIngredient(): void {
     this.addIngredientId = 0;
-    this.addIngredientAmount = 1;
+    this.addIngredientAmount = '0';
     this.addIngredientShow = false;
   }
 
@@ -231,16 +231,16 @@ export default class DishEditIngredients extends mixins(OutsideClickMixin) {
   }
 
   @Emit('add-ingredient')
-  addIngredient(): {id: number, amount: number} {
-    let amount = Math.round(this.addIngredientAmount / this.portions);
-    if (amount === 0) {
+  addIngredient(): {id: number, amount: string} {
+    let amount = Number(this.addIngredientAmount) / this.portions;
+    if (amount <= 0) {
       amount = 1;
     }
 
 
     return {
       id: this.addIngredientId,
-      amount: amount,
+      amount: Number(amount.toFixed(3)).toString(),
     };
   }
 

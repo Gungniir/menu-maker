@@ -28,7 +28,7 @@
           <ul style="padding-left: 16px;">
             <li v-for="ingredient of typeIngredients.ingredients" :key="ingredient.id" class="ingredients__category-item">
               <div class="ingredients__category-item-container">
-                {{ ingredient.name }} - {{ ingredient.amount }} {{ ingredient.unit }}
+                {{ ingredient.name }} - {{ Number(ingredient.amount) }} {{ ingredient.unit }}
                 <div class="d-flex ingredients__category-item-container-actions">
                   <v-tooltip
                     bottom
@@ -145,7 +145,7 @@ export default class Ingredients extends Vue {
 
   get filteredIngredients(): Ingredient[] {
     if (this.mode === 'Мой холодильник') {
-      return this.ingredients.filter(({amount}) => amount > 0);
+      return this.ingredients.filter(({amount}) => Number(amount) > 0);
     }
     return this.ingredients;
   }

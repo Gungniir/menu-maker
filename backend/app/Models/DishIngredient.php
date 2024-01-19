@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $dish_id
  * @property int $ingredient_id
- * @property int $amount Количество ингредиента в расчёте на одну порцию
+ * @property string $amount Количество ингредиента в расчёте на одну порцию
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Dish $dish

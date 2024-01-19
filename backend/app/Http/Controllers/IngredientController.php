@@ -57,7 +57,7 @@ class IngredientController extends Controller
         $input = $request->validate([
             'name' => 'required|string|max:255',
             'is_perishable' => 'required|boolean',
-            'amount' => 'required|numeric|integer|min:0',
+            'amount' => 'required|numeric|decimal:0,3|min:0',
             'type' => 'nullable|string',
             'unit' => [
                 'required',
@@ -96,7 +96,7 @@ class IngredientController extends Controller
         $input = $request->validate([
             'name' => 'required|string|max:255',
             'is_perishable' => 'required|boolean',
-            'amount' => 'required|numeric|integer|min:0',
+            'amount' => 'required|numeric|decimal:0,3|min:0',
             'type' => 'nullable|string',
             'unit' => [
                 'required',

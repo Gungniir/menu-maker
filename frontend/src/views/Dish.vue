@@ -204,7 +204,7 @@ export default class Dish extends mixins(OutsideClickMixin) {
     this.dish = data;
   }
 
-  async addIngredient({id, amount}: {id: number, amount: number}): Promise<void> {
+  async addIngredient({id, amount}: {id: number, amount: string}): Promise<void> {
     const {data} = await DishRepository.storeIngredient(this.dishId, id, amount);
 
     this.dish = data;
