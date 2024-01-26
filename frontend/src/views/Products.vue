@@ -25,7 +25,7 @@
           </div>
           <ul style="padding-left: 16px;">
             <li v-for="item of typeItems.items" :key="item.id" class="products__category-item">
-              {{ item.ingredient.name }} - {{ item.amount }} {{ item.ingredient.unit }}
+              {{ item.ingredient.name }} - {{ Number(item.amount) }} {{ item.ingredient.unit }}
             </li>
           </ul>
         </div>
