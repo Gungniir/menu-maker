@@ -145,6 +145,42 @@ export default class MenuSchemeAddEditDialog extends mixins(OutsideClickMixin) {
       id: 9,
       color: '#CBFCCA'
     },
+    {
+      id: 10,
+      color: '#7e93fd'
+    },
+    {
+      id: 11,
+      color: '#fcc66b'
+    },
+    {
+      id: 12,
+      color: '#da7474'
+    },
+    {
+      id: 13,
+      color: '#ff3f3f'
+    },
+    {
+      id: 14,
+      color: '#6ec3fd'
+    },
+    {
+      id: 15,
+      color: '#faff5e'
+    },
+    {
+      id: 16,
+      color: '#3d3d3d'
+    },
+    {
+      id: 17,
+      color: '#77269f'
+    },
+    {
+      id: 18,
+      color: '#0b5007'
+    },
   ] as {
     id: number,
     color: string
