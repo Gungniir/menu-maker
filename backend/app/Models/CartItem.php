@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $user_id
  * @property int $ingredient_id
- * @property int $amount
+ * @property string $amount
  * @property-read Ingredient $ingredient
  * @property-read User $user
  * @method static Builder|CartItem newModelQuery()
